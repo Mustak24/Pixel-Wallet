@@ -1,6 +1,7 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Home from "./src/screens/Home";
 import Navbar from "./src/components/Navbar";
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 export default function App(): React.JSX.Element {

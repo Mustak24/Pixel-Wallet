@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import AnimateButton from "../components/AnimateButton";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import FeatherIcons from 'react-native-vector-icons/Feather';
+import TransitionCard from "../components/TransitionCard";
 
 export default function Home(): React.JSX.Element {
 
@@ -13,8 +17,8 @@ export default function Home(): React.JSX.Element {
     }
     
     return (
-        <View style={styles.home}>
-            <View style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: 'row', width: '100%', height: 50}}>
+        <View style={styles.root}>
+            <View style={styles.topHeader}>
                 <View style={{display: 'flex', flexDirection: isScrollCloseTop ? 'row' : 'column'}}>
                     <Text style={{fontSize: isScrollCloseTop ? 16 : 12, color: 'white', fontWeight: '900'}}>
                         {isScrollCloseTop ? 'Hi' : 'INR'},
@@ -26,14 +30,13 @@ export default function Home(): React.JSX.Element {
                 </View>
 
                 <View style={[styles.center, {flexDirection: 'row', gap: 20}]}>
-                    <View 
-                        style={[styles.center, {borderWidth: 1, borderColor: 'gray', height: 44, borderRadius: 100, paddingInline: 20}]}
-                    >
+                    <AnimateButton style={styles.topHeader_mounthSelector}>
+                        <MaterialIcons name="calendar-today" size={20} color={'white'} />
                         <Text style={{color: 'white', fontWeight: '900', fontSize: 16}}>Mounth</Text>
-                    </View>
+                    </AnimateButton>
 
-                    <View style={[styles.center, {borderRadius: '50%', height: 44, aspectRatio: 1, backgroundColor: 'gray'}]}>
-
+                    <View style={styles.topHeader_menu}>
+                        <MaterialIcons name="keyboard-arrow-down" color={'white'} size={24}/>
                     </View>
                 </View>
             </View>
@@ -46,12 +49,28 @@ export default function Home(): React.JSX.Element {
                     </View>
 
                     <View style={[styles.center, {flexDirection: 'row', gap: 12, position: 'relative'}]}>
-                        <View style={{height: 100, backgroundColor: 'lightgreen', borderRadius: 20, flex: 1}}>
+                        <View style={{height: 100, backgroundColor: 'rgb(25,200,150)', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
+                            <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                                <FeatherIcons name="download" size={24} color={'white'} />
+                                <Text style={{color: 'white', fontWeight: 800}}>INCOME</Text>
+                            </View>
 
+                            <Text style={{color: 'white', fontSize: 22}}>
+                                <Text style={{fontWeight: 800}}>120</Text>
+                                <Text> INR</Text>
+                            </Text>
                         </View>
 
-                        <View style={{height: 100, backgroundColor: 'gray', borderRadius: 20, flex: 1}}>
+                        <View style={{height: 100, backgroundColor: 'gray', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
+                            <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                                <FeatherIcons name="upload" size={24} color={'white'} />
+                                <Text style={{color: 'white', fontWeight: 800}}>EXPENSES</Text>
+                            </View>
 
+                            <Text style={{color: 'white', fontSize: 22}}>
+                                <Text style={{fontWeight: 800}}>120</Text>
+                                <Text> INR</Text>
+                            </Text>
                         </View>
                     </View>
                 </View>
@@ -59,7 +78,7 @@ export default function Home(): React.JSX.Element {
                 <View style={{borderBottomColor: 'gray', borderWidth: 1, width: '100%', marginBlock: 32, opacity: .5}}></View>
 
                 <View>
-
+                    <TransitionCard type="expenes" date="JUNE 14" mode="cash" title="Food"/>
                 </View>
             </ScrollView>
         </View>
@@ -67,7 +86,7 @@ export default function Home(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create({
-    home: {
+    root: {
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'column',
@@ -80,5 +99,37 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+
+    topHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        width: '100%',
+        height: 50
+    },
+
+    topHeader_mounthSelector: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        gap: 10,
+        paddingInline: 20,
+        height: 44,
+        borderRadius: 100,
+        borderWidth: 1,
+        borderColor: 'gray'
+    },
+
+    topHeader_menu: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 44,
+        height: 44,
+        borderRadius: 1000,
+        backgroundColor: 'gray'
     }
 })

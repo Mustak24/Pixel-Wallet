@@ -1,26 +1,29 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AnimateButton from "./AnimateButton";
 
 export default function Navbar(): React.JSX.Element {
     return (
-        <View style={[styles.navabr, {}]}>
-            <Text style={{color: 'white'}}>Home</Text>
+        <View style={[styles.navbarContener]}>
+            <AnimateButton style={styles.navigatorBtn}>
+                <MaterialIcons name="home" size={22} color={'white'} />
+                <Text style={styles.navigatorBtn_text}>Home</Text>
+            </AnimateButton>
 
-            <View style={[styles.center, {position: 'relative', width: 64, aspectRatio: 1, alignSelf: 'flex-start', top: -32, flexDirection: 'row'}]}>
-                <View style={[styles.center, {borderTopColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: 'black', borderWidth: 38, top: -6, borderRadius: 100, borderBottomRightRadius: 100, alignSelf: 'flex-end', position: 'absolute', transform: 'rotate(-45deg)'}]}></View>
+            <AnimateButton style={styles.createBtn}>
+                <MaterialIcons name="add" color={'white'} size={22}/>
+            </AnimateButton>
 
-                <View style={[styles.center, {position: 'absolute', backgroundColor: 'royalblue', width: 64, aspectRatio: 1, borderRadius: '50%'}]}>
-                    <View style={{borderColor: 'white', borderWidth: 1, borderRadius: 10, width: 22, position: 'absolute'}}></View>
-                    <View style={{borderColor: 'white', borderWidth: 1, borderRadius: 10, width: 22, position: 'absolute', transform: 'rotate(90deg)'}}></View>
-                </View>
-            </View>
-
-            <Text style={{color: 'white'}}>ACC</Text>
+            <AnimateButton style={styles.navigatorBtn}>
+                <MaterialIcons name="account-balance-wallet" size={22} color={'white'} />
+                <Text style={styles.navigatorBtn_text}>Accounts</Text>
+            </AnimateButton>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    navabr: {
+    navbarContener: {
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'row',
@@ -28,12 +31,38 @@ const styles = StyleSheet.create({
         height: 60,
         justifyContent: 'space-between',
         backgroundColor: 'rgb(25, 25, 25)',
-        paddingInline: 32
+        paddingInline: 20
     },
 
-    center: {
+    navigatorBtn: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexDirection: 'row',
+        gap: 10,
+        height: 40,
+        paddingInline: 20,
+        borderRadius: 100,
+        width: 120
+    },
+
+    navigatorBtn_text: {
+        color: 'white',
+        fontWeight: '900',
+        fontSize: 12
+    },
+
+    createBtn: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        position: 'relative', 
+        width: 64, 
+        aspectRatio: 1, 
+        alignSelf: 'flex-start', 
+        top: -32, 
+        backgroundColor: 'royalblue',
+        borderRadius: 100,
     },
 })
