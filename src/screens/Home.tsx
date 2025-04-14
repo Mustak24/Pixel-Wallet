@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import AnimateButton from "../components/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import TransitionCard from "../components/TransitionCard";
+import Transition from "../Database/Models/Transition";
+import Storage from "../Database/Storage";
 
 export default function Home(): React.JSX.Element {
 
@@ -16,6 +18,9 @@ export default function Home(): React.JSX.Element {
         setScrollCloseTop(isClose); 
     }
     
+    const TranstionData = useRef<Transition[]>(Transition.getAll()).current;
+    const Name = useRef(Storage.getString('name')).current;
+    
     return (
         <View style={styles.root}>
             <View style={styles.topHeader}>
@@ -25,7 +30,7 @@ export default function Home(): React.JSX.Element {
                     </Text>
 
                     <Text style={{fontSize: 16, color: 'white', fontWeight: '900'}}>
-                        {isScrollCloseTop ? 'Name' : '0.00'}
+                        {isScrollCloseTop ? Name : '0.00'}
                     </Text>
                 </View>
 
@@ -78,7 +83,11 @@ export default function Home(): React.JSX.Element {
                 <View style={{borderBottomColor: 'gray', borderWidth: 1, width: '100%', marginBlock: 32, opacity: .5}}></View>
 
                 <View>
-                    <TransitionCard type="expenes" date="JUNE 14" mode="cash" title="Food" description="234 rupins inasf fsdfsd  fdsf" />
+                    {
+                        TranstionData.map(({type, accountId, title, description}) => (
+                            <TransitionCard type={type} date="JUNE 14" time="12:32" mode={accountId} title={title} description={description} />
+                        ))
+                    }
                 </View>
             </ScrollView>
         </View>

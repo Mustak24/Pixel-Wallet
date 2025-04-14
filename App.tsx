@@ -8,8 +8,9 @@ import Accounts from "./src/screens/Accounts";
 const Tab = createBottomTabNavigator();
 
 
+
 export default function App(): React.JSX.Element {
-  
+
   return (
     <NavigationContainer>
       <View style={styles.root}>

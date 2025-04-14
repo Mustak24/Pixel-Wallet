@@ -3,13 +3,14 @@ import FeatherIcons from 'react-native-vector-icons/Feather';
 
 type TransitionCardProps = {
     type: 'income' | 'expenes',
-    date: string,
     mode: string,
     title?: string,
     description?: string
+    date: string,
+    time: string
 }
 
-export default function TransitionCard({type, mode, title='', date, description=''}: TransitionCardProps): React.JSX.Element {
+export default function TransitionCard({type, mode, title='', date, description='', time}: TransitionCardProps): React.JSX.Element {
     
     const backgroundColor = type == 'income' ? 'rgb(25,200,150)' : 'gray';
 
