@@ -78,7 +78,7 @@ export default function Home(): React.JSX.Element {
                 <View style={{borderBottomColor: 'gray', borderWidth: 1, width: '100%', marginBlock: 32, opacity: .5}}></View>
 
                 <View>
-                    <TransitionCard type="expenes" date="JUNE 14" mode="cash" title="Food"/>
+                    <TransitionCard type="expenes" date="JUNE 14" mode="cash" title="Food" description="234 rupins inasf fsdfsd  fdsf" />
                 </View>
             </ScrollView>
         </View>
@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
         width: '100%',
         flex: 1,
         paddingInline: 20,
+        backgroundColor: 'black'
     },
 
     center: {

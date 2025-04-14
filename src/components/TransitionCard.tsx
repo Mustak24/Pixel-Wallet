@@ -9,7 +9,7 @@ type TransitionCardProps = {
     description?: string
 }
 
-export default function TransitionCard({type, mode, title, date, description}: TransitionCardProps): React.JSX.Element {
+export default function TransitionCard({type, mode, title='', date, description=''}: TransitionCardProps): React.JSX.Element {
     
     const backgroundColor = type == 'income' ? 'rgb(25,200,150)' : 'gray';
 
@@ -18,12 +18,12 @@ export default function TransitionCard({type, mode, title, date, description}: T
             <Text style={styles.date}>{date}</Text>
             <View style={[styles.card, {backgroundColor}]}>
                 <View style={styles.mode}>
-                    <Text style={{color: 'black', fontSize: 14, fontWeight: 900}}>{mode}</Text>
+                    <Text style={{color: 'black', fontSize: 16, fontWeight: 900}}>{mode}</Text>
                 </View>
 
                 <View>
                     <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.description}>{description}</Text>
+                    <Text style={styles.description}>{description}{description?.at(-1) === '.' ? '' : '.'}</Text>
                 </View>
                 
                 <View style={{display: "flex", gap: 10, flexDirection: 'row'}}>
@@ -52,19 +52,20 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 20, 
         borderRadius: 20, 
-        position: 'relative'
+        position: 'relative',
+        gap: 16
     },
 
     mode: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 32,
-        paddingHorizontal: 16,
+        height: 40,
+        paddingHorizontal: 20,
         borderRadius: 1000,
         backgroundColor: 'white',
         position: 'absolute',
-        top: -16,
+        top: -20,
         right: 20,
     },
 
@@ -79,14 +80,13 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 900,
         color: 'white',
-        
     },
 
     description: {
         fontSize: 12,
-        fontWeight: 700,
+        fontWeight: 800,
         opacity: 0.8,
-        color: 'white'
+        color: 'white',
     },
 
     center: {

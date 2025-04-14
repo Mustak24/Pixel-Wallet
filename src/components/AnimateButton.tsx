@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { Animated, findNodeHandle, Pressable, Text, UIManager, View, ViewStyle } from "react-native";
+import { Animated, findNodeHandle, Pressable, PressableProps, Text, UIManager, View, ViewStyle } from "react-native";
 import { GestureResponderEvent } from "react-native";
 
 type AnimateButtonProps = {
@@ -7,11 +7,13 @@ type AnimateButtonProps = {
     style?: ViewStyle,
     title?: string,
     duration?: number,
-    scale?: number
+    scale?: number,
+    onPress?: (event: GestureResponderEvent) => void,
+    props?: PressableProps   
 }
 
 
-export default function AnimateButton({children=<Text style={{color: 'white'}}>Click</Text>, style={}, duration=300, scale=10}: AnimateButtonProps ): React.JSX.Element {
+export default function AnimateButton({children=<Text style={{color: 'white'}}>Click</Text>, style={}, duration=300, scale=10, onPress=()=>{}, props={}}: AnimateButtonProps ): React.JSX.Element {
 
     const [pressPoints, setPressPoints] = useState<{x: number, y: number}>({x: -1, y: -1});
 
@@ -19,7 +21,8 @@ export default function AnimateButton({children=<Text style={{color: 'white'}}>C
     const scaleAnime = useRef<Animated.Value>(new Animated.Value(0)).current;
     const button = useRef<View>(null);
 
-    function animate({nativeEvent}: GestureResponderEvent): void{
+    function animate(event: GestureResponderEvent): void{
+        let {nativeEvent} = event;
         let {pageX, pageY} = nativeEvent;    
 
         let nodeHandler = findNodeHandle(button.current);
@@ -29,6 +32,8 @@ export default function AnimateButton({children=<Text style={{color: 'white'}}>C
             pageX -= px; pageY -= py;
             setPressPoints({x: pageX, y: pageY});
         });
+
+        return onPress(event);
     }
 
     useEffect(() => {
@@ -50,7 +55,7 @@ export default function AnimateButton({children=<Text style={{color: 'white'}}>C
     }, [pressPoints])
 
     return (
-        <Pressable ref={button} onPress={animate} style={[style, {position: 'relative', overflow: "hidden"}]}>
+        <Pressable ref={button} onPress={animate} style={[style, {position: 'relative', overflow: "hidden"}]} {...props} >
             <Animated.View  style={{
                 position: 'absolute', aspectRatio: 1, borderRadius: 10000, left: pressPoints.x - 5, top: pressPoints.y - 5, 
                 opacity: opacityAnime, transform: [{scale: scaleAnime}],

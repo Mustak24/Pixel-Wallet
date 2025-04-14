@@ -1,0 +1,47 @@
+import { StyleSheet, View } from "react-native";
+import TypingText from "../components/TypingText";
+
+
+export default function Accounts({}): React.JSX.Element {
+    return (
+        <View style={styles.root}>
+            <TypingText text="Accounts" style={styles.topHeading} />
+            <TypingText text="Total: INR 123.93" style={styles.topHeading_balance} />
+
+        </View>
+    )
+}
+
+
+const styles = StyleSheet.create({
+    root: {
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+        width: '100%',
+        flex: 1,
+        paddingInline: 20,
+        backgroundColor: 'black'
+    },
+
+    center: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    topHeading: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 900,
+        alignSelf: 'flex-start'
+    },
+
+    topHeading_balance: {
+        color: 'white',
+        fontSize: 14,
+        fontWeight: 900,
+        opacity: 0.70,
+        alignSelf: 'flex-start'
+    }
+})

@@ -1,22 +1,30 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AnimateButton from "./AnimateButton";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
-export default function Navbar(): React.JSX.Element {
+
+
+export default function BottomTabNavbar({navigation, state}: BottomTabBarProps): React.JSX.Element {
+
+    const currentRouteName = state.routes[state.index].name;
+
+    const isActive = (route: string) => route === currentRouteName;
+
     return (
         <View style={[styles.navbarContener]}>
-            <AnimateButton style={styles.navigatorBtn}>
-                <MaterialIcons name="home" size={22} color={'white'} />
-                <Text style={styles.navigatorBtn_text}>Home</Text>
+            <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('home')} >
+                <MaterialIcons name="home" size={22} color={isActive('home') ? 'royalblue' : 'white'} />
+                <Text style={[styles.navigatorBtn_text, {color: isActive('home') ? 'royalblue' : 'white'}]}>Home</Text>
             </AnimateButton>
 
             <AnimateButton style={styles.createBtn}>
                 <MaterialIcons name="add" color={'white'} size={22}/>
             </AnimateButton>
 
-            <AnimateButton style={styles.navigatorBtn}>
-                <MaterialIcons name="account-balance-wallet" size={22} color={'white'} />
-                <Text style={styles.navigatorBtn_text}>Accounts</Text>
+            <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('accounts')}>
+                <MaterialIcons name="account-balance-wallet" size={22} color={isActive('accounts') ? 'royalblue' : 'white'} />
+                <Text style={[styles.navigatorBtn_text, {color: isActive('accounts') ? 'royalblue' : 'white'}]}>Accounts</Text>
             </AnimateButton>
         </View>
     )
