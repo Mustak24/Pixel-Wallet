@@ -60,4 +60,19 @@ export default class Transition{
 
         return {}
     }
+
+    static getByMounth(mounth, year){
+        if(!year) year = new Date().getFullYear();
+        if(!mounth) return [];
+
+        let transitionData = JSON.parse(Storage.getString('Transitions'));
+        let thisMounthData = [];
+
+        for(let i=0; i<transitionData.length; i++){
+            let {mounth: m, year: y} = transitionData[i].time;
+            if(mounth == m && year == y) thisMounthData.push(transitionData[i])
+        }
+        
+        return thisMounthData;
+    }
 }
