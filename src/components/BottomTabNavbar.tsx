@@ -1,32 +1,34 @@
-import { Animated, Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Dimensions, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AnimateButton from "./AnimateButton";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useEffect, useRef, useState } from "react";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import CreateTransition from "./CreateTransition";
 
-
-type transitonMode = 'income' | 'expenses' | 'transfer' | 'none'
 
 export default function BottomTabNavbar({navigation, state}: BottomTabBarProps): React.JSX.Element {
+    
+    const currentRouteName = state.routes[state.index].name;
+    const isActive = (route: string) => route === currentRouteName;
 
-    const [transitionMode, setTransitionMode] = useState<transitonMode>('none');
+    const isHide = ['transition'].includes(currentRouteName);
+    if(isHide) return <></>
 
-    const {width: screenInnerWidth, height: screenInnerHeight} = Dimensions.get('screen');
+    const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
 
-    const isMenuOpen = useRef<Boolean>(false);
+    const {height: screenInnerHeight} = Dimensions.get('screen');
+
     const translateY = useRef<Animated.Value>(new Animated.Value(screenInnerHeight)).current;
-    const ballsOpacityAnime = useRef<Animated.Value>(new Animated.Value(0)).current
-    const rotateMenuAnime = useRef<Animated.Value>(new Animated.Value(0)).current
+    const ballsOpacityAnime = useRef<Animated.Value>(new Animated.Value(0)).current;
+    const rotateMenuAnime = useRef<Animated.Value>(new Animated.Value(0)).current;
 
     const incomeAnime = useRef<Animated.ValueXY>(new Animated.ValueXY({x: 0, y: 0})).current;
     const expensesAnime = useRef<Animated.ValueXY>(new Animated.ValueXY({x: 0, y: 0})).current;
     const transferAnime = useRef<Animated.ValueXY>(new Animated.ValueXY({x: 0, y: 0})).current;
 
-
-    const currentRouteName = state.routes[state.index].name;
-    const isActive = (route: string) => route === currentRouteName;
+    function handleMenu(){
+        setMenuOpen(menu => !menu);
+    }
 
     function handleMenuAnime(isOpen: Boolean): void{
         Animated.parallel([
@@ -44,21 +46,16 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
             }),
             Animated.timing(rotateMenuAnime, {
                 toValue: isOpen ? 1 : 0, duration: 100, useNativeDriver: true
+            }),
+            Animated.timing(translateY, {
+                toValue: isOpen ? 0 : screenInnerHeight, duration: 100, useNativeDriver: true
             })
         ]).start()
     }
 
-    function handleBackAnime(isOpen: Boolean): void{
-        Animated.timing(translateY, {
-            toValue: isOpen ? 0 : screenInnerHeight, duration: 100, useNativeDriver: true
-        }).start();
-    }
-
     useEffect(() => {
-        if(transitionMode == 'none') handleBackAnime(false)
-        isMenuOpen.current = false;
-        handleMenuAnime(isMenuOpen.current);
-    }, [transitionMode])
+        handleMenuAnime(isMenuOpen);
+    }, [isMenuOpen])
 
     return (<>
         <View style={[styles.center, {position: 'relative'}]}>
@@ -79,14 +76,16 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                 currentRouteName === 'home' ? (
                     <View style={[styles.center, {position: 'absolute', width: "100%", height: 60, flexDirection: 'row'}]}>
                         <Animated.View style={[styles.center, styles.menuBackCover, {height: screenInnerHeight, transform: [{translateY}]}]}>
-                            <CreateTransition transitionMode={transitionMode} setTransitionMode={setTransitionMode}  />
                         </Animated.View>
 
                         <Animated.View 
                             style={[styles.center, {transform: incomeAnime.getTranslateTransform(), top: -32, position: 'absolute', opacity: ballsOpacityAnime}]}
                         >
                             <Pressable 
-                                onPress={() => setTransitionMode('income')} 
+                                onPress={() => {
+                                    handleMenu();
+                                    navigation.navigate('transition', {mode: 'income'})
+                                }} 
                                 style={[styles.animateBalls, styles.center, {backgroundColor: 'rgb(25,200,150)'}]}
                             >
                                 <FeatherIcons name="download" size={24} color={'white'} />
@@ -99,7 +98,10 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                             style={[styles.center, {transform: expensesAnime.getTranslateTransform(), top: -32, position: 'absolute', opacity: ballsOpacityAnime}]}
                         >
                             <Pressable
-                                onPress={() => setTransitionMode('expenses')} 
+                                onPress={() => {
+                                    handleMenu();
+                                    navigation.navigate('transition', {mode: 'expenses'})
+                                }} 
                                 style={[styles.animateBalls, styles.center, {backgroundColor: 'gray'}]}
                             >
                                 <FeatherIcons name="upload" size={24} color={'white'} />
@@ -112,7 +114,10 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                             style={[styles.center, {transform: transferAnime.getTranslateTransform(), top: -32, position: 'absolute', opacity: ballsOpacityAnime}]}
                         >
                             <Pressable 
-                                onPress={() => setTransitionMode('transfer')}
+                                onPress={() => {
+                                    handleMenu();
+                                    navigation.navigate('transition', {mode: 'transfer'})
+                                }}
                                 style={[styles.animateBalls, styles.center, {backgroundColor: 'rgb(130, 100, 255)'}]}
                             >
                                 <FeatherIcons name="shuffle" size={24} color={'white'} />
@@ -124,13 +129,9 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                 ) : null
             }
 
-            <View style={[styles.center, {width: '100%', position: 'absolute', display: transitionMode == 'none' ? 'flex' : 'none'}]}>
+            <View style={[styles.center, {width: '100%', position: 'absolute'}]}>
                 <AnimateButton style={styles.createBtn} 
-                    onPress={() => {
-                        isMenuOpen.current = !isMenuOpen.current
-                        handleMenuAnime(isMenuOpen.current);
-                        handleBackAnime(isMenuOpen.current);
-                    }}
+                    onPress={handleMenu}
                 >
                     <Animated.View style={{transform: [{rotate: rotateMenuAnime.interpolate({inputRange: [0, 1], outputRange: ['0deg', '45deg']})}]}}>
                         <MaterialIcons name="add" color={'white'} size={22} />

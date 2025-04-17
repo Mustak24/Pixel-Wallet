@@ -9,11 +9,12 @@ type AnimateButtonProps = {
     duration?: number,
     scale?: number,
     onPress?: (event: GestureResponderEvent) => void,
-    props?: PressableProps   
+    props?: PressableProps,
+    color?: string
 }
 
 
-export default function AnimateButton({children=<Text style={{color: 'white'}}>Click</Text>, style={}, duration=300, scale=10, onPress=()=>{}, props={}}: AnimateButtonProps ): React.JSX.Element {
+export default function AnimateButton({children, style={}, duration=300, scale=10, onPress=()=>{}, props={}, title='Click', color='white'}: AnimateButtonProps ): React.JSX.Element {
 
     const [pressPoints, setPressPoints] = useState<{x: number, y: number}>({x: -1, y: -1});
 
@@ -61,7 +62,7 @@ export default function AnimateButton({children=<Text style={{color: 'white'}}>C
                 opacity: opacityAnime, transform: [{scale: scaleAnime}],
                 borderWidth: 10, borderColor: 'white'
             }}></Animated.View>
-            {children}
+            {children || <Text style={{color}}>{title}</Text>}
         </Pressable>
     );
 }

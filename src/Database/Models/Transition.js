@@ -2,8 +2,8 @@ import Storage from "../Storage";
 
 export default class Transition{
 
-    constructor({type, accountId, title, description}){
-        this.type = type;
+    constructor({mode, accountId, title, description}){
+        this.mode = mode;
         this.accountId = accountId;
         this.title = title;
         this.description = description;

@@ -4,20 +4,26 @@ import BottomTabNavbar from "./src/components/BottomTabNavbar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Accounts from "./src/screens/Accounts";
+import Transition from "./src/screens/Transition";
 
-const Tab = createBottomTabNavigator();
 
-
+const Tab = createBottomTabNavigator<stackParamsList>();
 
 export default function App(): React.JSX.Element {
 
   return (
     <NavigationContainer>
       <View style={styles.root}>
-          <Tab.Navigator tabBar={(props) => <BottomTabNavbar {...props} />} screenOptions={{headerShown: false}} >
+        <View style={{width: '100%', flex: 1}}>
+          <Tab.Navigator 
+            tabBar={(props) => <BottomTabNavbar {...props} />} 
+            screenOptions={{headerShown: false}} 
+            >
             <Tab.Screen name="home" component={Home} />
             <Tab.Screen name="accounts" component={Accounts} />
+            <Tab.Screen name="transition" component={Transition} />
           </Tab.Navigator>
+        </View>
       </View>
     </NavigationContainer>
   )
@@ -36,3 +42,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   }
 })
+
+
+export type stackParamsList = {
+  transition: {
+      mode: 'income' | 'expenses' | 'transfer',
+  },
+  home: undefined,
+  accounts: undefined
+}

@@ -84,8 +84,8 @@ export default function Home(): React.JSX.Element {
 
                 <View>
                     {
-                        TranstionData.map(({type, accountId, title, description}) => (
-                            <TransitionCard type={type} date="JUNE 14" time="12:32" mode={accountId} title={title} description={description} />
+                        TranstionData.map(({mode, accountId, title, description}) => (
+                            <TransitionCard type={mode} date="JUNE 14" time="12:32" mode={accountId} title={title} description={description} />
                         ))
                     }
                 </View>
