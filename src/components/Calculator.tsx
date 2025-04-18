@@ -4,9 +4,9 @@ import AnimateButton from "./AnimateButton";
 import Feathericons from 'react-native-vector-icons/Feather';
 
 type CalculatorProps = {
-    value?: string
+    value?: number
     onChangeValue?: (value: string) => any,
-    onResult?: (value: string) => any,
+    onResult?: (value: number) => any,
 }
 
 type buttonObject = {
@@ -16,9 +16,9 @@ type buttonObject = {
 }
 
 
-export default function Calculator({onChangeValue=()=>{}, value: val = '', onResult=()=>{}}: CalculatorProps): React.JSX.Element {
+export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResult=()=>{}}: CalculatorProps): React.JSX.Element {
     
-    const [value, setValue] = useState<string>(val);
+    const [value, setValue] = useState<string>(String(val));
 
     const buttons = useRef<buttonObject[][]>([
         [
@@ -84,7 +84,7 @@ export default function Calculator({onChangeValue=()=>{}, value: val = '', onRes
     }
 
     useEffect(() => {
-        if(isResult()) onResult(value)
+        if(isResult()) onResult(Number(value))
         onChangeValue(value)
     }, [value])
 

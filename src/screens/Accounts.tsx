@@ -1,13 +1,25 @@
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import TypingText from "../components/TypingText";
+import AccountModal from "../Database/Models/AccountModal";
+import AccountCard from "../components/AccountCard";
 
 
 export default function Accounts({}): React.JSX.Element {
+
+    const accounts = AccountModal.getAllId();
+
     return (
         <View style={styles.root}>
             <TypingText text="Accounts" style={styles.topHeading} />
             <TypingText text="Total: INR 123.93" style={styles.topHeading_balance} />
-
+            
+            <ScrollView style={{width: '100%', height: '100%', paddingBlock: 20}}>
+                {
+                    accounts.map((id: string) => (
+                        <AccountCard key={id} id={id} />
+                    ))
+                }
+            </ScrollView>
         </View>
     )
 }

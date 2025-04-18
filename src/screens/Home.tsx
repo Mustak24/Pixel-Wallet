@@ -1,11 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import AnimateButton from "../components/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import TransitionCard from "../components/TransitionCard";
-import Transition from "../Database/Models/Transition";
 import Storage from "../Database/Storage";
+import TransitionModal from "../Database/Models/TransitionModal";
 
 export default function Home(): React.JSX.Element {
 
@@ -18,7 +18,7 @@ export default function Home(): React.JSX.Element {
         setScrollCloseTop(isClose); 
     }
     
-    const TranstionData = useRef<Transition[]>(Transition.getAll()).current;
+    const transitions: string[] = TransitionModal.getAllId();
     const Name = useRef(Storage.getString('name')).current;
     
     return (
@@ -84,8 +84,11 @@ export default function Home(): React.JSX.Element {
 
                 <View>
                     {
-                        TranstionData.map(({mode, accountId, title, description}) => (
-                            <TransitionCard type={mode} date="JUNE 14" time="12:32" mode={accountId} title={title} description={description} />
+                        transitions.map((id) => (
+                            <TransitionCard 
+                                key={id} 
+                                id={id}
+                            />
                         ))
                     }
                 </View>

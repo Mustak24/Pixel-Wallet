@@ -1,14 +1,21 @@
 import { StyleSheet, Text, View } from "react-native";
+import AccountModal from "../Database/Models/AccountModal";
 
 type AccountCardProps = {
-    name: string,
-    balance: number,
-    backgroundColor: string,
-    incomeThisMounth: number,
-    expensesThisMounth: number
+    id: string
 }
 
-export default function AccountCard({name, balance, backgroundColor, incomeThisMounth, expensesThisMounth}: AccountCardProps): React.JSX.Element{
+export default function AccountCard({id}: AccountCardProps): React.JSX.Element{
+
+    console.log(id)
+    const account = AccountModal.findById(id);
+    if(!account) return <></>;
+    console.log(account)
+
+    const {backgroundColor, name, balance} = account
+    const incomeThisMounth = account.getIncomeThisMounth();
+    const expensesThisMounth = account.getExpensesThisMounth();
+
     return (
         <View style={styles.root}>
             <View style={{display: 'flex', backgroundColor, width: "100%", padding: 20, gap: 12}}>

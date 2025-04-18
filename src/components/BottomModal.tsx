@@ -6,6 +6,7 @@ import RoundedView from "./RoundedView";
 
 type BottomModalProps = {
     visible: boolean,
+    setVisible: (vis: boolean) => void,
     children: React.ReactNode,
     actionButtons?: [{title: string, onPress: (arg: PressableProps) => void, color?: string, backgroundColor?: string}],
     transparent?: boolean,
@@ -15,12 +16,11 @@ type BottomModalProps = {
     animationType?: "none" | "slide" | "fade"
 }
 
-export default function BottomModal({visible, children, style, backgroundColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide'}: BottomModalProps): React.JSX.Element {
+export default function BottomModal({visible, setVisible, children, style, backgroundColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide'}: BottomModalProps): React.JSX.Element {
 
-    const [isVisible, setVisible] = useState<boolean>(visible)
 
     return (
-        <Modal animationType={animationType} visible={visible && isVisible} transparent={true} onRequestClose={() => setVisible(!closeOnBack)}>
+        <Modal animationType={animationType} visible={visible} transparent={true} onRequestClose={() => setVisible(!closeOnBack)}>
             <View style={[styles.root, {backgroundColor}]}>
                 <View style={[styles.modalContener, style]}>{children}</View>
 

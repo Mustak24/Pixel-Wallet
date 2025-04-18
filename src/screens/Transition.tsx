@@ -9,6 +9,8 @@ import HandleSwipe from "../components/HandleSwipe";
 import RoundedView from "../components/RoundedView";
 import BottomModal from "../components/BottomModal";
 import Calculator from "../components/Calculator";
+import TransitionModal from "../Database/Models/TransitionModal";
+import AccountModal from "../Database/Models/AccountModal";
 
 
 type transitionInfoType = {
@@ -52,20 +54,39 @@ export default function Transition({route, navigation}: TransitionProps): React.
    
     const {mode} = route.params;
 
-    const [amount, setAmount] = useState<string>('')
-
+    const [amount, setAmount] = useState<number>(0)
+    const [transitionMode, setTransitionMode] = useState<transitionMode>(mode);
+    const [accountId, setAccountId] = useState<string>('');
+    const [title, setTitle] = useState<string>('');
+    
     
     const [paddingBottom, setPaddingBottom] = useState<number>(0) 
-    const [transitionMode, setTransitionMode] = useState<transitionMode>(mode);
     const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expenses' ? 1 : 2]
 
     const time = useRef<string>((() => {
         let date = new Date();
-        let mounth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date.getMonth()];
         let mode = Math.floor(date.getHours() / 12) ? 'AM' : 'PM';
         let time = `${date.getHours() % 12}:${date.getMinutes()}`
-        return `${mounth} ${date.getDate()}  ${time} ${mode}`;
+        return `${time} ${mode}`;
     })()).current;
+
+    const date = useRef<string>((()=>{
+        let date = new Date();
+        let mounth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date.getMonth()];
+        return `${mounth} ${date.getDate()}`;
+    })()).current
+
+    const accountsId = useRef<string[]>(AccountModal.getAllId()).current;
+
+
+    function createTransiton() {
+        if(!title || !accountId || !mode || !amount) {
+            console.log("ERROR");
+            return;
+        }
+        let transition = TransitionModal.create({title, description: '', accountId: accountId, mode, amount, date, time});
+        console.log(transition);
+    }
     
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[styles.root, {paddingBottom}]}>
@@ -100,10 +121,12 @@ export default function Transition({route, navigation}: TransitionProps): React.
 
                 <View style={{marginBlock: 20}}>
                     <TextInput 
+                        value={title}
                         style={styles.titleInput} 
                         placeholder={`${transitionMode[0].toLocaleUpperCase() + transitionMode.slice(1)} title`} 
                         onFocus={() => setPaddingBottom(20)}
                         onBlur={() => setPaddingBottom(0)}
+                        onChangeText={setTitle}
                     />
                 </View>
 
@@ -124,7 +147,13 @@ export default function Transition({route, navigation}: TransitionProps): React.
             </ScrollView>
 
             <View style={styles.bottomOpationContener}>
-                <AmountBox heading={getTransitonInfo().title} accounts={['Cash', 'Bank']} amount={amount} setAmount={setAmount} />
+                <AmountBox 
+                    heading={getTransitonInfo().title} 
+                    accountsId={accountsId} 
+                    amount={amount} 
+                    setAmount={setAmount} 
+                    onChangeAccount={setAccountId}
+                />
 
                 <View style={styles.bottomOpations}>
                     <AnimateButton style={styles.closeBtn}>
@@ -132,7 +161,7 @@ export default function Transition({route, navigation}: TransitionProps): React.
                     </AnimateButton>
                     
                     <View style={styles.actionsButtonsBox}>
-                        <AnimateButton style={{...styles.actionBtn, backgroundColor: 'rgb(25,200,150)'}}>
+                        <AnimateButton style={{...styles.actionBtn, backgroundColor: 'rgb(25,200,150)'}} onPress={createTransiton}>
                             <Text style={{color: 'white', fontWeight: '900'}}>Save</Text>
                         </AnimateButton>
                     </View>
@@ -145,19 +174,19 @@ export default function Transition({route, navigation}: TransitionProps): React.
 
 type AmountBoxProps = {
     heading: string,
-    accounts: string[],
-    amount: string,
-    setAmount: (amount: string) => void
-    usedAccount?: (acc: string) => void,
+    accountsId: string[],
+    amount: number,
+    setAmount: (amount: number) => void
+    onChangeAccount?: (acc: string) => void,
 }
 
-function AmountBox({heading, accounts, usedAccount=()=>{}, amount, setAmount}: AmountBoxProps){
+function AmountBox({heading, accountsId, onChangeAccount=()=>{}, amount, setAmount}: AmountBoxProps){
 
-    const [useAcc, setUseAcc] = useState<string>('Cash');
+    const [useAcc, setUseAcc] = useState<string>(accountsId[0]);
     const [isOpenCal, setOpenCal] = useState<boolean>(true);
 
     useEffect(() => {
-        usedAccount(useAcc);
+        onChangeAccount(useAcc);
     }, [useAcc])
 
     return (
@@ -166,17 +195,20 @@ function AmountBox({heading, accounts, usedAccount=()=>{}, amount, setAmount}: A
 
             <ScrollView contentContainerStyle={{width: '100%', height: 50, gap: 20, marginBlock: 16}} horizontal={true}>   
                 {
-                    accounts.map(name => (
-                        <Pressable key={name} onPress={() => setUseAcc(name)}>
-                            <RoundedView  
-                                key={name} 
-                                title={name} 
-                                color="white" 
-                                backgroundColor={name == useAcc ? "rgb(20,200,150)" : 'transparent'}
-                                style={{borderWidth: 1, borderColor: 'gray'}} 
-                            />
-                        </Pressable>
-                    ))
+                    accountsId.map(id => {
+                        let {name=''} = AccountModal.findById(id) || {};
+                        return (
+                            <Pressable key={name} onPress={() => setUseAcc(id)}>
+                                <RoundedView  
+                                    key={name} 
+                                    title={name} 
+                                    color="white" 
+                                    backgroundColor={id == useAcc ? "rgb(20,200,150)" : 'transparent'}
+                                    style={{borderWidth: 1, borderColor: 'gray'}} 
+                                />
+                            </Pressable>
+                        )
+                    })
                 }
             </ScrollView>
 
@@ -189,6 +221,7 @@ function AmountBox({heading, accounts, usedAccount=()=>{}, amount, setAmount}: A
 
             <BottomModal 
                 visible={isOpenCal} 
+                setVisible={setOpenCal}
                 backgroundColor="rgba(0,0,0,.8)" 
                 style={{backgroundColor: 'black', paddingInline: 20}}
                 actionButtons={[
@@ -203,17 +236,20 @@ function AmountBox({heading, accounts, usedAccount=()=>{}, amount, setAmount}: A
 
                 <ScrollView contentContainerStyle={{width: '100%', height: 50, gap: 20, marginBlock: 16}} horizontal={true}>   
                     {
-                        accounts.map(name => (
-                            <Pressable key={name} onPress={() => setUseAcc(name)}>
-                                <RoundedView  
-                                    key={name} 
-                                    title={name} 
-                                    color="white" 
-                                    backgroundColor={name == useAcc ? "rgb(20,200,150)" : 'transparent'}
-                                    style={{borderWidth: 1, borderColor: 'gray'}} 
-                                />
-                            </Pressable>
-                        ))
+                        accountsId.map(id => {
+                            let {name=''} = AccountModal.findById(id) || {};
+                            return (
+                                <Pressable key={name} onPress={() => setUseAcc(id)}>
+                                    <RoundedView  
+                                        key={name} 
+                                        title={name} 
+                                        color="white" 
+                                        backgroundColor={id == useAcc ? "rgb(20,200,150)" : 'transparent'}
+                                        style={{borderWidth: 1, borderColor: 'gray'}} 
+                                    />
+                                </Pressable>
+                            )
+                        })
                     }
                 </ScrollView>
 
@@ -288,6 +324,7 @@ const styles = StyleSheet.create({
         fontWeight: 900,
         borderBottomWidth: 1,
         borderBottomColor: 'gray',
+        color: "white"
     },
 
     box: {

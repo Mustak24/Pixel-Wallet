@@ -1,25 +1,24 @@
 import { StyleSheet, Text, View } from "react-native";
 import FeatherIcons from 'react-native-vector-icons/Feather';
+import AccountModal from "../Database/Models/AccountModal";
+import TransitionModal from "../Database/Models/TransitionModal";
 
-type TransitionCardProps = {
-    type: 'income' | 'expenes',
-    mode: string,
-    title?: string,
-    description?: string
-    date: string,
-    time: string
-}
+export default function TransitionCard({id}: {id: string}): React.JSX.Element {
 
-export default function TransitionCard({type, mode, title='', date, description='', time}: TransitionCardProps): React.JSX.Element {
+    const transition = TransitionModal.findeById(id);
+    console.log(transition)
+    if(!transition) return <></>;
+    const {accountId, mode, amount, date, time, title, description} = transition;
     
-    const backgroundColor = type == 'income' ? 'rgb(25,200,150)' : 'gray';
+    const backgroundColor = mode == 'income' ? 'rgb(25,200,150)' : 'gray';
+    const accountName = AccountModal.findById(accountId)?.name
 
     return (
         <View style={styles.root}>
             <Text style={styles.date}>{date}</Text>
             <View style={[styles.card, {backgroundColor}]}>
                 <View style={styles.mode}>
-                    <Text style={{color: 'black', fontSize: 16, fontWeight: 900}}>{mode}</Text>
+                    <Text style={{color: 'black', fontSize: 16, fontWeight: 900}}>{accountName || ''}</Text>
                 </View>
 
                 <View>
@@ -30,7 +29,7 @@ export default function TransitionCard({type, mode, title='', date, description=
                 <View style={{display: "flex", gap: 10, flexDirection: 'row'}}>
                     <FeatherIcons name="download" size={24} color={'white'} />
                     <Text style={{color: 'white', fontSize: 20}}>
-                        <Text style={{fontWeight: 800}}>234.03</Text>
+                        <Text style={{fontWeight: 800}}>{amount}</Text>
                         <Text> INR</Text>
                     </Text>
                 </View>
