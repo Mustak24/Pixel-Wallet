@@ -4,19 +4,21 @@ import AnimateButton from "./AnimateButton";
 import Feathericons from 'react-native-vector-icons/Feather';
 
 type CalculatorProps = {
+    value?: string
     onChangeValue?: (value: string) => any,
+    onResult?: (value: string) => any,
 }
 
 type buttonObject = {
     onPress: () => any,
     innerText: React.ReactNode | string,
-    textColor: 'crimson' | 'white'
+    textColor: 'crimson' | 'white',
 }
 
 
-export default function Calculator({onChangeValue=()=>{}}: CalculatorProps): React.JSX.Element {
+export default function Calculator({onChangeValue=()=>{}, value: val = '', onResult=()=>{}}: CalculatorProps): React.JSX.Element {
     
-    const [value, setValue] = useState<string>('');
+    const [value, setValue] = useState<string>(val);
 
     const buttons = useRef<buttonObject[][]>([
         [
@@ -76,12 +78,13 @@ export default function Calculator({onChangeValue=()=>{}}: CalculatorProps): Rea
 
     function isResult(): Boolean{
         for(let char of value){
-            if('()/×-+'.includes(char)) return false;
+            if('()/×-+NULL'.includes(char)) return false;
         }
         return true;
     }
 
     useEffect(() => {
+        if(isResult()) onResult(value)
         onChangeValue(value)
     }, [value])
 
@@ -98,9 +101,9 @@ export default function Calculator({onChangeValue=()=>{}}: CalculatorProps): Rea
                         buttons.map((row, index) => (
                             <View key={index + 'row'} style={styles.buttonBox_rows}>
                                 {
-                                    row.map(({onPress, innerText, textColor}, row) => (
+                                    row.map(({onPress, innerText, textColor}, col) => (
                                         <AnimateButton 
-                                            key={index +" "+ row} 
+                                            key={index +" "+ col} 
                                             style={styles.button}
                                             onPress={onPress} 
                                         >

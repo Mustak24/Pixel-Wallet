@@ -7,6 +7,8 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { stackParamsList } from "../../App";
 import HandleSwipe from "../components/HandleSwipe";
 import RoundedView from "../components/RoundedView";
+import BottomModal from "../components/BottomModal";
+import Calculator from "../components/Calculator";
 
 
 type transitionInfoType = {
@@ -49,6 +51,8 @@ const transitionInfo: transitionInfoType[] = [
 export default function Transition({route, navigation}: TransitionProps): React.JSX.Element {
    
     const {mode} = route.params;
+
+    const [amount, setAmount] = useState<string>('')
 
     
     const [paddingBottom, setPaddingBottom] = useState<number>(0) 
@@ -120,7 +124,7 @@ export default function Transition({route, navigation}: TransitionProps): React.
             </ScrollView>
 
             <View style={styles.bottomOpationContener}>
-                <AmountBox heading={getTransitonInfo().title} accounts={['Cash', 'Bank']} />
+                <AmountBox heading={getTransitonInfo().title} accounts={['Cash', 'Bank']} amount={amount} setAmount={setAmount} />
 
                 <View style={styles.bottomOpations}>
                     <AnimateButton style={styles.closeBtn}>
@@ -142,12 +146,15 @@ export default function Transition({route, navigation}: TransitionProps): React.
 type AmountBoxProps = {
     heading: string,
     accounts: string[],
+    amount: string,
+    setAmount: (amount: string) => void
     usedAccount?: (acc: string) => void,
 }
 
-function AmountBox({heading, accounts, usedAccount=()=>{}}: AmountBoxProps){
+function AmountBox({heading, accounts, usedAccount=()=>{}, amount, setAmount}: AmountBoxProps){
 
-    const [useAcc, setUseAcc] = useState('Cash');
+    const [useAcc, setUseAcc] = useState<string>('Cash');
+    const [isOpenCal, setOpenCal] = useState<boolean>(true);
 
     useEffect(() => {
         usedAccount(useAcc);
@@ -173,12 +180,45 @@ function AmountBox({heading, accounts, usedAccount=()=>{}}: AmountBoxProps){
                 }
             </ScrollView>
 
-            <Pressable style={[styles.center, {width: '100%', alignSelf: 'center'}]}>
+            <Pressable style={[styles.center, {width: '100%', alignSelf: 'center', marginBottom: 20}]} onPress={() => setOpenCal(true)}>
                 <Text style={{fontWeight: 900, fontSize: 28, color: 'white'}}>
-                    <Text>0.00</Text>
+                    <Text>{amount || '0.00'}</Text>
                     <Text> INR</Text>
                 </Text>
             </Pressable>
+
+            <BottomModal 
+                visible={isOpenCal} 
+                backgroundColor="rgba(0,0,0,.8)" 
+                style={{backgroundColor: 'black', paddingInline: 20}}
+                actionButtons={[
+                    {
+                        title: 'Set', 
+                        backgroundColor: "rgb(25,200,150)",
+                        onPress: () => setOpenCal(false), 
+                    }
+                ]}
+            >
+                <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 8}}>{heading}</Text>
+
+                <ScrollView contentContainerStyle={{width: '100%', height: 50, gap: 20, marginBlock: 16}} horizontal={true}>   
+                    {
+                        accounts.map(name => (
+                            <Pressable key={name} onPress={() => setUseAcc(name)}>
+                                <RoundedView  
+                                    key={name} 
+                                    title={name} 
+                                    color="white" 
+                                    backgroundColor={name == useAcc ? "rgb(20,200,150)" : 'transparent'}
+                                    style={{borderWidth: 1, borderColor: 'gray'}} 
+                                />
+                            </Pressable>
+                        ))
+                    }
+                </ScrollView>
+
+                <Calculator onResult={setAmount} value={amount}/>
+            </BottomModal>
         </HandleSwipe>
     )
 }

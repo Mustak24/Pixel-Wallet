@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Modal, StyleSheet, Text, View, ViewStyle } from "react-native";
+import { Modal, Pressable, PressableProps, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 import FeatherIcons from 'react-native-vector-icons/Feather'
 import AnimateButton from "./AnimateButton";
 import RoundedView from "./RoundedView";
@@ -7,7 +7,7 @@ import RoundedView from "./RoundedView";
 type BottomModalProps = {
     visible: boolean,
     children: React.ReactNode,
-    actionButtons: [{title: string, onPress: () => void, color?: string, backgroundColor?: string}],
+    actionButtons?: [{title: string, onPress: (arg: PressableProps) => void, color?: string, backgroundColor?: string}],
     transparent?: boolean,
     style?: ViewStyle,
     backgroundColor?: string,
@@ -20,21 +20,27 @@ export default function BottomModal({visible, children, style, backgroundColor='
     const [isVisible, setVisible] = useState<boolean>(visible)
 
     return (
-        <Modal animationType={animationType} visible={isVisible} transparent={true} onRequestClose={() => setVisible(!closeOnBack)}>
+        <Modal animationType={animationType} visible={visible && isVisible} transparent={true} onRequestClose={() => setVisible(!closeOnBack)}>
             <View style={[styles.root, {backgroundColor}]}>
                 <View style={[styles.modalContener, style]}>{children}</View>
 
                 <View style={styles.bottomOpations}>
-                    <AnimateButton style={styles.closeBtn}>
+                    <AnimateButton style={styles.closeBtn} onPress={() => setVisible(false)}>
                         <FeatherIcons name="plus" size={16} color={'white'} style={{transform: 'rotate(45deg)'}} />
                     </AnimateButton>
                     
                     <View style={styles.actionsButtonsBox}>
                         {
-                            actionButtons.map(({title, onPress, color, backgroundColor}) => (
-                                <AnimateButton key={title}>
-                                    <RoundedView title={title} style={{borderWidth: 1, borderColor: 'gray'}} titleFrontSize={14} />
-                                </AnimateButton>
+                            actionButtons?.map(({title, onPress, color='white', backgroundColor='black'}) => (
+                                <TouchableOpacity key={title}  onPress={onPress}>
+                                    <RoundedView 
+                                        title={title} 
+                                        color={color} 
+                                        backgroundColor={backgroundColor} 
+                                        style={{borderWidth: 1, borderColor: 'gray'}} 
+                                        titleFrontSize={14} 
+                                        />
+                                </TouchableOpacity>
                             ))
                         }
                     </View>
