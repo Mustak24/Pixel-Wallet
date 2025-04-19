@@ -1,22 +1,26 @@
 import { MMKV } from "react-native-mmkv";
 import idCreator from "../idCreator";
 
-const Storage = new MMKV({id: 'app'});
+const Storage = new MMKV({id: 'Accounts'});
 
 
-type AccountModalProps = {
+type CreateProps = {
     name: string,
     balance: number,
     backgroundColor: string,
 }
 
-class AccountModal{
+type AccountModalProps = CreateProps & {
+    id: string,
+}
+
+class AccountModal {
     name: string;
     balance: number;
     backgroundColor: string;
     id: string;
 
-    constructor({name, balance, backgroundColor, id}: AccountModalProps & {id: string}){
+    constructor({name, balance, backgroundColor, id}: AccountModalProps){
         this.name = name;
         this.balance = balance;
         this.backgroundColor = backgroundColor;
@@ -42,59 +46,65 @@ class AccountModal{
     }
 
     save(): boolean {
-        let accounts: AccountModal[] = JSON.parse(Storage.getString('Accounrs') || '[]');
-        for(let i=0; i<accounts.length; i++) {
-            if(accounts[i].id == this.id) {
-                accounts[i] = this;
-                Storage.set('Accounts', JSON.stringify(accounts));
+        let keys: string[] = Storage.getAllKeys();
+        
+        for(let key of keys) {
+            if(key == this.id) {
+                Storage.set(this.id, JSON.stringify(this));
                 return true;
             }
         }
-        return false
+        return false;
     }
 
     static createId(): string{
-        let accounts: AccountModal[] = JSON.parse(Storage.getString('Accounrs') || '[]');
-        
-        let id: string = idCreator();
+        let keys: string[] = Storage.getAllKeys();
 
-        for(let acc of accounts) 
-            if(acc.id == id) return AccountModal.createId();
+        let id: string = idCreator();
+        for(let key of keys)  if(key == id) return AccountModal.createId();
 
         return id;
     }
 
-    static create({name, balance, backgroundColor}: AccountModalProps): AccountModal | undefined {
+    static create({name, balance, backgroundColor}: CreateProps): AccountModal {
         let id: string = AccountModal.createId();
         let acc: AccountModal = new AccountModal({name, balance, backgroundColor, id});
-        let accounts: AccountModal[] = JSON.parse(Storage.getString('Accounts') || '[]');
-        accounts.push(acc);
 
-        Storage.set('Accounts', JSON.stringify(accounts));
+        Storage.set(id, JSON.stringify(acc));
         return acc;
     }
 
     static getAll(): AccountModal[] {
-        return JSON.parse(Storage.getString('Accounts') || '[]');
+        let keys: string[] = Storage.getAllKeys();
+        return keys.map( key => {
+           return new AccountModal(JSON.parse(Storage.getString(key) || '{}'));
+        });
     }
 
     static getAllId(): string[] {
-        let accounts: AccountModal[] = AccountModal.getAll();
-        
-        let res: string[] = [];
-        for(let {id} of accounts) res.push(id);
-       
-        return res
+        return Storage.getAllKeys();
     }
 
-    static findById(id: string): AccountModal | undefined {
-        let accounts: AccountModal[] = JSON.parse(Storage.getString('Accounts') || '[]');
-        for(let acc of accounts){
-            if(acc.id == id){ 
-                return new AccountModal(acc);
-            }
-        }
+    static findById(id: string): AccountModal | null {
+        let acc = JSON.parse(Storage.getString(id) || '{}') ?? null;
+        return acc ? new AccountModal(acc) : null;
     }
+
+    static delete(id: string): AccountModalProps | null {
+        if(!Storage.contains(id)) return null;
+
+        let account: AccountModalProps = JSON.parse(Storage.getString(id) || '{}');
+        Storage.delete(id);
+        return account;
+    }
+
+    static getTotalBalance(): number {
+        let accounts: AccountModal[] = AccountModal.getAll();
+        let total: number = 0;
+        for(let account of accounts) total += account.balance;
+        return total;
+    }
+
 }
 
 export default AccountModal

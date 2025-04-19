@@ -2,11 +2,21 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import TypingText from "../components/TypingText";
 import AccountModal from "../Database/Models/AccountModal";
 import AccountCard from "../components/AccountCard";
+import { useEffect, useState } from "react";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { stackParamsList } from "../../App";
 
 
-export default function Accounts({}): React.JSX.Element {
+export default function Accounts({ navigation }: BottomTabScreenProps<stackParamsList, 'accounts'>): React.JSX.Element {
 
-    const accounts = AccountModal.getAllId();
+    const [accountsId, setAccountsId] = useState(AccountModal.getAllId());
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setAccountsId(AccountModal.getAllId());
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     return (
         <View style={styles.root}>
@@ -15,7 +25,7 @@ export default function Accounts({}): React.JSX.Element {
             
             <ScrollView style={{width: '100%', height: '100%', paddingBlock: 20}}>
                 {
-                    accounts.map((id: string) => (
+                    accountsId.map((id: string) => (
                         <AccountCard key={id} id={id} />
                     ))
                 }

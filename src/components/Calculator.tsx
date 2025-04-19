@@ -18,7 +18,7 @@ type buttonObject = {
 
 export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResult=()=>{}}: CalculatorProps): React.JSX.Element {
     
-    const [value, setValue] = useState<string>(String(val));
+    const [value, setValue] = useState<string>(String(val || ''));
 
     const buttons = useRef<buttonObject[][]>([
         [

@@ -7,10 +7,8 @@ type AccountCardProps = {
 
 export default function AccountCard({id}: AccountCardProps): React.JSX.Element{
 
-    console.log(id)
     const account = AccountModal.findById(id);
     if(!account) return <></>;
-    console.log(account)
 
     const {backgroundColor, name, balance} = account
     const incomeThisMounth = account.getIncomeThisMounth();

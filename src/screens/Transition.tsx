@@ -2,7 +2,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import { View } from "react-native";
 import AnimateButton from "../components/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { stackParamsList } from "../../App";
 import HandleSwipe from "../components/HandleSwipe";
@@ -48,45 +48,58 @@ const transitionInfo: transitionInfoType[] = [
     }
 ]
 
+const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 
 export default function Transition({route, navigation}: TransitionProps): React.JSX.Element {
    
     const {mode} = route.params;
+    const [accounts, setAccounts] = useState<AccountModal[]>(AccountModal.getAll());
 
     const [amount, setAmount] = useState<number>(0)
     const [transitionMode, setTransitionMode] = useState<transitionMode>(mode);
-    const [accountId, setAccountId] = useState<string>('');
+    const [account, setAccount] = useState<AccountModal>(accounts[0]);
     const [title, setTitle] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const [year, setYear] = useState<number>(new Date().getFullYear())
+    const [month, setMonth] = useState<number>(new Date().getMonth())
+    const [date, setDate] = useState<number>(new Date().getDate())
+    const [hour, setHour] = useState<number>(new Date().getHours())
+    const [minute, setMinute] = useState<number>(new Date().getMinutes())
     
     
     const [paddingBottom, setPaddingBottom] = useState<number>(0) 
     const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expenses' ? 1 : 2]
 
-    const time = useRef<string>((() => {
-        let date = new Date();
-        let mode = Math.floor(date.getHours() / 12) ? 'AM' : 'PM';
-        let time = `${date.getHours() % 12}:${date.getMinutes()}`
-        return `${time} ${mode}`;
-    })()).current;
-
-    const date = useRef<string>((()=>{
-        let date = new Date();
-        let mounth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date.getMonth()];
-        return `${mounth} ${date.getDate()}`;
-    })()).current
-
-    const accountsId = useRef<string[]>(AccountModal.getAllId()).current;
 
 
     function createTransiton() {
-        if(!title || !accountId || !mode || !amount) {
-            console.log("ERROR");
-            return;
-        }
-        let transition = TransitionModal.create({title, description: '', accountId: accountId, mode, amount, date, time});
-        console.log(transition);
+        TransitionModal.create({
+            title, description, accountId: account.id, mode: transitionMode, amount, 
+            createOn: {year, month, date, hour, minute}
+        });    
+
+        navigation.navigate('home')
     }
+
+    useEffect(() => {
+        let unsubscribe = navigation.addListener('focus', () => {
+            setAccounts(AccountModal.getAll())
+            setTransitionMode(mode);
+            setAccount(accounts[0]);
+            setAmount(0);
+            setTitle('');
+            setDescription('');
+            setYear(new Date().getFullYear())
+            setMonth(new Date().getMonth())
+            setDate(new Date().getDate())
+            setHour(new Date().getHours())
+            setMinute(new Date().getMinutes())
+            setPaddingBottom(0);
+        })
+        return unsubscribe;
+    }, [navigation])
+
     
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[styles.root, {paddingBottom}]}>
@@ -141,7 +154,9 @@ export default function Transition({route, navigation}: TransitionProps): React.
                             <FeatherIcons name="calendar" size={20} color={'white'} />
                             <Text style={{color: 'white', fontWeight: '900', opacity: 0.4}}>Created on</Text>
                         </View>
-                        <Text style={{color: 'white', fontWeight: '900'}}>{time}</Text>
+                        <Text style={{color: 'white', fontWeight: '900'}}>
+                            {mouths[month]} {hour%12 || 12}:{minute < 10 ? `0${minute}` : minute} {hour >= 12 ? 'PM' : 'AM'}
+                        </Text>
                     </AnimateButton>
                 </View>
             </ScrollView>
@@ -149,10 +164,10 @@ export default function Transition({route, navigation}: TransitionProps): React.
             <View style={styles.bottomOpationContener}>
                 <AmountBox 
                     heading={getTransitonInfo().title} 
-                    accountsId={accountsId} 
+                    accounts={accounts} 
                     amount={amount} 
                     setAmount={setAmount} 
-                    onChangeAccount={setAccountId}
+                    onChangeAccount={setAccount}
                 />
 
                 <View style={styles.bottomOpations}>
@@ -174,15 +189,15 @@ export default function Transition({route, navigation}: TransitionProps): React.
 
 type AmountBoxProps = {
     heading: string,
-    accountsId: string[],
+    accounts: AccountModal[],
     amount: number,
     setAmount: (amount: number) => void
-    onChangeAccount?: (acc: string) => void,
+    onChangeAccount?: (acc: AccountModal) => void,
 }
 
-function AmountBox({heading, accountsId, onChangeAccount=()=>{}, amount, setAmount}: AmountBoxProps){
+function AmountBox({heading, accounts, onChangeAccount=()=>{}, amount, setAmount}: AmountBoxProps){
 
-    const [useAcc, setUseAcc] = useState<string>(accountsId[0]);
+    const [useAcc, setUseAcc] = useState<AccountModal>(accounts[0]);
     const [isOpenCal, setOpenCal] = useState<boolean>(true);
 
     useEffect(() => {
@@ -195,15 +210,14 @@ function AmountBox({heading, accountsId, onChangeAccount=()=>{}, amount, setAmou
 
             <ScrollView contentContainerStyle={{width: '100%', height: 50, gap: 20, marginBlock: 16}} horizontal={true}>   
                 {
-                    accountsId.map(id => {
-                        let {name=''} = AccountModal.findById(id) || {};
+                    accounts.map((acc) => {
                         return (
-                            <Pressable key={name} onPress={() => setUseAcc(id)}>
+                            <Pressable key={acc.name} onPress={() => setUseAcc(acc)}>
                                 <RoundedView  
-                                    key={name} 
-                                    title={name} 
+                                    key={acc.id} 
+                                    title={acc.name} 
                                     color="white" 
-                                    backgroundColor={id == useAcc ? "rgb(20,200,150)" : 'transparent'}
+                                    backgroundColor={acc.id == useAcc.id ? "rgb(20,200,150)" : 'transparent'}
                                     style={{borderWidth: 1, borderColor: 'gray'}} 
                                 />
                             </Pressable>
@@ -236,15 +250,14 @@ function AmountBox({heading, accountsId, onChangeAccount=()=>{}, amount, setAmou
 
                 <ScrollView contentContainerStyle={{width: '100%', height: 50, gap: 20, marginBlock: 16}} horizontal={true}>   
                     {
-                        accountsId.map(id => {
-                            let {name=''} = AccountModal.findById(id) || {};
+                        accounts.map(acc => {
                             return (
-                                <Pressable key={name} onPress={() => setUseAcc(id)}>
+                                <Pressable key={acc.name} onPress={() => setUseAcc(acc)}>
                                     <RoundedView  
-                                        key={name} 
-                                        title={name} 
+                                        key={acc.id} 
+                                        title={acc.name} 
                                         color="white" 
-                                        backgroundColor={id == useAcc ? "rgb(20,200,150)" : 'transparent'}
+                                        backgroundColor={acc.id == useAcc.id ? "rgb(20,200,150)" : 'transparent'}
                                         style={{borderWidth: 1, borderColor: 'gray'}} 
                                     />
                                 </Pressable>

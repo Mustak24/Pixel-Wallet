@@ -1,15 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import AnimateButton from "../components/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import TransitionCard from "../components/TransitionCard";
-import Storage from "../Database/Storage";
 import TransitionModal from "../Database/Models/TransitionModal";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { stackParamsList } from "../../App";
+import AccountModal from "../Database/Models/AccountModal";
 
-export default function Home(): React.JSX.Element {
+const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+export default function Home({ navigation }: BottomTabScreenProps<stackParamsList, 'home'>): React.JSX.Element {
 
     const [isScrollCloseTop, setScrollCloseTop] = useState<Boolean>(true);
+    const [month, setMonth] = useState<number>(new Date().getMonth());
+    const [year, setYear] = useState<number>(new Date().getFullYear());
+    const [transitions, setTransitions] = useState<TransitionModal[]>([]);
+    const [totalBalance, setTotalBalance] = useState<number>(0);
+    const [transitionRecord, setTransitionRecord] = useState<{income: number, expenses: number}>({income: 0, expenses: 0});
 
     function handleScroll({nativeEvent}: {nativeEvent: {contentOffset: {x: number, y: number}}}): void{
         let isClose: Boolean = (nativeEvent?.contentOffset?.y < 55);
@@ -18,26 +27,37 @@ export default function Home(): React.JSX.Element {
         setScrollCloseTop(isClose); 
     }
     
-    const transitions: string[] = TransitionModal.getAllId();
-    const Name = useRef(Storage.getString('name')).current;
+    
+    const Name = 'Mustak';
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setScrollCloseTop(true);
+            setTransitions(TransitionModal.findByDate(month, year));
+            setTotalBalance(AccountModal.getTotalBalance());
+            setTransitionRecord(TransitionModal.getRecordByDate(month, year));
+        });
+
+        return unsubscribe;
+    }, [navigation]);
     
     return (
         <View style={styles.root}>
             <View style={styles.topHeader}>
                 <View style={{display: 'flex', flexDirection: isScrollCloseTop ? 'row' : 'column'}}>
                     <Text style={{fontSize: isScrollCloseTop ? 16 : 12, color: 'white', fontWeight: '900'}}>
-                        {isScrollCloseTop ? 'Hi' : 'INR'},
+                        {isScrollCloseTop ? 'Hi, ' : 'INR'}
                     </Text>
 
                     <Text style={{fontSize: 16, color: 'white', fontWeight: '900'}}>
-                        {isScrollCloseTop ? Name : '0.00'}
+                        {isScrollCloseTop ? Name : totalBalance || '0.00'}
                     </Text>
                 </View>
 
                 <View style={[styles.center, {flexDirection: 'row', gap: 20}]}>
                     <AnimateButton style={styles.topHeader_mounthSelector}>
                         <MaterialIcons name="calendar-today" size={20} color={'white'} />
-                        <Text style={{color: 'white', fontWeight: '900', fontSize: 16}}>Mounth</Text>
+                        <Text style={{color: 'white', fontWeight: '900', fontSize: 16}}>{months[month]}</Text>
                     </AnimateButton>
 
                     <View style={styles.topHeader_menu}>
@@ -46,11 +66,11 @@ export default function Home(): React.JSX.Element {
                 </View>
             </View>
 
-            <ScrollView onScroll={handleScroll} style={{flex: 1, width: '100%', display: 'flex'}}>
+            <ScrollView onScroll={handleScroll} style={{flex: 1, width: '100%', display: 'flex', paddingInline: 20}} >
                 <View style={{display: 'flex', alignItems: 'flex-start', gap: 20, flexDirection: 'column', width: '100%', marginTop: 32}}>
                     <View style={{display: 'flex', flexDirection: 'row', gap: 5, alignItems: 'flex-end'}}>
                         <Text style={{color: 'white', fontWeight: '900', fontSize: 24}}>INR:</Text>
-                        <Text style={{fontSize: 24, color: 'white', fontWeight: '900'}}>0.00</Text>
+                        <Text style={{fontSize: 24, color: 'white', fontWeight: '900'}}>{totalBalance || '0.00'}</Text>
                     </View>
 
                     <View style={[styles.center, {flexDirection: 'row', gap: 12, position: 'relative'}]}>
@@ -61,7 +81,7 @@ export default function Home(): React.JSX.Element {
                             </View>
 
                             <Text style={{color: 'white', fontSize: 22}}>
-                                <Text style={{fontWeight: 800}}>120</Text>
+                                <Text style={{fontWeight: 800}}>{transitionRecord.income || '0.00'}</Text>
                                 <Text> INR</Text>
                             </Text>
                         </View>
@@ -73,7 +93,7 @@ export default function Home(): React.JSX.Element {
                             </View>
 
                             <Text style={{color: 'white', fontSize: 22}}>
-                                <Text style={{fontWeight: 800}}>120</Text>
+                                <Text style={{fontWeight: 800}}>{transitionRecord.expenses || '0.00'}</Text>
                                 <Text> INR</Text>
                             </Text>
                         </View>
@@ -82,12 +102,18 @@ export default function Home(): React.JSX.Element {
 
                 <View style={{borderBottomColor: 'gray', borderWidth: 1, width: '100%', marginBlock: 32, opacity: .5}}></View>
 
-                <View>
+                <View style={[styles.center, {gap: 20}]}>
                     {
-                        transitions.map((id) => (
+                        transitions.map( ({id, mode, accountId, amount, title, description, createOn}) => (
                             <TransitionCard 
                                 key={id} 
-                                id={id}
+                                id={id} 
+                                mode={mode} 
+                                accountId={accountId} 
+                                amount={amount} 
+                                title={title} 
+                                description={description} 
+                                createOn={createOn} 
                             />
                         ))
                     }
@@ -104,7 +130,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '100%',
         flex: 1,
-        paddingInline: 20,
         backgroundColor: 'black'
     },
 
@@ -120,7 +145,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row',
         width: '100%',
-        height: 50
+        height: 50,
+        paddingInline: 20,
     },
 
     topHeader_mounthSelector: {
