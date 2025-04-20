@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { Modal, Pressable, PressableProps, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
+
+import { Modal,  PressableProps, StyleSheet, TouchableHighlight, View, ViewStyle } from "react-native";
 import FeatherIcons from 'react-native-vector-icons/Feather'
-import AnimateButton from "./AnimateButton";
 import RoundedView from "./RoundedView";
 
 type BottomModalProps = {
@@ -11,12 +10,13 @@ type BottomModalProps = {
     actionButtons?: [{title: string, onPress: (arg: PressableProps) => void, color?: string, backgroundColor?: string}],
     transparent?: boolean,
     style?: ViewStyle,
+    bottomOpationStyle?: ViewStyle,
     backgroundColor?: string,
     closeOnBack?: boolean,
     animationType?: "none" | "slide" | "fade"
 }
 
-export default function BottomModal({visible, setVisible, children, style, backgroundColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide'}: BottomModalProps): React.JSX.Element {
+export default function BottomModal({visible, setVisible, children, style, backgroundColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}}: BottomModalProps): React.JSX.Element {
 
 
     return (
@@ -24,23 +24,23 @@ export default function BottomModal({visible, setVisible, children, style, backg
             <View style={[styles.root, {backgroundColor}]}>
                 <View style={[styles.modalContener, style]}>{children}</View>
 
-                <View style={styles.bottomOpations}>
-                    <AnimateButton style={styles.closeBtn} onPress={() => setVisible(false)}>
+                <View style={[styles.bottomOpations, bottomOpationStyle]}>
+                    <TouchableHighlight style={styles.closeBtn} onPress={() => setVisible(false)}>
                         <FeatherIcons name="plus" size={16} color={'white'} style={{transform: 'rotate(45deg)'}} />
-                    </AnimateButton>
+                    </TouchableHighlight>
                     
                     <View style={styles.actionsButtonsBox}>
                         {
                             actionButtons?.map(({title, onPress, color='white', backgroundColor='black'}) => (
-                                <TouchableOpacity key={title}  onPress={onPress}>
+                                <TouchableHighlight key={title}  onPress={onPress}>
                                     <RoundedView 
                                         title={title} 
                                         color={color} 
                                         backgroundColor={backgroundColor} 
                                         style={{borderWidth: 1, borderColor: 'gray'}} 
                                         titleFrontSize={14} 
-                                        />
-                                </TouchableOpacity>
+                                    />
+                                </TouchableHighlight>
                             ))
                         }
                     </View>
@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         paddingBottom: 40,
-        paddingTop: 20
+        paddingTop: 20,
+        backgroundColor: 'black'
     },
 
     bottomOpations: {
@@ -83,7 +84,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0,
         height: 24,
         width: '100%',
-        paddingInline: 20
+        paddingInline: 20,
+        backgroundColor: 'black'
     },
 
     closeBtn: {

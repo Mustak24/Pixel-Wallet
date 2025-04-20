@@ -1,5 +1,6 @@
 import { MMKV } from "react-native-mmkv";
 import idCreator from "../idCreator";
+import TransitionModal from "./TransitionModal";
 
 const Storage = new MMKV({id: 'Accounts'});
 
@@ -12,6 +13,7 @@ type CreateProps = {
 
 type AccountModalProps = CreateProps & {
     id: string,
+    createOn: number
 }
 
 class AccountModal {
@@ -19,20 +21,34 @@ class AccountModal {
     balance: number;
     backgroundColor: string;
     id: string;
+    createOn: number;
 
-    constructor({name, balance, backgroundColor, id}: AccountModalProps){
+    constructor({name, balance, backgroundColor, id, createOn}: AccountModalProps){
         this.name = name;
         this.balance = balance;
         this.backgroundColor = backgroundColor;
         this.id = id;
+        this.createOn = createOn;
     }
 
-    getIncomeThisMounth(): number {
-        return 120
+    getIncomeThisMonth(): number {
+        let transitons: TransitionModal[] = TransitionModal.findByDate(new Date().getMonth());
+        let income: number = 0;
+        for(let transiton of transitons) {
+            if(transiton.accountId == this.id && transiton.mode == 'income') 
+                income += transiton.amount;
+        }
+        return income;
     }
 
-    getExpensesThisMounth(): number {
-        return 120
+    getExpensesThisMonth(): number {
+        let transitons: TransitionModal[] = TransitionModal.findByDate(new Date().getMonth());
+        let expenses: number = 0;
+        for(let transiton of transitons) {
+            if(transiton.accountId == this.id && transiton.mode == 'expenses') 
+                expenses += transiton.amount;
+        }
+        return expenses;
     }
 
     addBalance(amount: number): AccountModal {
@@ -55,7 +71,7 @@ class AccountModal {
             }
         }
         return false;
-    }
+    }   
 
     static createId(): string{
         let keys: string[] = Storage.getAllKeys();
@@ -68,7 +84,8 @@ class AccountModal {
 
     static create({name, balance, backgroundColor}: CreateProps): AccountModal {
         let id: string = AccountModal.createId();
-        let acc: AccountModal = new AccountModal({name, balance, backgroundColor, id});
+        let createOn = Date.now();
+        let acc: AccountModal = new AccountModal({name, balance, backgroundColor, id, createOn});
 
         Storage.set(id, JSON.stringify(acc));
         return acc;
@@ -78,7 +95,7 @@ class AccountModal {
         let keys: string[] = Storage.getAllKeys();
         return keys.map( key => {
            return new AccountModal(JSON.parse(Storage.getString(key) || '{}'));
-        });
+        }).sort((a, b) => a.createOn - b.createOn);
     }
 
     static getAllId(): string[] {
@@ -90,7 +107,7 @@ class AccountModal {
         return acc ? new AccountModal(acc) : null;
     }
 
-    static delete(id: string): AccountModalProps | null {
+    static deleteById(id: string): AccountModalProps | null {
         if(!Storage.contains(id)) return null;
 
         let account: AccountModalProps = JSON.parse(Storage.getString(id) || '{}');

@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Accounts from "./src/screens/Accounts";
 import Transition from "./src/screens/Transition";
+import AppContextProvider from "./src/Contexts/App";
 
 
 const Tab = createBottomTabNavigator<stackParamsList>();
@@ -12,20 +13,22 @@ const Tab = createBottomTabNavigator<stackParamsList>();
 export default function App(): React.JSX.Element {
 
   return (
-    <NavigationContainer>
-      <View style={styles.root}>
-        <View style={{width: '100%', flex: 1}}>
-          <Tab.Navigator 
-            tabBar={(props) => <BottomTabNavbar {...props} />} 
-            screenOptions={{headerShown: false}} 
-            >
-            <Tab.Screen name="home" component={Home} />
-            <Tab.Screen name="accounts" component={Accounts} />
-            <Tab.Screen name="transition" component={Transition} />
-          </Tab.Navigator>
+    <AppContextProvider>
+      <NavigationContainer>
+        <View style={styles.root}>
+          <View style={{width: '100%', flex: 1}}>
+            <Tab.Navigator 
+              tabBar={(props) => <BottomTabNavbar {...props} />} 
+              screenOptions={{headerShown: false}} 
+              >
+              <Tab.Screen name="home" component={Home} />
+              <Tab.Screen name="accounts" component={Accounts} />
+              <Tab.Screen name="transition" component={Transition} />
+            </Tab.Navigator>
+          </View>
         </View>
-      </View>
-    </NavigationContainer>
+      </NavigationContainer>
+    </AppContextProvider>
   )
 }
 

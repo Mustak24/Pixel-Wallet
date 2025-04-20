@@ -1,34 +1,37 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import TypingText from "../components/TypingText";
 import AccountModal from "../Database/Models/AccountModal";
 import AccountCard from "../components/AccountCard";
-import { useEffect, useState } from "react";
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { stackParamsList } from "../../App";
+import { useContext } from "react";
+import { AppContext } from "../Contexts/App";
 
 
-export default function Accounts({ navigation }: BottomTabScreenProps<stackParamsList, 'accounts'>): React.JSX.Element {
+export default function Accounts(): React.JSX.Element {
 
-    const [accountsId, setAccountsId] = useState(AccountModal.getAllId());
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            setAccountsId(AccountModal.getAllId());
-        });
-        return unsubscribe;
-    }, [navigation]);
+    const {accounts, totalBalance} = useContext(AppContext);
 
     return (
         <View style={styles.root}>
             <TypingText text="Accounts" style={styles.topHeading} />
-            <TypingText text="Total: INR 123.93" style={styles.topHeading_balance} />
+            <Text style={styles.topHeading_balance}>{`Total: INR ${totalBalance || '0.00'}`}</Text>
             
-            <ScrollView style={{width: '100%', height: '100%', paddingBlock: 20}}>
+            <ScrollView style={{width: '100%', height: '100%', paddingBlock: 20, paddingInline: 20}}>
                 {
-                    accountsId.map((id: string) => (
-                        <AccountCard key={id} id={id} />
+                    accounts?.map((acc: AccountModal) => (
+                        <View key={acc.id} style={{marginBottom: 10}}>
+                            <AccountCard 
+                                id={acc.id} 
+                                name={acc.name} 
+                                balance={acc.balance} 
+                                backgroundColor={acc.backgroundColor} 
+                                incomeThisMonth={acc.getIncomeThisMonth() ?? 0} 
+                                expensesThisMonth={acc.getExpensesThisMonth() ?? 0}  
+                            />
+                        </View>
                     ))
                 }
+
+                <View style={{height: 100}}></View>
             </ScrollView>
         </View>
     )
@@ -42,7 +45,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '100%',
         flex: 1,
-        paddingInline: 20,
         backgroundColor: 'black'
     },
 
@@ -56,7 +58,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 20,
         fontWeight: 900,
-        alignSelf: 'flex-start'
+        alignSelf: 'flex-start',
+        paddingInline: 20
     },
 
     topHeading_balance: {
@@ -64,6 +67,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 900,
         opacity: 0.70,
-        alignSelf: 'flex-start'
+        alignSelf: 'flex-start',
+        paddingInline: 20
     }
 })

@@ -1,22 +1,39 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AccountModal from "../Database/Models/AccountModal";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { useContext, useState } from "react";
+import BottomModal from "./BottomModal";
+import { AppContext } from "../Contexts/App";
 
 type AccountCardProps = {
-    id: string
+    id: string,
+    incomeThisMonth: number,
+    expensesThisMonth: number,
+    backgroundColor: string,
+    balance: number,
+    name: string
 }
 
-export default function AccountCard({id}: AccountCardProps): React.JSX.Element{
+export default function AccountCard({id, incomeThisMonth, expensesThisMonth, backgroundColor, balance, name}: AccountCardProps): React.JSX.Element{
+
+    const {setAccounts, setTotalBalance} = useContext(AppContext);
 
     const account = AccountModal.findById(id);
     if(!account) return <></>;
 
-    const {backgroundColor, name, balance} = account
-    const incomeThisMounth = account.getIncomeThisMounth();
-    const expensesThisMounth = account.getExpensesThisMounth();
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+    function deleteAccount(){
+        AccountModal.deleteById(id);
+        setAccounts(AccountModal.getAll());
+        setTotalBalance(AccountModal.getTotalBalance());
+        
+    }
 
     return (
         <View style={styles.root}>
-            <View style={{display: 'flex', backgroundColor, width: "100%", padding: 20, gap: 12}}>
+
+            <View style={{display: 'flex', backgroundColor, width: "100%", padding: 20, gap: 12, position: 'relative'}}>
                 <Text style={{fontSize: 18, fontWeight: 900, color: 'white'}}>{name}</Text>
                 <Text style={{fontSize: 24, color: 'white'}}>
                     <Text style={{fontWeight: 900}}>{balance}</Text>
@@ -28,7 +45,7 @@ export default function AccountCard({id}: AccountCardProps): React.JSX.Element{
                 <View style={[styles.center, {flex: 1, height: 80}]}>
                     <Text style={{color: 'white', fontSize: 12}}>INCOME THIS MOUNTH</Text>
                     <Text style={{color: 'white', fontSize: 16}}>
-                        <Text style={{fontWeight: 900}}>{incomeThisMounth}</Text>
+                        <Text style={{fontWeight: 900}}>{incomeThisMonth}</Text>
                         <Text> INR</Text>
                     </Text>
                 </View>
@@ -38,11 +55,22 @@ export default function AccountCard({id}: AccountCardProps): React.JSX.Element{
                 <View style={[styles.center, {flex: 1, height: 80}]}>
                     <Text style={{color: 'white', fontSize: 12}}>EXPENSES THIS MOUNTH</Text>
                     <Text style={{color: 'white', fontSize: 16}}>
-                        <Text style={{fontWeight: 900}}>{expensesThisMounth}</Text>
+                        <Text style={{fontWeight: 900}}>{expensesThisMonth}</Text>
                         <Text> INR</Text>
                     </Text>
                 </View>
             </View>
+
+            <TouchableOpacity 
+                onPress={() => setDeleteModalOpen(true)}
+                style={{backgroundColor: 'white', width: 44, aspectRatio: 1, borderRadius: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 8, right: 8}}
+            >
+                <MaterialIcons name="delete-outline" size={22} color={'crimson'} />
+            </TouchableOpacity>
+
+            <BottomModal visible={isDeleteModalOpen} setVisible={setDeleteModalOpen} actionButtons={[{title: 'Delete', onPress: deleteAccount, backgroundColor: 'crimson'}]} >
+                <Text style={{color: 'white', paddingLeft: 20}}>Are you sure you want to delete {name} account?</Text>
+            </BottomModal>
         </View>
     )
 }
@@ -53,7 +81,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         display: 'flex',
         overflow: 'hidden',
-        marginBlock: 10
+        marginBlock: 10,
+        position: 'relative'
     },
 
     center: {

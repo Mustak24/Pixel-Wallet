@@ -24,9 +24,6 @@ type CreateProps = {
 
 type TransitionModalProps = CreateProps & {id: string}
 
-// const mounths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-// const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-
 export default class TransitionModal{
     mode: 'income' | 'expenses' | 'transfer';
     accountId: string;
@@ -88,7 +85,7 @@ export default class TransitionModal{
         return Storage.getAllKeys();
     }
 
-    static findById(id: string) {
+    static findById(id: string): TransitionModal | null {
         if(!Storage.contains(id)) return null;
         let transition = Storage.getString(id);
         return transition ? new TransitionModal(JSON.parse(transition)) : null;
@@ -134,5 +131,21 @@ export default class TransitionModal{
         }
 
         return record;
+    }
+
+    static deleteById(id: string): TransitionModal | null {
+        let transiton = TransitionModal.findById(id);
+        if(!transiton) return null;
+
+        Storage.delete(id);
+
+        let account = AccountModal.findById(transiton.accountId);
+        if(!account) return transiton;
+
+        if(transiton.mode == 'income') account?.subBalance(transiton.amount);
+        else if (transiton.mode == 'expenses') account?.addBalance(transiton.amount);
+        account?.save();
+
+        return transiton;
     }
 }

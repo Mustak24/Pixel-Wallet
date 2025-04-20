@@ -2,7 +2,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import { View } from "react-native";
 import AnimateButton from "../components/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import { use, useEffect, useRef, useState } from "react";
+import { use, useContext, useEffect, useRef, useState } from "react";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { stackParamsList } from "../../App";
 import HandleSwipe from "../components/HandleSwipe";
@@ -11,6 +11,7 @@ import BottomModal from "../components/BottomModal";
 import Calculator from "../components/Calculator";
 import TransitionModal from "../Database/Models/TransitionModal";
 import AccountModal from "../Database/Models/AccountModal";
+import { AppContext } from "../Contexts/App";
 
 
 type transitionInfoType = {
@@ -52,9 +53,10 @@ const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 
 export default function Transition({route, navigation}: TransitionProps): React.JSX.Element {
+
+    const {accounts, setTotalBalance, setAccounts} = useContext(AppContext)
    
     const {mode} = route.params;
-    const [accounts, setAccounts] = useState<AccountModal[]>(AccountModal.getAll());
 
     const [amount, setAmount] = useState<number>(0)
     const [transitionMode, setTransitionMode] = useState<transitionMode>(mode);
@@ -79,12 +81,13 @@ export default function Transition({route, navigation}: TransitionProps): React.
             createOn: {year, month, date, hour, minute}
         });    
 
+        setTotalBalance(AccountModal.getTotalBalance());
+        setAccounts(AccountModal.getAll());
         navigation.navigate('home')
     }
 
     useEffect(() => {
         let unsubscribe = navigation.addListener('focus', () => {
-            setAccounts(AccountModal.getAll())
             setTransitionMode(mode);
             setAccount(accounts[0]);
             setAmount(0);
@@ -208,11 +211,11 @@ function AmountBox({heading, accounts, onChangeAccount=()=>{}, amount, setAmount
         <HandleSwipe style={{display: 'flex', width: '100%', paddingInline: 20}} >
             <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 8}}>{heading}</Text>
 
-            <ScrollView contentContainerStyle={{width: '100%', height: 50, gap: 20, marginBlock: 16}} horizontal={true}>   
+            <ScrollView style={{width: '100%', height: 50, marginBlock: 16}} horizontal={true} showsHorizontalScrollIndicator={false} >   
                 {
                     accounts.map((acc) => {
                         return (
-                            <Pressable key={acc.name} onPress={() => setUseAcc(acc)}>
+                            <Pressable key={acc.name} onPress={() => setUseAcc(acc)} style={{marginLeft: 10}}>
                                 <RoundedView  
                                     key={acc.id} 
                                     title={acc.name} 
@@ -248,11 +251,11 @@ function AmountBox({heading, accounts, onChangeAccount=()=>{}, amount, setAmount
             >
                 <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 8}}>{heading}</Text>
 
-                <ScrollView contentContainerStyle={{width: '100%', height: 50, gap: 20, marginBlock: 16}} horizontal={true}>   
+                <ScrollView style={{width: '100%', height: 50, marginBlock: 16}} horizontal={true} showsHorizontalScrollIndicator={false} >   
                     {
                         accounts.map(acc => {
                             return (
-                                <Pressable key={acc.name} onPress={() => setUseAcc(acc)}>
+                                <Pressable key={acc.name} onPress={() => setUseAcc(acc)} style={{marginLeft: 10}}>
                                     <RoundedView  
                                         key={acc.id} 
                                         title={acc.name} 
