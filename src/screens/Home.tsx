@@ -156,16 +156,17 @@ export default function Home({ navigation }: BottomTabScreenProps<stackParamsLis
 
                     <View style={[styles.center, {gap: 20}]}>
                         {
-                            transitions.map( ({id, mode, accountId, amount, title, description, createOn}) => (
+                            transitions.map( ({id, mode, fromAccountId, amount, title, description, createOn, toAccountId}) => (
                                 <TransitionCard 
-                                key={id} 
-                                id={id} 
-                                mode={mode} 
-                                accountId={accountId} 
-                                amount={amount} 
-                                title={title} 
-                                description={description} 
-                                createOn={createOn} 
+                                    key={id} 
+                                    id={id} 
+                                    mode={mode} 
+                                    fromAccountId={fromAccountId} 
+                                    toAccountId={toAccountId}
+                                    amount={amount} 
+                                    title={title} 
+                                    description={description} 
+                                    createOn={createOn} 
                                 />
                             ))
                         }

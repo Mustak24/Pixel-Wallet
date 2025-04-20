@@ -6,11 +6,26 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Accounts from "./src/screens/Accounts";
 import Transition from "./src/screens/Transition";
 import AppContextProvider from "./src/Contexts/App";
+import AccountModal from "./src/Database/Models/AccountModal";
 
 
 const Tab = createBottomTabNavigator<stackParamsList>();
 
 export default function App(): React.JSX.Element {
+
+  let accounts = AccountModal.getAll();
+
+  let hasCashAccount = false;
+  let hasBankAccount = false;  
+  
+  for(let {name} of accounts){
+    if(hasCashAccount && hasBankAccount) break;
+    if (name === 'Cash') hasCashAccount = true;
+    if (name === 'Bank') hasBankAccount = true;
+  }
+
+  if(!hasCashAccount) AccountModal.create({name: 'Cash', balance: 0, backgroundColor: 'rgb(25,200,150)'});
+  if(!hasBankAccount) AccountModal.create({name: 'Bank', balance: 0, backgroundColor: 'rgb(130,100,255)'});
 
   return (
     <AppContextProvider>

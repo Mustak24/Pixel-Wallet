@@ -44,7 +44,7 @@ const transitionInfo: transitionInfoType[] = [
         mode: 'transfer',
         backgroundColor: 'rgb(130,100,255)',
         iconName: 'shuffle',
-        title: ''
+        title: 'From'
     }
 ]
 
@@ -54,12 +54,11 @@ const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 export default function Transition({route, navigation}: TransitionProps): React.JSX.Element {
 
     const {accounts, setTotalBalance, setAccounts} = useContext(AppContext)
-   
-    const {mode} = route.params;
 
     const [amount, setAmount] = useState<number>(0)
-    const [transitionMode, setTransitionMode] = useState<transitionMode>(mode);
-    const [account, setAccount] = useState<AccountModal>(accounts[0]);
+    const [transitionMode, setTransitionMode] = useState<transitionMode>(route.params.mode);
+    const [fromAccount, setFromAccount] = useState<AccountModal>(accounts[0]);
+    const [toAccount, setToAccount] = useState<AccountModal>(accounts[0]);
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [year, setYear] = useState<number>(new Date().getFullYear())
@@ -67,7 +66,8 @@ export default function Transition({route, navigation}: TransitionProps): React.
     const [date, setDate] = useState<number>(new Date().getDate())
     const [hour, setHour] = useState<number>(new Date().getHours())
     const [minute, setMinute] = useState<number>(new Date().getMinutes())
-    
+
+    const [isDescriptionModalOpen, setDescriptionModalOpen] = useState<boolean>(false);
     
     const [paddingBottom, setPaddingBottom] = useState<number>(0) 
     const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expenses' ? 1 : 2]
@@ -75,10 +75,13 @@ export default function Transition({route, navigation}: TransitionProps): React.
 
 
     function createTransiton() {
-        TransitionModal.create({
-            title, description, accountId: account.id, mode: transitionMode, amount, 
-            createOn: {year, month, date, hour, minute}
-        });    
+        let tra = TransitionModal.create({
+            title, description, fromAccountId: fromAccount.id, mode: transitionMode, amount, 
+            createOn: {year, month, date, hour, minute}, 
+            toAccountId: toAccount.id
+        });
+
+        if(!tra) return;
 
         setTotalBalance(AccountModal.getTotalBalance());
         setAccounts(AccountModal.getAll());
@@ -87,8 +90,8 @@ export default function Transition({route, navigation}: TransitionProps): React.
 
     useEffect(() => {
         let unsubscribe = navigation.addListener('focus', () => {
-            setTransitionMode(mode);
-            setAccount(accounts[0]);
+            setFromAccount(accounts[0]);
+            setToAccount(accounts[0]);
             setAmount(0);
             setTitle('');
             setDescription('');
@@ -102,8 +105,13 @@ export default function Transition({route, navigation}: TransitionProps): React.
         return unsubscribe;
     }, [navigation])
 
+
+    useEffect(() => {
+        setTransitionMode(route.params.mode)
+    }, [route.params])
+
     
-    return (
+    return (<>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[styles.root, {paddingBottom}]}>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.topNav}>
@@ -142,13 +150,16 @@ export default function Transition({route, navigation}: TransitionProps): React.
                         onFocus={() => setPaddingBottom(20)}
                         onBlur={() => setPaddingBottom(0)}
                         onChangeText={setTitle}
-                    />
+                        />
                 </View>
 
                 <View style={[styles.center, {gap: 10}]}>
-                    <AnimateButton style={styles.box}>
-                        <FeatherIcons name="align-left" size={20} color={'white'} />
-                        <Text style={{color: 'white', fontWeight: '900'}}>Add description</Text>
+                    <AnimateButton style={{display: 'flex', padding: 20, borderRadius: 20, backgroundColor: 'rgb(24,24,24)', width: '100%', justifyContent: 'center'}} onPress={() => setDescriptionModalOpen(true)}>
+                        <View style={{display: 'flex', alignItems: 'center', flexDirection: 'row', gap: 14}}>
+                            <FeatherIcons name="align-left" size={20} color={'white'} />
+                            <Text style={{color: 'white', fontWeight: '900'}}>Add description</Text>
+                        </View>
+                        {description && <Text style={{color: 'white', fontSize: 12, opacity: 0.8}} numberOfLines={8}>{description}</Text>}
                     </AnimateButton>
 
                     <AnimateButton style={{...styles.box, justifyContent: 'space-between'}}>
@@ -169,11 +180,15 @@ export default function Transition({route, navigation}: TransitionProps): React.
                     accounts={accounts} 
                     amount={amount} 
                     setAmount={setAmount} 
-                    onChangeAccount={setAccount}
+                    fromAccount={fromAccount}
+                    setFromAccount={setFromAccount}
+                    mode={transitionMode}
+                    toAccount={toAccount}
+                    setToAccount={setToAccount}
                 />
 
                 <View style={styles.bottomOpations}>
-                    <AnimateButton style={styles.closeBtn}>
+                    <AnimateButton style={styles.closeBtn}  onPress={() => navigation.navigate('home')}>
                         <FeatherIcons name="plus" size={16} color={'white'} style={{transform: 'rotate(45deg)'}} />
                     </AnimateButton>
                     
@@ -185,7 +200,23 @@ export default function Transition({route, navigation}: TransitionProps): React.
                 </View>
             </View>
         </KeyboardAvoidingView>
-    )
+
+        <BottomModal 
+            visible={isDescriptionModalOpen} 
+            setVisible={setDescriptionModalOpen} 
+            style={{paddingInline: 20}}
+            actionButtons={[{title: 'Add', backgroundColor: 'rgb(25,200,150)', onPress: () => setDescriptionModalOpen(false)}]}
+        >
+            <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 8}}>Add Description</Text>
+            <TextInput 
+                value={description}
+                style={{fontSize: 14, color: 'white', maxHeight: 280, opacity: 0.8}} 
+                multiline={true}
+                placeholder="Add description ..." 
+                onChangeText={setDescription}
+            />
+        </BottomModal>
+    </>)
 }
 
 
@@ -194,39 +225,23 @@ type AmountBoxProps = {
     accounts: AccountModal[],
     amount: number,
     setAmount: (amount: number) => void
-    onChangeAccount?: (acc: AccountModal) => void,
+    mode: transitionMode,
+    fromAccount: AccountModal,
+    setFromAccount: (acc: AccountModal) => void,
+    toAccount: AccountModal,
+    setToAccount: (acc: AccountModal) => void
 }
 
-function AmountBox({heading, accounts, onChangeAccount=()=>{}, amount, setAmount}: AmountBoxProps){
+function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, setToAccount, fromAccount, toAccount}: AmountBoxProps){
 
-    const [useAcc, setUseAcc] = useState<AccountModal>(accounts[0]);
     const [isOpenCal, setOpenCal] = useState<boolean>(true);
 
-    useEffect(() => {
-        onChangeAccount(useAcc);
-    }, [useAcc])
-
     return (
-        <View style={{display: 'flex', width: '100%', paddingInline: 20, alignItems: 'flex-start'}} >
-            <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 8}}>{heading}</Text>
+        <View style={{display: 'flex', width: '100%', alignItems: 'flex-start'}} >
 
-            <ScrollView style={{width: '100%', height: 50, marginBlock: 16}} horizontal={true} showsHorizontalScrollIndicator={false} >   
-                {
-                    accounts.map((acc) => {
-                        return (
-                            <Pressable key={acc.name} onPress={() => setUseAcc(acc)} style={{marginLeft: 10}}>
-                                <RoundedView  
-                                    key={acc.id} 
-                                    title={acc.name} 
-                                    color="white" 
-                                    backgroundColor={acc.id == useAcc.id ? "rgb(20,200,150)" : 'transparent'}
-                                    style={{borderWidth: 1, borderColor: 'gray'}} 
-                                />
-                            </Pressable>
-                        )
-                    })
-                }
-            </ScrollView>
+            <AccountSelector accounts={accounts} useAccount={fromAccount} setUseAccount={setFromAccount} title={heading}/>
+
+            {mode == 'transfer' && <AccountSelector accounts={accounts} useAccount={toAccount} setUseAccount={setToAccount} title="To" />}
 
             <Pressable style={[styles.center, {width: '100%', alignSelf: 'center', marginBottom: 20}]} onPress={() => setOpenCal(true)}>
                 <Text style={{fontWeight: 800, fontSize: 14, color: 'white', opacity: 0.6}}>Enter Amount</Text>
@@ -249,28 +264,38 @@ function AmountBox({heading, accounts, onChangeAccount=()=>{}, amount, setAmount
                     }
                 ]}
             >
-                <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 8}}>{heading}</Text>
-
-                <ScrollView style={{width: '100%', height: 50, marginBlock: 16}} horizontal={true} showsHorizontalScrollIndicator={false} >   
-                    {
-                        accounts.map(acc => {
-                            return (
-                                <Pressable key={acc.name} onPress={() => setUseAcc(acc)} style={{marginLeft: 10}}>
-                                    <RoundedView  
-                                        key={acc.id} 
-                                        title={acc.name} 
-                                        color="white" 
-                                        backgroundColor={acc.id == useAcc.id ? "rgb(20,200,150)" : 'transparent'}
-                                        style={{borderWidth: 1, borderColor: 'gray'}} 
-                                    />
-                                </Pressable>
-                            )
-                        })
-                    }
-                </ScrollView>
+                <AccountSelector accounts={accounts} useAccount={fromAccount} setUseAccount={setFromAccount} title={heading}/>
 
                 <Calculator onResult={setAmount} value={amount}/>
             </BottomModal>
+        </View>
+    )
+}
+
+
+function AccountSelector({accounts, useAccount, setUseAccount, title}: {accounts: AccountModal[], useAccount: AccountModal, setUseAccount: (acc: AccountModal) => void, title: string}) {
+    
+    return (
+        <View style={{display: 'flex', width: '100%', alignItems: 'flex-start'}} >
+            <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 20}}>{title}</Text>
+
+            <ScrollView style={{width: '100%', height: 50, marginBlock: 16}} horizontal={true} showsHorizontalScrollIndicator={false} >   
+                {
+                    accounts.map((acc) => {
+                        return (
+                            <Pressable key={acc.name} onPress={() => setUseAccount(acc)} style={{marginLeft: 16}}>
+                                <RoundedView  
+                                    key={acc.id} 
+                                    title={acc.name} 
+                                    color="white" 
+                                    backgroundColor={acc.id == useAccount.id ? acc.backgroundColor : 'transparent'}
+                                    style={{borderWidth: 1, borderColor: 'gray'}} 
+                                />
+                            </Pressable>
+                        )
+                    })
+                }
+            </ScrollView>
         </View>
     )
 }

@@ -15,32 +15,35 @@ export type createOnType = {
 
 type CreateProps = {
     mode: 'income' | 'expenses' | 'transfer',
-    accountId: string,
+    fromAccountId: string,
     amount: number,
     title?: string,
     description?: string,
-    createOn: createOnType
+    createOn: createOnType,
+    toAccountId?: string,
 }
 
 type TransitionModalProps = CreateProps & {id: string}
 
 export default class TransitionModal{
     mode: 'income' | 'expenses' | 'transfer';
-    accountId: string;
+    fromAccountId: string;
     amount: number;
     id: string;
     title: string;
     description: string;
     createOn: createOnType;
+    toAccountId: string;
 
-    constructor({mode, accountId, amount, title='', description='', id, createOn}: TransitionModalProps) {
+    constructor({mode, fromAccountId, amount, title='', description='', id, createOn, toAccountId=''}: TransitionModalProps) {
         this.id = id;
         this.mode = mode;
-        this.accountId = accountId;
+        this.fromAccountId = fromAccountId;
         this.amount = amount;
         this.title = title;
         this.description = description;
         this.createOn = createOn;
+        this.toAccountId = toAccountId;
     }
 
     static createId(): string {
@@ -52,18 +55,26 @@ export default class TransitionModal{
         return id;
     }
 
-    static create({mode, accountId, amount, title, description, createOn}: CreateProps): TransitionModal {
+    static create({mode, fromAccountId, amount, title, description, createOn, toAccountId}: CreateProps): TransitionModal {
 
         let id: string = TransitionModal.createId();
-        let transiton = new TransitionModal({mode, accountId, amount, title, description, id, createOn});
+        let transiton = new TransitionModal({mode, fromAccountId, amount, title, description, id, createOn, toAccountId});
 
         Storage.set(id, JSON.stringify(transiton));
 
-        let account = AccountModal.findById(accountId);
+        let account = AccountModal.findById(fromAccountId);
         if(!account) return transiton;
 
         if(mode == 'income') account?.addBalance(amount);
         else if (mode == 'expenses') account?.subBalance(amount);
+        else if (mode == 'transfer' && toAccountId) {
+            account?.subBalance(amount);
+            let toAccount = AccountModal.findById(toAccountId);
+
+            if(!toAccount) return transiton;
+            toAccount.addBalance(amount);
+            toAccount.save();
+        }
         account?.save();
 
         return transiton;
@@ -139,12 +150,20 @@ export default class TransitionModal{
 
         Storage.delete(id);
 
-        let account = AccountModal.findById(transiton.accountId);
-        if(!account) return transiton;
+        let fromAccount = AccountModal.findById(transiton.fromAccountId);
+        if(!fromAccount) return transiton;
 
-        if(transiton.mode == 'income') account?.subBalance(transiton.amount);
-        else if (transiton.mode == 'expenses') account?.addBalance(transiton.amount);
-        account?.save();
+        if(transiton.mode == 'income') fromAccount?.subBalance(transiton.amount);
+        else if (transiton.mode == 'expenses') fromAccount?.addBalance(transiton.amount);
+        else if (transiton.mode == 'transfer' && transiton.toAccountId) {
+            let toAccount = AccountModal.findById(transiton.toAccountId);
+            if(!toAccount) return transiton;
+
+            fromAccount?.addBalance(transiton.amount);
+            toAccount.subBalance(transiton.amount);
+            toAccount?.save();
+        }
+        fromAccount?.save();
 
         return transiton;
     }

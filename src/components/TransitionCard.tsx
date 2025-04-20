@@ -14,25 +14,27 @@ type TransitionCardProps = {
     mode: 'income' | 'expenses' | 'transfer'
     title?: string
     description?: string
-    accountId: string
+    fromAccountId: string
+    toAccountId: string
     createOn: createOnType
-    amount: number
+    amount: number,
 }
 const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export default function TransitionCard({id, mode, title, description, accountId, createOn, amount}: TransitionCardProps): React.JSX.Element {
+export default function TransitionCard({id, mode, title, description, fromAccountId, toAccountId, createOn, amount}: TransitionCardProps): React.JSX.Element {
 
     const {setTotalBalance, setAccounts} = useContext(AppContext);
     const {month, year, setTransitions, setTransitionsRecord} = useContext(HomeContext)
 
     const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
-    const color = mode == 'income' ? 'rgb(25,200,150)' : 'gray';
-    const accountName = AccountModal.findById(accountId)?.name;
+    const color = mode == 'income' ? 'rgb(25,200,150)' : mode == 'expenses' ? 'gray' : 'rgb(130,100,255)';
+    const fromAccountName = AccountModal.findById(fromAccountId)?.name;
+    const toAccountName = AccountModal.findById(toAccountId)?.name;
 
     const date: string = `${months[createOn.month]} ${createOn.date}`;
 
-    function deleteTansition(){
+    function deleteTransition(){
         if(!TransitionModal.deleteById(id)) return;
         
         setDeleteModalOpen(false);
@@ -49,22 +51,30 @@ export default function TransitionCard({id, mode, title, description, accountId,
                 <Text style={styles.date}>{date}</Text>
 
                 <Text style={{color, fontSize: 14}}>
-                        <Text style={{fontWeight: 800}}>{mode == 'income' ? '+' : '-'}{amount}</Text>
+                        <Text style={{fontWeight: 800}}>{mode == 'income' ? '+' : mode == 'expenses' ? '-' : ''}{amount}</Text>
                         <Text> INR</Text>
                 </Text>
             </View>
             <View style={[styles.card]}>
                 <View style={styles.mode}>
-                    <Text style={{color: 'white', fontSize: 14, fontWeight: 900}}>{accountName || ''}</Text>
+                    <Text style={{color: 'white', fontSize: 14, fontWeight: 900}}>{fromAccountName || ''}</Text>
+                    {
+                        mode == 'transfer' ? (
+                            <>
+                                <FeatherIcons name="chevrons-right" size={14} color={'white'} style={{marginHorizontal: 4}} />
+                                <Text style={{color: 'white', fontSize: 14, fontWeight: 900}}> {toAccountName || ''} </Text>
+                            </>
+                        ): null
+                    }
                 </View>
 
                 <View style={{paddingLeft: 10}}>
                     {title && <Text style={styles.title}>{title}</Text>}
-                    {description && <Text numberOfLines={2} style={styles.description}>{description}{description?.at(-1) === '.' ? '' : '.'}</Text>}
+                    {description && <Text numberOfLines={10} style={styles.description}>{description}{description?.at(-1) === '.' ? '' : '.'}</Text>}
                 </View>
                 
                 <View style={{display: "flex", gap: 10, flexDirection: 'row', paddingLeft: 10, alignItems: 'center'}}>
-                    <FeatherIcons name={mode == 'income' ? "download" : 'upload'} size={20} color={'white'} style={[styles.icon, {backgroundColor: color}]} />
+                    <FeatherIcons name={mode == 'income' ? "download" : mode == 'expenses' ? 'upload' : 'shuffle'} size={20} color={'white'} style={[styles.icon, {backgroundColor: color}]} />
                     <Text style={{color, fontSize: 20}}>
                         <Text style={{fontWeight: 800}}>{amount}</Text>
                         <Text> INR</Text>
@@ -83,7 +93,7 @@ export default function TransitionCard({id, mode, title, description, accountId,
             <BottomModal 
                 visible={isDeleteModalOpen} 
                 setVisible={setDeleteModalOpen} 
-                actionButtons={[{title: 'Delete', onPress: deleteTansition, backgroundColor: 'crimson'}]} 
+                actionButtons={[{title: 'Delete', onPress: deleteTransition, backgroundColor: 'crimson'}]} 
             >
                 <Text style={{color: 'white', paddingLeft: 20}}>Are you sure you want to delete this transitions?</Text>
             </BottomModal>
@@ -118,6 +128,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        flexDirection: 'row',
+        gap: 8,
         height: 34,
         paddingInline: 20,
         borderRadius: 1000,
@@ -128,7 +140,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         fontWeight: 900,
         color: 'white',
-        fontSize: 16,
+        fontSize: 14,
     },
 
     date: {
@@ -138,7 +150,7 @@ const styles = StyleSheet.create({
     },
 
     description: {
-        fontSize: 12,
+        fontSize: 10,
         fontWeight: 800,
         opacity: 0.8,
         color: 'white',
