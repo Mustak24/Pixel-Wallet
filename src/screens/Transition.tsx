@@ -2,10 +2,9 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import { View } from "react-native";
 import AnimateButton from "../components/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import { use, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { stackParamsList } from "../../App";
-import HandleSwipe from "../components/HandleSwipe";
 import RoundedView from "../components/RoundedView";
 import BottomModal from "../components/BottomModal";
 import Calculator from "../components/Calculator";
@@ -208,7 +207,7 @@ function AmountBox({heading, accounts, onChangeAccount=()=>{}, amount, setAmount
     }, [useAcc])
 
     return (
-        <HandleSwipe style={{display: 'flex', width: '100%', paddingInline: 20}} >
+        <View style={{display: 'flex', width: '100%', paddingInline: 20, alignItems: 'flex-start'}} >
             <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 8}}>{heading}</Text>
 
             <ScrollView style={{width: '100%', height: 50, marginBlock: 16}} horizontal={true} showsHorizontalScrollIndicator={false} >   
@@ -230,7 +229,8 @@ function AmountBox({heading, accounts, onChangeAccount=()=>{}, amount, setAmount
             </ScrollView>
 
             <Pressable style={[styles.center, {width: '100%', alignSelf: 'center', marginBottom: 20}]} onPress={() => setOpenCal(true)}>
-                <Text style={{fontWeight: 900, fontSize: 28, color: 'white'}}>
+                <Text style={{fontWeight: 800, fontSize: 14, color: 'white', opacity: 0.6}}>Enter Amount</Text>
+                <Text style={{fontWeight: '900', fontSize: 28, color: 'white'}}>
                     <Text>{amount || '0.00'}</Text>
                     <Text> INR</Text>
                 </Text>
@@ -271,7 +271,7 @@ function AmountBox({heading, accounts, onChangeAccount=()=>{}, amount, setAmount
 
                 <Calculator onResult={setAmount} value={amount}/>
             </BottomModal>
-        </HandleSwipe>
+        </View>
     )
 }
 
@@ -365,7 +365,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0,
         borderColor: 'gray',
         borderTopLeftRadius: 20,
-        borderTopRightRadius: 20
+        borderTopRightRadius: 20,
+        width: '100%'
     },
 
     bottomOpations: {

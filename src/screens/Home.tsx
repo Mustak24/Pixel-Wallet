@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, createContext, Dispatch, SetStateAction } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import AnimateButton from "../components/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcons from 'react-native-vector-icons/Feather';
@@ -9,6 +9,8 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { stackParamsList } from "../../App";
 import BottomModal from "../components/BottomModal";
 import { AppContext } from "../Contexts/App";
+import { AppStorage } from "../Database/Storage";
+import TypingText from "../components/TypingText";
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const years = Array.from({length: new Date().getFullYear() - 2000 + 1}, (_, i) => i + 2000).reverse();
@@ -50,6 +52,9 @@ export default function Home({ navigation }: BottomTabScreenProps<stackParamsLis
     const [transitionsRecord, setTransitionsRecord] = useState<{income: number, expenses: number}>({income: 0, expenses: 0});
 
     const [isDateModalVisible, setDateModalVisible] = useState<boolean>(false);
+    const [isNameModalVisible, setNameModalVisible] = useState<boolean>(!AppStorage.contains('username'));
+
+    const [username, setUsername] = useState<string>(isNameModalVisible ? "" : AppStorage.getString('username') ?? 'Hii');
 
     function handleScroll({nativeEvent}: {nativeEvent: {contentOffset: {x: number, y: number}}}): void{
         let isClose: boolean = (nativeEvent?.contentOffset?.y < 55);
@@ -57,9 +62,12 @@ export default function Home({ navigation }: BottomTabScreenProps<stackParamsLis
         
         setScrollCloseTop(isClose);
     }
-    
-    
-    const Name = 'Mustak';
+
+    function updateUsername() {
+        if(!username) return;
+        AppStorage.set('username', username);
+        setNameModalVisible(false);
+    }
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -94,7 +102,7 @@ export default function Home({ navigation }: BottomTabScreenProps<stackParamsLis
                         </Text>
 
                         <Text style={{fontSize: 16, color: 'white', fontWeight: '900'}}>
-                            {isScrollCloseTop ? Name : totalBalance || '0.00'}
+                            {isScrollCloseTop ? username : totalBalance || '0.00'}
                         </Text>
                     </View>
 
@@ -214,6 +222,26 @@ export default function Home({ navigation }: BottomTabScreenProps<stackParamsLis
                             }
                         </ScrollView>
                     </View>
+                </BottomModal>
+
+                <BottomModal 
+                    visible={isNameModalVisible} 
+                    setVisible={setNameModalVisible} 
+                    actionButtons={[{title: 'Save', backgroundColor: 'rgb(25,200,150)', onPress: updateUsername}]}
+                    style={{paddingInline: 20, paddingBottom: 150}}
+                >
+                    <TypingText 
+                        text="Welcome" 
+                        speed={200}
+                        style={{color: 'white', fontSize: 18, fontWeight: 900, marginBottom: 20}} 
+                    />
+                    <TextInput
+                        placeholder="Enter Your Name"
+                        value={username}
+                        onChangeText={setUsername}
+                        style={{fontSize: 20, fontWeight: 900, color: 'white', paddingInline: 2, borderBottomColor: 'gray', borderBottomWidth: 1}}
+                        autoFocus={true}
+                    />
                 </BottomModal>
             </View>
         </HomeContext.Provider>
