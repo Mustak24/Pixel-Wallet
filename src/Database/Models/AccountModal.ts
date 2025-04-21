@@ -51,6 +51,20 @@ class AccountModal {
         return expenses;
     }
 
+    getTransitionsRecord(): {income: TransitionModal[], expense: TransitionModal[]} {
+        let transitons: TransitionModal[] = TransitionModal.getAll();
+        let record: {income: TransitionModal[], expense: TransitionModal[]} = {income: [], expense: []};
+        for(let transiton of transitons) {
+            if(transiton.fromAccountId == this.id){
+                if(transiton.mode == 'income') 
+                    record.income.push(transiton);
+                else if(transiton.mode == 'expenses') 
+                    record.expense.push(transiton);
+            }
+        }
+        return record;
+    }
+
     addBalance(amount: number): AccountModal {
         this.balance += amount;
         return this;

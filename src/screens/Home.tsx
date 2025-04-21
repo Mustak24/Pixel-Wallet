@@ -11,6 +11,7 @@ import BottomModal from "../components/BottomModal";
 import { AppContext } from "../Contexts/App";
 import { AppStorage } from "../Database/Storage";
 import TypingText from "../components/TypingText";
+import DateSelectorModal from "../components/Modal/DateSelectorModal";
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const years = Array.from({length: new Date().getFullYear() - 2000 + 1}, (_, i) => i + 2000).reverse();
@@ -173,57 +174,7 @@ export default function Home({ navigation }: BottomTabScreenProps<stackParamsLis
                     </View>
                 </ScrollView>
 
-                <BottomModal 
-                    visible={isDateModalVisible} 
-                    setVisible={setDateModalVisible} style={{height: 300}} 
-                    actionButtons={[{title: 'Save', onPress: () => setDateModalVisible(false), backgroundColor: 'rgb(25,200,150)'}]} 
-                    >
-                    <View>
-                        <Text style={{color: 'white', fontSize: 20, fontWeight: '900', paddingLeft: 20}}>Select Month</Text>
-                        <ScrollView 
-                            style={{marginTop: 14}} 
-                            horizontal={true} 
-                            showsHorizontalScrollIndicator={false} 
-                            ref={(scrollView) => {
-                                if (scrollView) {
-                                    setTimeout(() => {
-                                        scrollView.scrollTo({ x: month * 80, animated: true });
-                                    }, 0);
-                                }
-                            }}
-                            >
-                            {
-                                months.map((monthName, index) => (
-                                    <AnimateButton key={index} onPress={() => {setMonth(index); setDateModalVisible(false)}} style={{borderRadius: 100, backgroundColor: month == index ? 'rgb(25,200,150)' : 'gray', height: 44, display: 'flex', justifyContent: 'center', alignItems: 'center', marginInline: 10, width: 60}}>
-                                        <Text style={{color: 'white', fontWeight: '900'}}>{monthName}</Text>
-                                    </AnimateButton>
-                                ))
-                            }
-                        </ScrollView>
-
-                        <Text style={{color: 'white', fontSize: 20, fontWeight: '900', paddingLeft: 20, marginTop: 34}}>Select Month</Text>
-                        <ScrollView 
-                            style={{marginTop: 14}} 
-                            horizontal={true} 
-                            showsHorizontalScrollIndicator={false}
-                            ref={(scrollView) => {
-                                if (scrollView) {
-                                    setTimeout(() => {
-                                        scrollView.scrollTo({ x: (years[0] - year) * 100, animated: true });
-                                    }, 0);
-                                }
-                            }}
-                            >
-                            {
-                                years.map((y, index) => (
-                                    <AnimateButton key={index} onPress={() => {setYear(y); setDateModalVisible(false)}} style={{borderRadius: 100, backgroundColor: y == year ? 'rgb(25,200,150)' : 'gray', height: 44, display: 'flex', justifyContent: 'center', marginInline: 10, width: 80, alignItems: 'center'}}>
-                                        <Text style={{color: 'white', fontWeight: '900'}}>{y}</Text>
-                                    </AnimateButton>
-                                ))
-                            }
-                        </ScrollView>
-                    </View>
-                </BottomModal>
+                <DateSelectorModal visible={isDateModalVisible} setVisible={setDateModalVisible} month={month} setMonth={setMonth} year={year} setYear={setYear} />
 
                 <BottomModal 
                     visible={isNameModalVisible} 
@@ -256,7 +207,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '100%',
         flex: 1,
-        backgroundColor: 'black'
+        backgroundColor: 'black',
+        paddingTop: 44,
     },
 
     center: {

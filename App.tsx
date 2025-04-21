@@ -5,13 +5,19 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Accounts from "./src/screens/Accounts";
 import Transition from "./src/screens/Transition";
-import AppContextProvider from "./src/Contexts/App";
+import AppContextProvider, { AppContext } from "./src/Contexts/App";
 import AccountModal from "./src/Database/Models/AccountModal";
+import AccountInfo from "./src/screens/AccountInfo";
+import { useContext } from "react";
+import { createStackNavigator } from "@react-navigation/stack";
 
 
 const Tab = createBottomTabNavigator<stackParamsList>();
+const Stack = createStackNavigator<stackParamsList>();
 
 export default function App(): React.JSX.Element {
+
+  const {backgroundColor} = useContext(AppContext);
 
   let accounts = AccountModal.getAll();
 
@@ -33,12 +39,15 @@ export default function App(): React.JSX.Element {
         <View style={styles.root}>
           <View style={{width: '100%', flex: 1}}>
             <Tab.Navigator 
-              tabBar={(props) => <BottomTabNavbar {...props} />} 
-              screenOptions={{headerShown: false}} 
-              >
+              initialRouteName="home"
+              tabBar={(props) => <BottomTabNavbar {...props} />}
+              screenOptions={{
+                headerShown: false, 
+              }}
+            >
               <Tab.Screen name="home" component={Home} />
-              <Tab.Screen name="accounts" component={Accounts} />
               <Tab.Screen name="transition" component={Transition} />
+              <Tab.Screen name="accounts" component={AccountStack} />
             </Tab.Navigator>
           </View>
         </View>
@@ -47,13 +56,22 @@ export default function App(): React.JSX.Element {
   )
 }
 
+
+function AccountStack(){
+  return (
+    <Stack.Navigator initialRouteName="accounts" screenOptions={{headerShown: false}}>
+      <Stack.Screen name="accounts" component={Accounts} />
+      <Stack.Screen name="account-info" component={AccountInfo} />
+    </Stack.Navigator>
+  )
+}
+
+
+
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: 'black',
     width: '100%',
     height: '100%',
-    paddingTop: 40,
-    paddingBottom: 20,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -63,9 +81,12 @@ const styles = StyleSheet.create({
 
 
 export type stackParamsList = {
-  transition: {
+  'transition': {
       mode: 'income' | 'expenses' | 'transfer',
   },
-  home: undefined,
-  accounts: undefined
+  'home': undefined,
+  'accounts': undefined
+  'account-info': {
+      account: AccountModal,
+  }
 }

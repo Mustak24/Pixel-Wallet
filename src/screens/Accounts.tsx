@@ -1,12 +1,14 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import TypingText from "../components/TypingText";
 import AccountModal from "../Database/Models/AccountModal";
 import AccountCard from "../components/AccountCard";
 import { useContext } from "react";
 import { AppContext } from "../Contexts/App";
+import { stackParamsList } from "../../App";
+import { StackScreenProps } from "@react-navigation/stack";
 
 
-export default function Accounts(): React.JSX.Element {
+export default function Accounts({navigation}: StackScreenProps<stackParamsList, 'accounts'>): React.JSX.Element {
 
     const {accounts, totalBalance} = useContext(AppContext);
 
@@ -18,7 +20,7 @@ export default function Accounts(): React.JSX.Element {
             <ScrollView style={{width: '100%', height: '100%', paddingBlock: 20, paddingInline: 20}}>
                 {
                     accounts?.map((acc: AccountModal) => (
-                        <View key={acc.id} style={{marginBottom: 10}}>
+                        <Pressable onPress={() => navigation.push('account-info', {account: acc})} key={acc.id} style={{marginBottom: 10}}>
                             <AccountCard 
                                 id={acc.id} 
                                 name={acc.name} 
@@ -27,7 +29,7 @@ export default function Accounts(): React.JSX.Element {
                                 incomeThisMonth={acc.getIncomeThisMonth() ?? 0} 
                                 expensesThisMonth={acc.getExpensesThisMonth() ?? 0}  
                             />
-                        </View>
+                        </Pressable>
                     ))
                 }
 
@@ -45,7 +47,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '100%',
         flex: 1,
-        backgroundColor: 'black'
+        backgroundColor: 'black',
+        paddingTop: 44,
     },
 
     center: {

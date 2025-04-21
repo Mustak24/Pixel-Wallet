@@ -15,7 +15,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
     const currentRouteName = state.routes[state.index].name;
     const isActive = (route: string) => route === currentRouteName;
 
-    const isHide = ['transition'].includes(currentRouteName);
+    const isHide = ['transition', 'account-info'].includes(currentRouteName);
     if(isHide) return <></>
 
     const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
@@ -62,7 +62,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
     }, [isMenuOpen])
 
     return (<>
-        <View style={[styles.center, {position: 'relative'}]}>
+        <View style={[styles.center, {position: 'relative', paddingBottom: 20}]}>
             <View style={[styles.navbarContener]}>
                 <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('home')} >
                     <MaterialIcons name="home" size={22} color={isActive('home') ? 'royalblue' : 'white'} />

@@ -13,19 +13,20 @@ type BottomModalProps = {
     bottomOpationStyle?: ViewStyle,
     backgroundColor?: string,
     closeOnBack?: boolean,
-    animationType?: "none" | "slide" | "fade"
+    animationType?: "none" | "slide" | "fade",
+    onClose?: () => void
 }
 
-export default function BottomModal({visible, setVisible, children, style, backgroundColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}}: BottomModalProps): React.JSX.Element {
+export default function BottomModal({visible, setVisible, children, style, backgroundColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}, onClose=()=>{}}: BottomModalProps): React.JSX.Element {
 
 
     return (
-        <Modal animationType={animationType} visible={visible} transparent={true} onRequestClose={() => setVisible(!closeOnBack)}>
+        <Modal animationType={animationType} visible={visible} transparent={true} onRequestClose={() => {setVisible(!closeOnBack); onClose();}}>
             <View style={[styles.root, {backgroundColor}]}>
                 <View style={[styles.modalContener, style]}>{children}</View>
 
                 <View style={[styles.bottomOpations, bottomOpationStyle]}>
-                    <TouchableHighlight style={styles.closeBtn} onPress={() => setVisible(false)}>
+                    <TouchableHighlight style={styles.closeBtn} onPress={() => {setVisible(false); onClose();}}>
                         <FeatherIcons name="plus" size={16} color={'white'} style={{transform: 'rotate(45deg)'}} />
                     </TouchableHighlight>
                     
