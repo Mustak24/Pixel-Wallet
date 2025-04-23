@@ -1,14 +1,14 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import TypingText from "../components/TypingText";
-import AccountModal from "../Database/Models/AccountModal";
-import AccountCard from "../components/AccountCard";
-import { useContext } from "react";
-import { AppContext } from "../Contexts/App";
-import { stackParamsList } from "../../App";
+import TypingText from "../../components/TypingText";
+import AccountModal from "../../Database/Models/AccountModal";
+import AccountCard from "../../components/AccountCard";
+import { useContext, useEffect } from "react";
+import { AppContext } from "../../Contexts/App";
+import { AccountStackParamsList, stackParamsList } from "../../../App";
 import { StackScreenProps } from "@react-navigation/stack";
 
 
-export default function Accounts({navigation}: StackScreenProps<stackParamsList, 'accounts'>): React.JSX.Element {
+export default function Accounts({navigation}: StackScreenProps<AccountStackParamsList, 'accounts'>): React.JSX.Element {
 
     const {accounts, totalBalance} = useContext(AppContext);
 
@@ -27,7 +27,7 @@ export default function Accounts({navigation}: StackScreenProps<stackParamsList,
                                 balance={acc.balance} 
                                 backgroundColor={acc.backgroundColor} 
                                 incomeThisMonth={acc.getIncomeThisMonth() ?? 0} 
-                                expensesThisMonth={acc.getExpensesThisMonth() ?? 0}  
+                                expenseThisMonth={acc.getExpenseThisMonth() ?? 0}  
                             />
                         </Pressable>
                     ))

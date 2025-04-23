@@ -1,24 +1,37 @@
-import style from '../../AppStyle';
+import style from '../../../AppStyle';
 
-import { Pressable, ScrollView, View } from "react-native";
-import { stackParamsList } from "../../App";
+import { Pressable, ScrollView, TouchableHighlight, View } from "react-native";
+import { AccountStackParamsList } from "../../../App";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import TextTheme from '../components/Text/TextTheme';
+import TextTheme from '../../components/Text/TextTheme';
 import { useContext, useEffect, useState } from 'react';
-import { AppContext } from '../Contexts/App';
-import TransitionModal from '../Database/Models/TransitionModal';
-import AccountModal from '../Database/Models/AccountModal';
-import DateSelectorModal from '../components/Modal/DateSelectorModal';
-import TransitionCard from '../components/TransitionCard';
-import { StackScreenProps } from '@react-navigation/stack';
+import { AppContext } from '../../Contexts/App';
+import TransitionModal from '../../Database/Models/TransitionModal';
+import AccountModal from '../../Database/Models/AccountModal';
+import DateSelectorModal from '../../components/Modal/DateSelectorModal';
+import TransitionCard from '../../components/TransitionCard';
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 
 
-export default function AccountInfo({route, navigation}: StackScreenProps<stackParamsList, 'account-info'>): React.JSX.Element {
+type accountInfoCardType = {
+    type: 'Income' | 'Expense',
+    mode: 'income' | 'expense' | 'transfer',
+    amount: number | string,
+    transitions: number
+}
+
+export default function AccountInfo({route, navigation}: StackScreenProps<AccountStackParamsList, 'account-info'>): React.JSX.Element {
     const {color, backgroundColor} = useContext(AppContext);
 
     const {account} = route.params;
     const transitionsRecord: {income: TransitionModal[], expense: TransitionModal[]} = account.getTransitionsRecord();
+
+    const accountInfo: accountInfoCardType[] =  [
+        {type: 'Income', amount: account.getIncomeThisMonth() || '0.00', transitions: transitionsRecord?.income.length ?? 0, mode: 'income'},
+        {type: 'Expense', amount: account.getExpenseThisMonth() || '0.00', transitions: transitionsRecord?.expense.length ?? 0, mode: 'expense'}
+    ]
+
 
     return (
         <ScrollView style={{width: '100%', height: '100%', backgroundColor: account.backgroundColor, paddingTop: 44}}>
@@ -52,10 +65,7 @@ export default function AccountInfo({route, navigation}: StackScreenProps<stackP
 
                 <View style={[style.center, style.flexRow, {gap: 10, width: '100%'}]}>
                     {
-                        [
-                            {type: 'Income', amount: account.getIncomeThisMonth() || '0.00', transitions: transitionsRecord?.income.length ?? 0},
-                            {type: 'Expense', amount: account.getExpensesThisMonth() || '0.00', transitions: transitionsRecord?.expense.length ?? 0}
-                        ].map(({type, amount, transitions}) => (
+                        accountInfo.map(({type, amount, transitions, mode}) => (
                             <View key={type} style={{backgroundColor: 'rgba(0,0,0,.8)', borderRadius: 20, paddingTop: 20, flex: 1, padding: 10}}>
                                 <TextTheme style={{fontWeight: 900, marginBottom: 10, paddingLeft: 10}}>{type?.toLocaleUpperCase()}</TextTheme>
 
@@ -71,7 +81,10 @@ export default function AccountInfo({route, navigation}: StackScreenProps<stackP
                                 </View>
                                 <TextTheme style={{fontSize: 12, color: 'gray', fontWeight: 900, opacity: 0.9, paddingLeft: 10, paddingBottom: 10}}>Transitions</TextTheme>
 
-                                <Pressable style={[style.center, {height: 44, borderRadius: 10, backgroundColor: 'rgb(25,200,150)', width: '100%'}]}>
+                                <Pressable 
+                                    onPress={() => {navigation.push('create-transition', {mode: mode, account})}} 
+                                    style={[style.center, {height: 44, borderRadius: 10, backgroundColor: 'rgb(25,200,150)', width: '100%'}]}
+                                >
                                     <TextTheme>
                                         Add {type}
                                     </TextTheme>
@@ -82,8 +95,8 @@ export default function AccountInfo({route, navigation}: StackScreenProps<stackP
                 </View>
             </View>
 
-            <View style={{paddingInline: 20, paddingTop: 26, backgroundColor, borderTopLeftRadius: 24, borderTopRightRadius: 24, marginTop: 34, paddingBottom: 100, height: '100%'}}>
-                    <TransitionsRecords account={account} />
+            <View style={{paddingInline: 20, paddingTop: 26, backgroundColor, borderTopLeftRadius: 40, borderTopRightRadius: 40, marginTop: 34, paddingBottom: 100, height: '100%'}}>
+                    <TransitionsRecords account={account} navigation={navigation} />
             </View>
 
         </ScrollView>
@@ -91,7 +104,7 @@ export default function AccountInfo({route, navigation}: StackScreenProps<stackP
 }
 
 
-function TransitionsRecords({account}: {account: AccountModal}): React.JSX.Element {
+function TransitionsRecords({account, navigation}: {account: AccountModal, navigation: StackNavigationProp<AccountStackParamsList, 'account-info'>}): React.JSX.Element {
     const {color} = useContext(AppContext);
     
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -103,16 +116,48 @@ function TransitionsRecords({account}: {account: AccountModal}): React.JSX.Eleme
     const [isDateModalVisible, setDateModalVisible] = useState<boolean>(false)
 
     useEffect(() => {
-        let transitions: TransitionModal[] = TransitionModal.findByDate(month, year).filter(tra => tra.toAccountId == account.id);
-        setTransitions(() => transitions);
-    }, [month, year])
+        setTransitions(TransitionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id));
+    }, [month, year]);
+
+    useEffect(() => {
+        navigation.addListener('focus', () => {
+            setTransitions(TransitionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id))
+        })
+    }, [])
+
 
     return (
         <View>
             <View style={[style.center, style.flexRow, style.justifyBetween, {paddingInline: 20, height: 44, borderWidth: 2, borderColor: color, borderRadius: 100}]}>
-                <FeatherIcons name='chevron-left' size={20} color={color}/>
-                <TextTheme style={{fontWeight: '900', fontSize: 14}}>{months[month]}, {year}</TextTheme>
-                <FeatherIcons name='chevron-right' size={20} color={color}/>
+                <TouchableHighlight 
+                    onPress={() => {
+                        if(month == 0) {
+                            setYear(year => year - 1);
+                            setMonth(() => 11);
+                        } else {
+                            setMonth(month => month - 1);
+                        }
+                    }}
+                >
+                    <FeatherIcons name='chevron-left' size={20} color={color}/>
+                </TouchableHighlight>
+                
+                <TouchableHighlight onPress={() => setDateModalVisible(true)}>
+                    <TextTheme style={{fontWeight: '900', fontSize: 14}}>{months[month]}, {year}</TextTheme>
+                </TouchableHighlight>
+                
+                <TouchableHighlight
+                    onPress={() => {
+                        if(month == 11) {
+                            setYear(year => year + 1);
+                            setMonth(() => 0);
+                        } else {
+                            setMonth(month => month + 1);
+                        }
+                    }}
+                >
+                    <FeatherIcons name='chevron-right' size={20} color={color}/>
+                </TouchableHighlight>
             </View>
 
             <View>

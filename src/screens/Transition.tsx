@@ -20,7 +20,7 @@ type transitionInfoType = {
     iconName: string
 }
 
-type transitionMode = 'income' | 'expenses' | 'transfer';
+type transitionMode = 'income' | 'expense' | 'transfer';
 
 type TransitionProps = BottomTabScreenProps<stackParamsList, 'transition'>
 
@@ -34,7 +34,7 @@ const transitionInfo: transitionInfoType[] = [
     },
 
     {
-        mode: 'expenses',
+        mode: 'expense',
         backgroundColor: 'gray',
         iconName: 'upload',
         title: 'Pay with'
@@ -70,7 +70,7 @@ export default function Transition({route, navigation}: TransitionProps): React.
     const [isDescriptionModalOpen, setDescriptionModalOpen] = useState<boolean>(false);
     
     const [paddingBottom, setPaddingBottom] = useState<number>(0) 
-    const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expenses' ? 1 : 2]
+    const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expense' ? 1 : 2]
 
 
 

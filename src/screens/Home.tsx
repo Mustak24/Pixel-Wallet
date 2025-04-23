@@ -27,8 +27,8 @@ type AppContextType = {
     transitions: TransitionModal[],
     setTransitions: Dispatch<SetStateAction<TransitionModal[]>>,
     
-    transitionsRecord: {income: number, expenses: number},
-    setTransitionsRecord: Dispatch<SetStateAction<{income: number, expenses: number}>>,
+    transitionsRecord: {income: number, expense: number},
+    setTransitionsRecord: Dispatch<SetStateAction<{income: number, expense: number}>>,
     
 }
 
@@ -36,7 +36,7 @@ const defaultState: AppContextType = {
     month: 0, setMonth: ()=>{},
     year: 0, setYear: ()=>{},
     transitions: [], setTransitions: ()=>{},
-    transitionsRecord: {income: 0, expenses: 0}, setTransitionsRecord: ()=>{}
+    transitionsRecord: {income: 0, expense: 0}, setTransitionsRecord: ()=>{}
 }
 
 
@@ -50,7 +50,7 @@ export default function Home({ navigation }: BottomTabScreenProps<stackParamsLis
     const [year, setYear] = useState(new Date().getFullYear());
     const [isScrollCloseTop, setScrollCloseTop] = useState<boolean>(true);
     const [transitions, setTransitions] = useState<TransitionModal[]>([]);
-    const [transitionsRecord, setTransitionsRecord] = useState<{income: number, expenses: number}>({income: 0, expenses: 0});
+    const [transitionsRecord, setTransitionsRecord] = useState<{income: number, expense: number}>({income: 0, expense: 0});
 
     const [isDateModalVisible, setDateModalVisible] = useState<boolean>(false);
     const [isNameModalVisible, setNameModalVisible] = useState<boolean>(!AppStorage.contains('username'));
@@ -146,7 +146,7 @@ export default function Home({ navigation }: BottomTabScreenProps<stackParamsLis
                                 </View>
 
                                 <Text style={{color: 'white', fontSize: 22}}>
-                                    <Text style={{fontWeight: 800}}>{transitionsRecord.expenses || '0.00'}</Text>
+                                    <Text style={{fontWeight: 800}}>{transitionsRecord.expense || '0.00'}</Text>
                                     <Text> INR</Text>
                                 </Text>
                             </View>

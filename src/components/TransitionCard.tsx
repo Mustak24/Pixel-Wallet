@@ -11,7 +11,7 @@ import { HomeContext } from "../screens/Home";
 
 type TransitionCardProps = {
     id: string
-    mode: 'income' | 'expenses' | 'transfer'
+    mode: 'income' | 'expense' | 'transfer'
     title?: string
     description?: string
     fromAccountId: string
@@ -28,7 +28,7 @@ export default function TransitionCard({id, mode, title, description, fromAccoun
 
     const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
-    const color = mode == 'income' ? 'rgb(25,200,150)' : mode == 'expenses' ? 'gray' : 'rgb(130,100,255)';
+    const color = mode == 'income' ? 'rgb(25,200,150)' : mode == 'expense' ? 'gray' : 'rgb(130,100,255)';
     const fromAccountName = AccountModal.findById(fromAccountId)?.name;
     const toAccountName = AccountModal.findById(toAccountId)?.name;
 
@@ -51,7 +51,7 @@ export default function TransitionCard({id, mode, title, description, fromAccoun
                 <Text style={styles.date}>{date}</Text>
 
                 <Text style={{color, fontSize: 14}}>
-                        <Text style={{fontWeight: 800}}>{mode == 'income' ? '+' : mode == 'expenses' ? '-' : ''}{amount}</Text>
+                        <Text style={{fontWeight: 800}}>{mode == 'income' ? '+' : mode == 'expense' ? '-' : ''}{amount}</Text>
                         <Text> INR</Text>
                 </Text>
             </View>
@@ -74,7 +74,7 @@ export default function TransitionCard({id, mode, title, description, fromAccoun
                 </View>
                 
                 <View style={{display: "flex", gap: 10, flexDirection: 'row', paddingLeft: 10, alignItems: 'center'}}>
-                    <FeatherIcons name={mode == 'income' ? "download" : mode == 'expenses' ? 'upload' : 'shuffle'} size={20} color={'white'} style={[styles.icon, {backgroundColor: color}]} />
+                    <FeatherIcons name={mode == 'income' ? "download" : mode == 'expense' ? 'upload' : 'shuffle'} size={20} color={'white'} style={[styles.icon, {backgroundColor: color}]} />
                     <Text style={{color, fontSize: 20}}>
                         <Text style={{fontWeight: 800}}>{amount}</Text>
                         <Text> INR</Text>

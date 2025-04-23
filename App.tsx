@@ -1,19 +1,21 @@
 import { StyleSheet, View } from "react-native";
 import Home from "./src/screens/Home";
 import BottomTabNavbar from "./src/components/BottomTabNavbar";
-import { NavigationContainer } from "@react-navigation/native";
+import { getFocusedRouteNameFromRoute, NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Accounts from "./src/screens/Accounts";
+import Accounts from "./src/screens/AccountScreen/Accounts";
 import Transition from "./src/screens/Transition";
 import AppContextProvider, { AppContext } from "./src/Contexts/App";
 import AccountModal from "./src/Database/Models/AccountModal";
-import AccountInfo from "./src/screens/AccountInfo";
+import AccountInfo from "./src/screens/AccountScreen/AccountInfo";
 import { useContext } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import TransitionModal from "./src/Database/Models/TransitionModal";
+import style from './AppStyle'
+import CreateTranstion from "./src/screens/AccountScreen/CreateTransiton";
 
 
 const Tab = createBottomTabNavigator<stackParamsList>();
-const Stack = createStackNavigator<stackParamsList>();
 
 export default function App(): React.JSX.Element {
 
@@ -36,18 +38,21 @@ export default function App(): React.JSX.Element {
   return (
     <AppContextProvider>
       <NavigationContainer>
-        <View style={styles.root}>
+        <View style={[style.center, style.width100, style.height100, {overflow: 'hidden'}]}>
           <View style={{width: '100%', flex: 1}}>
             <Tab.Navigator 
               initialRouteName="home"
-              tabBar={(props) => <BottomTabNavbar {...props} />}
-              screenOptions={{
-                headerShown: false, 
+              screenOptions={{ headerShown: false }}
+              tabBar={(props) => {
+                let routeName = getFocusedRouteNameFromRoute(props.state.routes[props.state.index]) ?? props.state.routes[props.state.index].name;
+                return ['home', 'accounts'].includes(routeName) ? (
+                  <BottomTabNavbar {...props} />
+                ) : null;
               }}
             >
               <Tab.Screen name="home" component={Home} />
               <Tab.Screen name="transition" component={Transition} />
-              <Tab.Screen name="accounts" component={AccountStack} />
+              <Tab.Screen name="accounts" component={AccountStackScreens} />
             </Tab.Navigator>
           </View>
         </View>
@@ -57,12 +62,16 @@ export default function App(): React.JSX.Element {
 }
 
 
-function AccountStack(){
+const AccountStack = createStackNavigator<AccountStackParamsList>();
+
+function AccountStackScreens(){
+  
   return (
-    <Stack.Navigator initialRouteName="accounts" screenOptions={{headerShown: false}}>
-      <Stack.Screen name="accounts" component={Accounts} />
-      <Stack.Screen name="account-info" component={AccountInfo} />
-    </Stack.Navigator>
+    <AccountStack.Navigator initialRouteName="accounts" screenOptions={{headerShown: false}}>
+      <AccountStack.Screen name="accounts" component={Accounts} />
+      <AccountStack.Screen name="account-info" component={AccountInfo} />
+      <AccountStack.Screen name="create-transition" component={CreateTranstion} />
+    </AccountStack.Navigator>
   )
 }
 
@@ -80,13 +89,18 @@ const styles = StyleSheet.create({
 })
 
 
+export type AccountStackParamsList = {
+  'accounts': undefined,
+  'account-info': {account: AccountModal},
+  'create-transition': {mode: 'income' | 'expense' | 'transfer', account: AccountModal},
+  'update-transition': {transition: TransitionModal}
+}
+
+
 export type stackParamsList = {
   'transition': {
-      mode: 'income' | 'expenses' | 'transfer',
+      mode: 'income' | 'expense' | 'transfer',
   },
   'home': undefined,
   'accounts': undefined
-  'account-info': {
-      account: AccountModal,
-  }
 }

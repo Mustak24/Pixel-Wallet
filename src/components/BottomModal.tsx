@@ -17,7 +17,7 @@ type BottomModalProps = {
     onClose?: () => void
 }
 
-export default function BottomModal({visible, setVisible, children, style, backgroundColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}, onClose=()=>{}}: BottomModalProps): React.JSX.Element {
+export default function BottomModal({visible, setVisible, children, style, backgroundColor='rgba(0, 0, 0, 0.90)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}, onClose=()=>{}}: BottomModalProps): React.JSX.Element {
 
 
     return (

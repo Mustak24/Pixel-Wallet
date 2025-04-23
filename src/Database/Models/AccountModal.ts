@@ -41,14 +41,14 @@ class AccountModal {
         return income;
     }
 
-    getExpensesThisMonth(): number {
+    getExpenseThisMonth(): number {
         let transitons: TransitionModal[] = TransitionModal.findByDate(new Date().getMonth());
-        let expenses: number = 0;
+        let expense: number = 0;
         for(let transiton of transitons) {
-            if(transiton.fromAccountId == this.id && transiton.mode == 'expenses') 
-                expenses += transiton.amount;
+            if(transiton.fromAccountId == this.id && transiton.mode == 'expense') 
+                expense += transiton.amount;
         }
-        return expenses;
+        return expense;
     }
 
     getTransitionsRecord(): {income: TransitionModal[], expense: TransitionModal[]} {
@@ -58,7 +58,7 @@ class AccountModal {
             if(transiton.fromAccountId == this.id){
                 if(transiton.mode == 'income') 
                     record.income.push(transiton);
-                else if(transiton.mode == 'expenses') 
+                else if(transiton.mode == 'expense') 
                     record.expense.push(transiton);
             }
         }

@@ -14,7 +14,7 @@ export type createOnType = {
 }
 
 type CreateProps = {
-    mode: 'income' | 'expenses' | 'transfer',
+    mode: 'income' | 'expense' | 'transfer',
     fromAccountId: string,
     amount: number,
     title?: string,
@@ -26,7 +26,7 @@ type CreateProps = {
 type TransitionModalProps = CreateProps & {id: string}
 
 export default class TransitionModal{
-    mode: 'income' | 'expenses' | 'transfer';
+    mode: 'income' | 'expense' | 'transfer';
     fromAccountId: string;
     amount: number;
     id: string;
@@ -66,7 +66,7 @@ export default class TransitionModal{
         if(!account) return transiton;
 
         if(mode == 'income') account?.addBalance(amount);
-        else if (mode == 'expenses') account?.subBalance(amount);
+        else if (mode == 'expense') account?.subBalance(amount);
         else if (mode == 'transfer' && toAccountId) {
             account?.subBalance(amount);
             let toAccount = AccountModal.findById(toAccountId);
@@ -126,7 +126,7 @@ export default class TransitionModal{
         });
     }
 
-    static getRecordByDate(month: number, year?: number): {income: number, expenses: number} {
+    static getRecordByDate(month: number, year?: number): {income: number, expense: number} {
         if(!month || !year) {
             let date: Date = new Date();
             month ??= date.getMonth();
@@ -134,11 +134,11 @@ export default class TransitionModal{
         }
 
         let transitions: TransitionModal[] = TransitionModal.findByDate(month, year);
-        let record: {income: number, expenses: number} = {income: 0, expenses: 0};
+        let record: {income: number, expense: number} = {income: 0, expense: 0};
 
         for(let transition of transitions) {
             if(transition.mode == 'income') record.income += transition.amount;
-            else if(transition.mode == 'expenses') record.expenses += transition.amount;
+            else if(transition.mode == 'expense') record.expense += transition.amount;
         }
 
         return record;
@@ -154,7 +154,7 @@ export default class TransitionModal{
         if(!fromAccount) return transiton;
 
         if(transiton.mode == 'income') fromAccount?.subBalance(transiton.amount);
-        else if (transiton.mode == 'expenses') fromAccount?.addBalance(transiton.amount);
+        else if (transiton.mode == 'expense') fromAccount?.addBalance(transiton.amount);
         else if (transiton.mode == 'transfer' && transiton.toAccountId) {
             let toAccount = AccountModal.findById(transiton.toAccountId);
             if(!toAccount) return transiton;

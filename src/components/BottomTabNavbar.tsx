@@ -12,11 +12,10 @@ import { AppContext } from "../Contexts/App";
 
 export default function BottomTabNavbar({navigation, state}: BottomTabBarProps): React.JSX.Element {
     
+    const {isTabBarHide} = useContext(AppContext);
+
     const currentRouteName = state.routes[state.index].name;
     const isActive = (route: string) => route === currentRouteName;
-
-    const isHide = ['transition', 'account-info'].includes(currentRouteName);
-    if(isHide) return <></>
 
     const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
 
@@ -61,8 +60,8 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
         if(currentRouteName == 'home') handleMenuAnime(isMenuOpen);
     }, [isMenuOpen])
 
-    return (<>
-        <View style={[styles.center, {position: 'relative', paddingBottom: 20}]}>
+    return isTabBarHide ? <></> : (<>
+        <View style={[styles.center, {position: 'relative', backgroundColor: 'rgb(25,25,25)'}]}>
             <View style={[styles.navbarContener]}>
                 <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('home')} >
                     <MaterialIcons name="home" size={22} color={isActive('home') ? 'royalblue' : 'white'} />
@@ -78,7 +77,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
 
             {
                 currentRouteName === 'home' ? (
-                    <View style={[styles.center, {position: 'absolute', width: "100%", height: 60, flexDirection: 'row'}]}>
+                    <View style={[styles.center, {position: 'absolute', width: "100%", height: 80, flexDirection: 'row'}]}>
                         <Animated.View style={[styles.center, styles.menuBackCover, {height: screenInnerHeight, transform: [{translateY}]}]}>
                         </Animated.View>
 
@@ -104,7 +103,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                             <Pressable
                                 onPress={() => {
                                     handleMenu();
-                                    navigation.navigate('transition', {mode: 'expenses'})
+                                    navigation.navigate('transition', {mode: 'expense'})
                                 }} 
                                 style={[styles.animateBalls, styles.center, {backgroundColor: 'gray'}]}
                             >
@@ -248,10 +247,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         width: '100%',
-        height: 60,
+        height: 80,
         justifyContent: 'space-between',
         backgroundColor: 'rgb(25, 25, 25)',
         paddingInline: 20,
+        paddingBottom: 10
     },
 
     navigatorBtn: {

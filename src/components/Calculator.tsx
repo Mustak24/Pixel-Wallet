@@ -48,8 +48,8 @@ export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResu
         [
             {onPress: () => writeText('.'), innerText: '.', textColor: 'white'},
             {onPress: () => writeText('0'), innerText: '0', textColor: 'white'},
-            {onPress: deleteText, innerText: <Feathericons name='delete' size={18} color={'crimson'} />, textColor: 'crimson'},
             {onPress: calculate, innerText: '=', textColor: 'white'},
+            {onPress: deleteText, innerText: <Feathericons name='delete' size={18} color={'crimson'} />, textColor: 'crimson'},
         ]
     ]).current;
 

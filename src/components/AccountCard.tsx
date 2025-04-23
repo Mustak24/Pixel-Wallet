@@ -8,13 +8,13 @@ import { AppContext } from "../Contexts/App";
 type AccountCardProps = {
     id: string,
     incomeThisMonth: number,
-    expensesThisMonth: number,
+    expenseThisMonth: number,
     backgroundColor: string,
     balance: number,
     name: string
 }
 
-export default function AccountCard({id, incomeThisMonth, expensesThisMonth, backgroundColor, balance, name}: AccountCardProps): React.JSX.Element{
+export default function AccountCard({id, incomeThisMonth, expenseThisMonth, backgroundColor, balance, name}: AccountCardProps): React.JSX.Element{
 
     const {setAccounts, setTotalBalance} = useContext(AppContext);
 
@@ -53,9 +53,9 @@ export default function AccountCard({id, incomeThisMonth, expensesThisMonth, bac
                 <View style={{backgroundColor: 'gray', height: 60, width: 1, borderRadius: 100}}></View>
                 
                 <View style={[styles.center, {flex: 1, height: 80}]}>
-                    <Text style={{color: 'white', fontSize: 12}}>EXPENSES THIS MOUNTH</Text>
+                    <Text style={{color: 'white', fontSize: 12}}>EXPENSE THIS MOUNTH</Text>
                     <Text style={{color: 'white', fontSize: 16}}>
-                        <Text style={{fontWeight: 900}}>{expensesThisMonth}</Text>
+                        <Text style={{fontWeight: 900}}>{expenseThisMonth}</Text>
                         <Text> INR</Text>
                     </Text>
                 </View>
