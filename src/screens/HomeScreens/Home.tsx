@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, createContext, Dispatch, SetStateAction } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import AnimateButton from "../../components/Buttons/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcons from 'react-native-vector-icons/Feather';
@@ -127,7 +127,7 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                         </View>
 
                         <View style={[styles.center, {flexDirection: 'row', gap: 12, position: 'relative'}]}>
-                            <View style={{height: 100, backgroundColor: 'rgb(25,200,150)', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
+                            <Pressable style={{height: 100, backgroundColor: 'rgb(25,200,150)', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
                                 <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
                                     <FeatherIcons name="download" size={24} color={'white'} />
                                     <Text style={{color: 'white', fontWeight: 800}}>INCOME</Text>
@@ -137,7 +137,7 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                                     <Text style={{fontWeight: 800}}>{transitionsRecord.income || '0.00'}</Text>
                                     <Text> INR</Text>
                                 </Text>
-                            </View>
+                            </Pressable>
 
                             <View style={{height: 100, backgroundColor: 'gray', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
                                 <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>

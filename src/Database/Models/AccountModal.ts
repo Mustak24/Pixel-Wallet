@@ -1,6 +1,7 @@
 import { MMKV } from "react-native-mmkv";
 import idCreator from "../idCreator";
 import TransitionModal from "./TransitionModal";
+import { TransitionsStorage } from "../Storage";
 
 const Storage = new MMKV({id: 'Accounts'});
 
@@ -55,11 +56,18 @@ class AccountModal {
         let transitons: TransitionModal[] = TransitionModal.getAll();
         let record: {income: TransitionModal[], expense: TransitionModal[]} = {income: [], expense: []};
         for(let transiton of transitons) {
-            if(transiton.fromAccountId == this.id){
-                if(transiton.mode == 'income') 
+            if(transiton.fromAccountId == this.id || transiton.toAccountId == this.id){
+                if(transiton.mode == 'income') {
                     record.income.push(transiton);
-                else if(transiton.mode == 'expense') 
+                } else if(transiton.mode == 'expense') {
                     record.expense.push(transiton);
+                } else if(transiton.mode == 'transfer') {
+                    if(transiton.fromAccountId == this.id) {
+                        record.expense.push(transiton)
+                    } else if(transiton.toAccountId == this.id) {
+                        record.income.push(transiton);
+                    }
+                }
             }
         }
         return record;
@@ -125,6 +133,27 @@ class AccountModal {
         if(!Storage.contains(id)) return null;
 
         let account: AccountModalProps = JSON.parse(Storage.getString(id) || '{}');
+        let transitions: TransitionModal[] = TransitionModal.getAll().filter(tra => tra.fromAccountId == id || tra.toAccountId == id);
+        
+        for(let transition of transitions) {
+            if(transition.mode == 'transfer') {
+                let fromAccount = AccountModal.findById(transition.fromAccountId);
+                let toAccount = AccountModal.findById(transition.toAccountId);
+
+                if(fromAccount && fromAccount.id != id) {
+                    fromAccount.addBalance(transition.amount);
+                    fromAccount.save();
+                }
+
+                if(toAccount && toAccount.id != id){
+                    toAccount.subBalance(transition.amount);
+                    toAccount.save();
+                }
+            }
+            
+            TransitionsStorage.delete(transition.id)
+        }
+
         Storage.delete(id);
         return account;
     }

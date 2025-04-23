@@ -18,10 +18,10 @@ export default function AccountCard({id, incomeThisMonth, expenseThisMonth, back
     return account ? (
         <View style={[style.width100, style.flex, {marginBlock: 10, borderRadius: 20, overflow: 'hidden', position: 'relative'}]}>
 
-            <View style={{display: 'flex', backgroundColor, width: "100%", padding: 20, gap: 12, position: 'relative'}}>
-                <Text style={{fontSize: 18, fontWeight: 900, color: 'white'}}>{name}</Text>
-                <Text style={{fontSize: 24, color: 'white'}}>
-                    <Text style={{fontWeight: 900}}>{balance}</Text>
+            <View style={{display: 'flex', backgroundColor, width: "100%", padding: 20, gap: 2}}>
+                <Text style={{fontSize: 26, fontWeight: 900, color: 'white'}}>{name}</Text>
+                <Text style={{fontSize: 24, color: 'white', alignSelf: 'center', fontWeight: '900'}}>
+                    <Text>{balance}</Text>
                     <Text> INR</Text>
                 </Text>
             </View>

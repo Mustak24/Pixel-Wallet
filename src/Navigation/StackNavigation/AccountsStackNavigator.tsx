@@ -2,7 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import TransitionModal from "../../Database/Models/TransitionModal";
 import AccountModal from "../../Database/Models/AccountModal";
 import Accounts from "../../screens/AccountScreens/Accounts";
-import AccountInfo from "../../screens/AccountScreens/AccountInfo";
+import AccountInfo from "../../screens/AccountScreens/AccountInfoScreen/AccountInfo";
 import CreateTranstion from "../../screens/AccountScreens/CreateTransiton";
 
 

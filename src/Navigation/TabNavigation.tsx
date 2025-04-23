@@ -1,5 +1,4 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "../screens/HomeScreens/Home";
 import HomeStackNavigator from "./StackNavigation/HomeStackNavigator";
 import AccountsStackNavigator from "./StackNavigation/AccountsStackNavigator";
 import Transition from "../screens/Transition";
@@ -24,7 +23,6 @@ export default function TabNavigation(): React.JSX.Element {
             screenOptions={{ headerShown: false }}
             tabBar={(props) => {
                 let routeName = getFocusedRouteNameFromRoute(props.state.routes[props.state.index]) ?? props.state.routes[props.state.index].name;
-                console.log(routeName)
                 return tabBarRoutesName.includes(routeName) ? (
                     <BottomTabNavbar {...props} />
                 ) : null;

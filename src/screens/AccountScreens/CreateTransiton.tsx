@@ -54,7 +54,7 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
     const [minute, setMinute] = useState<number>(new Date().getMinutes());
 
     const [isDescriptionModalOpen ,setDescriptionModalOpen] = useState<boolean>(false);
-    const [isCalOpen, setCalOpen] = useState<boolean>(false);
+    const [isCalOpen, setCalOpen] = useState<boolean>(true);
 
     function createTransition(){
         let tra = TransitionModal.create({

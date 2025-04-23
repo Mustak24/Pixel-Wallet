@@ -1,5 +1,5 @@
 
-import { Modal,  PressableProps, StyleSheet, TouchableHighlight, View, ViewStyle } from "react-native";
+import { Modal,  PressableProps, StyleSheet, TouchableHighlight, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
 import FeatherIcons from 'react-native-vector-icons/Feather'
 import RoundedView from "../RoundedView";
 
@@ -23,6 +23,10 @@ export default function BottomModal({visible, setVisible, children, style, backg
     return (
         <Modal animationType={animationType} visible={visible} transparent={true} onRequestClose={() => {setVisible(!closeOnBack); onClose();}}>
             <View style={[styles.root, {backgroundColor}]}>
+                <TouchableWithoutFeedback onPress={() => setVisible(false)} >
+                    <View style={{width: '100%', flex: 1}}></View>
+                </TouchableWithoutFeedback>
+
                 <View style={[styles.modalContener, style]}>{children}</View>
 
                 <View style={[styles.bottomOpations, bottomOpationStyle]}>
@@ -33,7 +37,7 @@ export default function BottomModal({visible, setVisible, children, style, backg
                     <View style={styles.actionsButtonsBox}>
                         {
                             actionButtons?.map(({title, onPress, color='white', backgroundColor='black'}) => (
-                                <TouchableHighlight key={title}  onPress={onPress}>
+                                <TouchableHighlight key={title} onPress={onPress}>
                                     <RoundedView 
                                         title={title} 
                                         color={color} 
