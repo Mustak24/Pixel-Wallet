@@ -1,7 +1,5 @@
 import style from '../../../AppStyle';
-
 import { Pressable, ScrollView, TouchableHighlight, View } from "react-native";
-import { AccountStackParamsList } from "../../../App";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import TextTheme from '../../components/Text/TextTheme';
@@ -10,13 +8,14 @@ import { AppContext } from '../../Contexts/App';
 import TransitionModal from '../../Database/Models/TransitionModal';
 import AccountModal from '../../Database/Models/AccountModal';
 import DateSelectorModal from '../../components/Modal/DateSelectorModal';
-import TransitionCard from '../../components/TransitionCard';
+import TransitionCard from '../../components/Cards/TransitionCard';
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
+import { AccountStackParamsList } from '../../Navigation/StackNavigation/AccountsStackNavigator';
 
 
 type accountInfoCardType = {
     type: 'Income' | 'Expense',
-    mode: 'income' | 'expense' | 'transfer',
+    mode: 'income' | 'expense',
     amount: number | string,
     transitions: number
 }
@@ -82,7 +81,7 @@ export default function AccountInfo({route, navigation}: StackScreenProps<Accoun
                                 <TextTheme style={{fontSize: 12, color: 'gray', fontWeight: 900, opacity: 0.9, paddingLeft: 10, paddingBottom: 10}}>Transitions</TextTheme>
 
                                 <Pressable 
-                                    onPress={() => {navigation.push('create-transition', {mode: mode, account})}} 
+                                    onPress={() => {navigation.push('create-transition', {account, mode})}} 
                                     style={[style.center, {height: 44, borderRadius: 10, backgroundColor: 'rgb(25,200,150)', width: '100%'}]}
                                 >
                                     <TextTheme>
@@ -120,9 +119,10 @@ function TransitionsRecords({account, navigation}: {account: AccountModal, navig
     }, [month, year]);
 
     useEffect(() => {
-        navigation.addListener('focus', () => {
+        let unsubscribe =  navigation.addListener('focus', () => {
             setTransitions(TransitionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id))
         })
+        return unsubscribe;
     }, [])
 
 

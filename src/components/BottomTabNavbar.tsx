@@ -1,10 +1,10 @@
 import { Animated, Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AnimateButton from "./AnimateButton";
+import AnimateButton from "./Buttons/AnimateButton";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useContext, useEffect, useRef, useState } from "react";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import BottomModal from "./BottomModal";
+import BottomModal from "./Modal/BottomModal";
 import Calculator from "./Calculator";
 import AccountModal from "../Database/Models/AccountModal";
 import { AppContext } from "../Contexts/App";
@@ -57,26 +57,26 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
     }
 
     useEffect(() => {
-        if(currentRouteName == 'home') handleMenuAnime(isMenuOpen);
+        if(currentRouteName == 'home-stack-navigator') handleMenuAnime(isMenuOpen);
     }, [isMenuOpen])
 
     return isTabBarHide ? <></> : (<>
         <View style={[styles.center, {position: 'relative', backgroundColor: 'rgb(25,25,25)'}]}>
             <View style={[styles.navbarContener]}>
-                <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('home')} >
-                    <MaterialIcons name="home" size={22} color={isActive('home') ? 'royalblue' : 'white'} />
-                    <Text style={[styles.navigatorBtn_text, {color: isActive('home') ? 'royalblue' : 'white'}]}>Home</Text>
+                <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('home-stack-navigator')} >
+                    <MaterialIcons name="home" size={22} color={isActive('home-stack-navigator') ? 'royalblue' : 'white'} />
+                    <Text style={[styles.navigatorBtn_text, {color: isActive('home-stack-navigator') ? 'royalblue' : 'white'}]}>Home</Text>
                 </AnimateButton>
 
-                <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('accounts')}>
-                    <MaterialIcons name="account-balance-wallet" size={22} color={isActive('accounts') ? 'royalblue' : 'white'} />
-                    <Text style={[styles.navigatorBtn_text, {color: isActive('accounts') ? 'royalblue' : 'white'}]}>Accounts</Text>
+                <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('accounts-stack-navigator')}>
+                    <MaterialIcons name="account-balance-wallet" size={22} color={isActive('accounts-stack-navigator') ? 'royalblue' : 'white'} />
+                    <Text style={[styles.navigatorBtn_text, {color: isActive('accounts-stack-navigator') ? 'royalblue' : 'white'}]}>Accounts</Text>
                 </AnimateButton>
             </View>
 
 
             {
-                currentRouteName === 'home' ? (
+                currentRouteName === 'home-stack-navigator' ? (
                     <View style={[styles.center, {position: 'absolute', width: "100%", height: 80, flexDirection: 'row'}]}>
                         <Animated.View style={[styles.center, styles.menuBackCover, {height: screenInnerHeight, transform: [{translateY}]}]}>
                         </Animated.View>
@@ -129,7 +129,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                             <Text style={styles.animateBalls_text}>TRANSFER</Text>
                         </Animated.View>
                     </View>
-                ) : currentRouteName === 'accounts' ? (
+                ) : currentRouteName === 'accounts-stack-navigator' ? (
                     <CreateAccountModal visible={isMenuOpen} setVisible={setMenuOpen} />
                 ) : null
             }

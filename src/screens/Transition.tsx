@@ -1,16 +1,16 @@
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput } from "react-native";
 import { View } from "react-native";
-import AnimateButton from "../components/AnimateButton";
+import AnimateButton from "../components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import { useContext, useEffect, useState } from "react";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { stackParamsList } from "../../App";
 import RoundedView from "../components/RoundedView";
-import BottomModal from "../components/BottomModal";
+import BottomModal from "../components/Modal/BottomModal";
 import Calculator from "../components/Calculator";
 import TransitionModal from "../Database/Models/TransitionModal";
 import AccountModal from "../Database/Models/AccountModal";
 import { AppContext } from "../Contexts/App";
+import { TabParamsList } from "../Navigation/TabNavigation";
 
 
 type transitionInfoType = {
@@ -21,8 +21,6 @@ type transitionInfoType = {
 }
 
 type transitionMode = 'income' | 'expense' | 'transfer';
-
-type TransitionProps = BottomTabScreenProps<stackParamsList, 'transition'>
 
 
 const transitionInfo: transitionInfoType[] = [
@@ -51,7 +49,7 @@ const transitionInfo: transitionInfoType[] = [
 const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 
-export default function Transition({route, navigation}: TransitionProps): React.JSX.Element {
+export default function Transition({route, navigation}: BottomTabScreenProps<TabParamsList, 'transition'>): React.JSX.Element {
 
     const {accounts, setTotalBalance, setAccounts} = useContext(AppContext)
 
@@ -85,7 +83,7 @@ export default function Transition({route, navigation}: TransitionProps): React.
 
         setTotalBalance(AccountModal.getTotalBalance());
         setAccounts(AccountModal.getAll());
-        navigation.navigate('home')
+        navigation.navigate('home-stack-navigator')
     }
 
     useEffect(() => {
@@ -115,7 +113,7 @@ export default function Transition({route, navigation}: TransitionProps): React.
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[styles.root, {paddingBottom}]}>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.topNav}>
-                    <AnimateButton style={styles.topNav_closeBtn} onPress={() => navigation.navigate('home')}>
+                    <AnimateButton style={styles.topNav_closeBtn} onPress={() => navigation.navigate('home-stack-navigator')}>
                         <FeatherIcons name="plus" size={20} color={'white'} style={{transform: 'rotate(45deg)'}} />
                     </AnimateButton>
 
@@ -188,7 +186,7 @@ export default function Transition({route, navigation}: TransitionProps): React.
                 />
 
                 <View style={styles.bottomOpations}>
-                    <AnimateButton style={styles.closeBtn}  onPress={() => navigation.navigate('home')}>
+                    <AnimateButton style={styles.closeBtn}  onPress={() => navigation.navigate('home-stack-navigator')}>
                         <FeatherIcons name="plus" size={16} color={'white'} style={{transform: 'rotate(45deg)'}} />
                     </AnimateButton>
                     

@@ -1,7 +1,7 @@
 
 import { Modal,  PressableProps, StyleSheet, TouchableHighlight, View, ViewStyle } from "react-native";
 import FeatherIcons from 'react-native-vector-icons/Feather'
-import RoundedView from "./RoundedView";
+import RoundedView from "../RoundedView";
 
 type BottomModalProps = {
     visible: boolean,

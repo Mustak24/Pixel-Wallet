@@ -1,20 +1,17 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { useContext, useEffect, useState } from "react";
 import { KeyboardAvoidingView, Pressable, View } from "react-native";
-import { AccountStackParamsList } from "../../../App";
 import AccountModal from "../../Database/Models/AccountModal";
 import style from '../../../AppStyle'
 import { AppContext, months } from "../../Contexts/App";
 import { ScrollView, Text, TextInput } from "react-native-gesture-handler";
-import AnimateButton from "../../components/AnimateButton";
+import AnimateButton from "../../components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather'
 import TextTheme from "../../components/Text/TextTheme";
-import BottomModal from "../../components/BottomModal";
+import BottomModal from "../../components/Modal/BottomModal";
 import Calculator from "../../components/Calculator";
 import TransitionModal from "../../Database/Models/TransitionModal";
-
-
-type CreateTranstionProps = StackScreenProps<AccountStackParamsList, 'create-transition'>;
+import { AccountStackParamsList } from "../../Navigation/StackNavigation/AccountsStackNavigator";
 
 type transitionInfoType = {
     mode: 'income' | 'expense',
@@ -39,7 +36,7 @@ const transitionInfo: transitionInfoType[] = [
     }
 ]
 
-export default function CreateTranstion({route, navigation}: CreateTranstionProps): React.JSX.Element {
+export default function CreateTranstion({route, navigation}: StackScreenProps<AccountStackParamsList, 'create-transition'>): React.JSX.Element {
 
     const {color, backgroundColor, setTotalBalance, setAccounts} = useContext(AppContext);
     

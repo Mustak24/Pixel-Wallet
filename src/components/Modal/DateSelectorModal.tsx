@@ -1,7 +1,7 @@
 import { ScrollView, View } from "react-native";
-import BottomModal from "../BottomModal";
+import BottomModal from "./BottomModal";
 import TextTheme from "../Text/TextTheme";
-import AnimateButton from "../AnimateButton";
+import AnimateButton from "../Buttons/AnimateButton";
 import { useState } from "react";
 
 type DateSelectorModalProps = {

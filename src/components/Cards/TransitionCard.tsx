@@ -1,12 +1,12 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import AccountModal from "../Database/Models/AccountModal";
-import TransitionModal, { createOnType } from "../Database/Models/TransitionModal";
+import AccountModal from "../../Database/Models/AccountModal";
+import TransitionModal, { createOnType } from "../../Database/Models/TransitionModal";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useContext, useState } from "react";
-import BottomModal from "./BottomModal";
-import { AppContext } from "../Contexts/App";
-import { HomeContext } from "../screens/Home";
+import BottomModal from "../Modal/BottomModal";
+import { AppContext } from "../../Contexts/App";
+import { HomeContext } from "../../screens/HomeScreens/Home";
 
 
 type TransitionCardProps = {

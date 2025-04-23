@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState, createContext, Dispatch, SetStateAction } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import AnimateButton from "../components/AnimateButton";
+import AnimateButton from "../../components/Buttons/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import TransitionCard from "../components/TransitionCard";
-import TransitionModal from "../Database/Models/TransitionModal";
+import TransitionCard from "../../components/Cards/TransitionCard";
+import TransitionModal from "../../Database/Models/TransitionModal";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { stackParamsList } from "../../App";
-import BottomModal from "../components/BottomModal";
-import { AppContext } from "../Contexts/App";
-import { AppStorage } from "../Database/Storage";
-import TypingText from "../components/TypingText";
-import DateSelectorModal from "../components/Modal/DateSelectorModal";
+import BottomModal from "../../components/Modal/BottomModal";
+import { AppContext } from "../../Contexts/App";
+import { AppStorage } from "../../Database/Storage";
+import TypingText from "../../components/Text/TypingText";
+import DateSelectorModal from "../../components/Modal/DateSelectorModal";
+import { HomeStackParamsList } from "../../Navigation/StackNavigation/HomeStackNavigator";
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const years = Array.from({length: new Date().getFullYear() - 2000 + 1}, (_, i) => i + 2000).reverse();
@@ -42,7 +42,7 @@ const defaultState: AppContextType = {
 
 export const HomeContext = createContext<AppContextType>(defaultState);
 
-export default function Home({ navigation }: BottomTabScreenProps<stackParamsList, 'home'>): React.JSX.Element {
+export default function Home({ navigation }: BottomTabScreenProps<HomeStackParamsList, 'home'>): React.JSX.Element {
 
     const {totalBalance} = useContext(AppContext);
 

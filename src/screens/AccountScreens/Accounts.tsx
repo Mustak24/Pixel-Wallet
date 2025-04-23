@@ -1,11 +1,11 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import TypingText from "../../components/TypingText";
+import TypingText from "../../components/Text/TypingText";
 import AccountModal from "../../Database/Models/AccountModal";
-import AccountCard from "../../components/AccountCard";
-import { useContext, useEffect } from "react";
+import AccountCard from "../../components/Cards/AccountCard";
+import { useContext } from "react";
 import { AppContext } from "../../Contexts/App";
-import { AccountStackParamsList, stackParamsList } from "../../../App";
 import { StackScreenProps } from "@react-navigation/stack";
+import { AccountStackParamsList } from "../../Navigation/StackNavigation/AccountsStackNavigator";
 
 
 export default function Accounts({navigation}: StackScreenProps<AccountStackParamsList, 'accounts'>): React.JSX.Element {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import AnimateButton from "./AnimateButton";
+import AnimateButton from "./Buttons/AnimateButton";
 import Feathericons from 'react-native-vector-icons/Feather';
 
 type CalculatorProps = {
