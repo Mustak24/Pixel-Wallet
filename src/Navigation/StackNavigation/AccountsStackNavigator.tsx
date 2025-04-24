@@ -4,6 +4,7 @@ import AccountModal from "../../Database/Models/AccountModal";
 import Accounts from "../../screens/AccountScreens/Accounts";
 import AccountInfo from "../../screens/AccountScreens/AccountInfoScreen/AccountInfo";
 import CreateTranstion from "../../screens/AccountScreens/CreateTransiton";
+import Settings from "../../screens/HomeScreens/SettingsScreen/Settings";
 
 
 export type AccountStackParamsList = {
@@ -20,7 +21,6 @@ export default function AccountsStackNavigator(): React.JSX.Element {
         <HomeStack.Navigator screenOptions={{headerShown: false}}>
             <HomeStack.Screen name="accounts" component={Accounts} />
             <HomeStack.Screen name="account-info" component={AccountInfo} />
-            {/* <HomeStack.Screen name="update-transition" component={UpdateTransition} /> */}
             <HomeStack.Screen name="create-transition" component={CreateTranstion} />
         </HomeStack.Navigator>
     )

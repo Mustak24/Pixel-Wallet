@@ -11,18 +11,18 @@ type BottomModalProps = {
     transparent?: boolean,
     style?: ViewStyle,
     bottomOpationStyle?: ViewStyle,
-    backgroundColor?: string,
+    backdropColor?: string,
     closeOnBack?: boolean,
     animationType?: "none" | "slide" | "fade",
     onClose?: () => void
 }
 
-export default function BottomModal({visible, setVisible, children, style, backgroundColor='rgba(0, 0, 0, 0.90)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}, onClose=()=>{}}: BottomModalProps): React.JSX.Element {
+export default function BottomModal({visible, setVisible, children, style, backdropColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}, onClose=()=>{}}: BottomModalProps): React.JSX.Element {
 
 
     return (
-        <Modal animationType={animationType} visible={visible} transparent={true} onRequestClose={() => {setVisible(!closeOnBack); onClose();}}>
-            <View style={[styles.root, {backgroundColor}]}>
+        <Modal backdropColor={backdropColor} animationType={animationType} visible={visible} onRequestClose={() => {setVisible(!closeOnBack); onClose();}}>
+            <View style={[styles.root]}>
                 <TouchableWithoutFeedback onPress={() => setVisible(false)} >
                     <View style={{width: '100%', flex: 1}}></View>
                 </TouchableWithoutFeedback>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         width: '100%',   
         height: '100%',
         flex: 1,
-        paddingInline: 2,
+        paddingInline: 2
     },
 
     modalContener: {

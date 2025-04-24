@@ -184,7 +184,7 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
             setVisible={setDescriptionModalOpen} 
             style={{paddingInline: 20}}
             actionButtons={[{title: 'Add', backgroundColor: 'rgb(25,200,150)', onPress: () => setDescriptionModalOpen(false)}]}
-            backgroundColor="rgba(0,0,0,0.8)"
+            backdropColor="rgba(0,0,0,0.8)"
         >
             <TextTheme style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 8}}>Add Description</TextTheme>
             <TextInput 

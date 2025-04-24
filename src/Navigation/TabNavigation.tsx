@@ -20,7 +20,8 @@ export default function TabNavigation(): React.JSX.Element {
     return (
         <Tab.Navigator
             initialRouteName="home-stack-navigator"
-            screenOptions={{ headerShown: false }}
+            screenOptions={{ headerShown: false, tabBarStyle:{display: 'none'}}}
+            
             tabBar={(props) => {
                 let routeName = getFocusedRouteNameFromRoute(props.state.routes[props.state.index]) ?? props.state.routes[props.state.index].name;
                 return tabBarRoutesName.includes(routeName) ? (

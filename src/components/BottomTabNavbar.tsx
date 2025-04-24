@@ -63,12 +63,12 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
     return isTabBarHide ? <></> : (<>
         <View style={[styles.center, {position: 'relative', backgroundColor: 'rgb(25,25,25)'}]}>
             <View style={[styles.navbarContener]}>
-                <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('home-stack-navigator')} >
+                <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('home-stack-navigator')} >
                     <MaterialIcons name="home" size={22} color={isActive('home-stack-navigator') ? 'royalblue' : 'white'} />
                     <Text style={[styles.navigatorBtn_text, {color: isActive('home-stack-navigator') ? 'royalblue' : 'white'}]}>Home</Text>
                 </AnimateButton>
 
-                <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('accounts-stack-navigator')}>
+                <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('accounts-stack-navigator')}>
                     <MaterialIcons name="account-balance-wallet" size={22} color={isActive('accounts-stack-navigator') ? 'royalblue' : 'white'} />
                     <Text style={[styles.navigatorBtn_text, {color: isActive('accounts-stack-navigator') ? 'royalblue' : 'white'}]}>Accounts</Text>
                 </AnimateButton>
@@ -135,7 +135,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
             }
 
             <View style={[styles.center, {width: '100%', position: 'absolute'}]}>
-                <AnimateButton style={styles.createBtn} 
+                <AnimateButton delay={10} style={styles.createBtn} 
                     onPress={handleMenu}
                 >
                     <Animated.View style={{transform: [{rotate: rotateMenuAnime.interpolate({inputRange: [0, 1], outputRange: ['0deg', '45deg']})}]}}>

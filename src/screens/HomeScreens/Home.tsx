@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState, createContext, Dispatch, SetStateAction } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
 import AnimateButton from "../../components/Buttons/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcons from 'react-native-vector-icons/Feather';
@@ -113,9 +113,9 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                             <Text style={{color: 'white', fontWeight: '900', fontSize: 16}}>{months[month]}, {year}</Text>
                         </AnimateButton>
 
-                        <View style={styles.topHeader_menu}>
-                            <MaterialIcons name="keyboard-arrow-down" color={'white'} size={24}/>
-                        </View>
+                        <TouchableOpacity onPress={() => navigation.navigate('settings')} style={styles.topHeader_menu}>
+                            <MaterialIcons name="settings" color={'white'} size={24}/>
+                        </TouchableOpacity>
                     </View>
                 </View>
 
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
         paddingInline: 20,
         height: 44,
         borderRadius: 100,
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: 'gray'
     },
 

@@ -10,17 +10,19 @@ type AnimateButtonProps = {
     scale?: number,
     onPress?: (event: GestureResponderEvent) => void,
     props?: PressableProps,
-    color?: string
+    color?: string,
+    delay?: number
 }
 
 
-export default function AnimateButton({children, style={}, duration=300, scale=10, onPress=()=>{}, props={}, title='Click', color='white'}: AnimateButtonProps ): React.JSX.Element {
+export default function AnimateButton({children, style={}, duration=300, scale=10, onPress=()=>{}, props={}, title='Click', color='white', delay=200}: AnimateButtonProps ): React.JSX.Element {
 
     const [pressPoints, setPressPoints] = useState<{x: number, y: number}>({x: -1, y: -1});
 
     const opacityAnime = useRef<Animated.Value>(new Animated.Value(.8)).current;
     const scaleAnime = useRef<Animated.Value>(new Animated.Value(0)).current;
     const button = useRef<View>(null);
+    const timeout = useRef<NodeJS.Timeout>(null);
 
     function animate(event: GestureResponderEvent): void{
         let {nativeEvent} = event;
@@ -34,7 +36,8 @@ export default function AnimateButton({children, style={}, duration=300, scale=1
             setPressPoints({x: pageX, y: pageY});
         });
 
-        return onPress(event);
+        if(timeout.current) clearTimeout(timeout.current);
+        timeout.current = setTimeout(() => onPress(event), delay);
     }
 
     useEffect(() => {

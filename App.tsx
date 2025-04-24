@@ -24,8 +24,8 @@ export default function App(): React.JSX.Element {
   return (
     <AppContextProvider>
       <NavigationContainer>
-        <View style={[style.center, style.width100, style.height100, {overflow: 'hidden'}]}>
-          <View style={{width: '100%', flex: 1}}>
+        <View style={[style.center, style.width100, style.height100]}>
+          <View style={{width: '100%', flex: 1, height: '100%'}}>
             <TabNavigation />
           </View>
         </View>
