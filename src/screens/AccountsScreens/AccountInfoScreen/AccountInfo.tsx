@@ -14,6 +14,7 @@ import { AccountStackParamsList } from '../../../Navigation/StackNavigation/Acco
 import AnimateButton from '../../../components/Buttons/AnimateButton';
 import UpdateAccountInfoModal from './UpdateAccountInfoModal';
 import DeleteAccountModal from './DeleteAccountModal';
+import HaveNoTransition from '../../../components/HaveNoTransition';
 
 
 type accountInfoCardType = {
@@ -194,6 +195,8 @@ function TransitionsRecords({account, month, setMonth, year, setYear, transition
             </View>
 
             <View>
+                {transitions.length == 0 ? <HaveNoTransition/> : null}
+
                 {
                     transitions.map(({id, mode, fromAccountId, amount, title, description, createOn, toAccountId}) => (
                         <TransitionCard

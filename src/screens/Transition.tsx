@@ -11,6 +11,7 @@ import TransitionModal from "../Database/Models/TransitionModal";
 import AccountModal from "../Database/Models/AccountModal";
 import { AppContext } from "../Contexts/App";
 import { TabParamsList } from "../Navigation/TabNavigation";
+import { useNavigation } from "@react-navigation/native";
 
 
 type transitionInfoType = {
@@ -51,7 +52,7 @@ const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 export default function Transition({route, navigation}: BottomTabScreenProps<TabParamsList, 'transition'>): React.JSX.Element {
 
-    const {accounts, setTotalBalance, setAccounts} = useContext(AppContext)
+    const {accounts, setTotalBalance, setAccounts, backgroundColor} = useContext(AppContext)
 
     const [amount, setAmount] = useState<number>(0)
     const [transitionMode, setTransitionMode] = useState<transitionMode>(route.params.mode);
@@ -67,7 +68,6 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
 
     const [isDescriptionModalOpen, setDescriptionModalOpen] = useState<boolean>(false);
     
-    const [paddingBottom, setPaddingBottom] = useState<number>(0) 
     const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expense' ? 1 : 2]
 
 
@@ -98,7 +98,6 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
             setDate(new Date().getDate())
             setHour(new Date().getHours())
             setMinute(new Date().getMinutes())
-            setPaddingBottom(0);
         })
         return unsubscribe;
     }, [navigation])
@@ -110,7 +109,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
 
     
     return (<>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={[styles.root, {paddingBottom}]}>
+        <KeyboardAvoidingView style={[styles.root, {backgroundColor}]}>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.topNav}>
                     <AnimateButton style={styles.topNav_closeBtn} onPress={() => navigation.navigate('home-stack-navigator')}>
@@ -145,8 +144,6 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
                         value={title}
                         style={styles.titleInput} 
                         placeholder={`${transitionMode[0].toLocaleUpperCase() + transitionMode.slice(1)} title`} 
-                        onFocus={() => setPaddingBottom(20)}
-                        onBlur={() => setPaddingBottom(0)}
                         onChangeText={setTitle}
                         />
                 </View>
@@ -232,7 +229,16 @@ type AmountBoxProps = {
 
 function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, setToAccount, fromAccount, toAccount}: AmountBoxProps){
 
+    const navigation = useNavigation();
+
     const [isOpenCal, setOpenCal] = useState<boolean>(true);
+
+    useEffect(() => {
+        let unsubscribe = navigation.addListener('focus', () => {
+            setOpenCal(true);
+        });
+        return unsubscribe;
+    }, [])
 
     return (
         <View style={{display: 'flex', width: '100%', alignItems: 'flex-start'}} >
@@ -252,7 +258,7 @@ function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, 
             <BottomModal 
                 visible={isOpenCal} 
                 setVisible={setOpenCal}
-                backgroundColor="rgba(0,0,0,.8)" 
+                backdropColor="rgba(0,0,0,.8)" 
                 style={{backgroundColor: 'black', paddingInline: 20}}
                 actionButtons={[
                     {
@@ -304,7 +310,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'black',
         width: '100%',
         height: '100%',
         paddingTop: 44,

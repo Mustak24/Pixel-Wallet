@@ -10,6 +10,8 @@ import FeatherIcons from 'react-native-vector-icons/Feather';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import BottomModal from "../../../components/Modal/BottomModal";
 import { AppStorage } from "../../../Database/Storage";
+import UpdateNameModal from "./UpdateNameModal";
+import DeleteAllData from "./DeleteAllDataModal";
 
 
 export default function Settings(): React.JSX.Element {
@@ -111,7 +113,7 @@ export default function Settings(): React.JSX.Element {
 
                 <Text style={{paddingLeft: 4, fontWeight: '900', fontSize: 20, marginTop: 24, color: 'rgb(250,50,100)'}}>Danger Zone</Text>
 
-                <Container style={{marginBlock: 14}} backgroundColor="rgb(250,50,100)">
+                <Container onPress={() => setDeleteDataModalVisible(true)} style={{marginBlock: 14}} backgroundColor="rgb(250,50,100)">
                     <View style={[style.flex, style.itemCenter, style.flexRow, {gap: 16}]}>
                         <FeatherIcons name="trash-2" size={26} color={'white'} />
                         <Text style={{fontWeight: '900', fontSize: 16, color: 'white'}}>Delete all Data</Text>
@@ -123,7 +125,7 @@ export default function Settings(): React.JSX.Element {
             </ScrollView>
 
             <UpdateNameModal visible={isUpdateNameModalVisible} setVisible={setUpdateNameModalVisible} onUpdate={setName} />
-
+            <DeleteAllData visible={isDeleteDataModalVisible} setVisible={setDeleteDataModalVisible} />
         </View>
     )
 }
@@ -146,56 +148,5 @@ function Container({children, backgroundColor='rgb(25,25,25)', style={}, onPress
         >
             {children}
         </AnimateButton>
-    )
-}
-
-
-
-
-
-
-type UpdateNameModalProps = {
-    visible: boolean,
-    setVisible: (vis: boolean) => void,
-    onUpdate: (name: string) => void,
-}
-
-function UpdateNameModal({visible, setVisible, onUpdate}: UpdateNameModalProps): React.JSX.Element {
-    
-    const {color} = useContext(AppContext);
-
-    const [name, setName] = useState<string>(AppStorage.getString('username') ?? 'Undefined');
-
-    function updateName() {
-        if(!name) return;
-        AppStorage.set('username', name)
-        onUpdate(name);
-        setVisible(false);
-        setName('');
-    }
-
-    return (
-        <BottomModal 
-            visible={visible} 
-            setVisible={setVisible}
-            actionButtons={[
-                {
-                    title: 'Save',
-                    backgroundColor: 'rgb(50,200,150)',
-                    onPress: updateName
-                }
-            ]}
-            style={{paddingInline: 20}}
-        >
-            <TextTheme style={{fontWeight: '900', fontSize: 14}}>Edit Name</TextTheme>
-            <TextInput  
-                value={name}
-                onChangeText={setName}
-                placeholder="Enter Name..."
-                style={{color, fontWeight: 900, fontSize: 28}}
-                autoCapitalize="sentences"
-                autoFocus={true}
-            />
-        </BottomModal>
     )
 }

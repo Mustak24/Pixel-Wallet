@@ -1,13 +1,14 @@
 
-import { Modal,  PressableProps, StyleSheet, TouchableHighlight, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
+import { Modal,  PressableProps, StyleSheet, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
 import FeatherIcons from 'react-native-vector-icons/Feather'
 import RoundedView from "../RoundedView";
+import { Text } from "react-native-gesture-handler";
 
 type BottomModalProps = {
     visible: boolean,
     setVisible: (vis: boolean) => void,
     children: React.ReactNode,
-    actionButtons?: [{title: string, onPress: (arg: PressableProps) => void, color?: string, backgroundColor?: string}],
+    actionButtons?: [{title: string, onPress: (arg: PressableProps) => void, color?: string, backgroundColor?: string, icon?: any}],
     transparent?: boolean,
     style?: ViewStyle,
     bottomOpationStyle?: ViewStyle,
@@ -36,16 +37,15 @@ export default function BottomModal({visible, setVisible, children, style, backd
                     
                     <View style={styles.actionsButtonsBox}>
                         {
-                            actionButtons?.map(({title, onPress, color='white', backgroundColor='black'}) => (
-                                <TouchableHighlight key={title} onPress={onPress}>
-                                    <RoundedView 
-                                        title={title} 
-                                        color={color} 
-                                        backgroundColor={backgroundColor} 
-                                        style={{borderWidth: 1, borderColor: 'gray'}} 
-                                        titleFrontSize={14} 
-                                    />
-                                </TouchableHighlight>
+                            actionButtons?.map(({title, onPress, color='white', backgroundColor='black', icon}) => (
+                                <TouchableOpacity key={title} onPress={onPress}>
+                                    <View 
+                                        style={{height: 44, borderRadius: 100, paddingInline: 20, display: 'flex', alignItems: 'center', flexDirection: 'row', gap: 10, backgroundColor}}
+                                    >
+                                        {icon ? icon : null}
+                                        <Text style={{color, fontWeight: '900', fontSize: 14}}>{title}</Text>
+                                    </View>
+                                </TouchableOpacity>
                             ))
                         }
                     </View>

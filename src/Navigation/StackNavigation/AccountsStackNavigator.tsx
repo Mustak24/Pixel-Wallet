@@ -1,10 +1,9 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import TransitionModal from "../../Database/Models/TransitionModal";
 import AccountModal from "../../Database/Models/AccountModal";
-import Accounts from "../../screens/AccountScreens/Accounts";
-import AccountInfo from "../../screens/AccountScreens/AccountInfoScreen/AccountInfo";
-import CreateTranstion from "../../screens/AccountScreens/CreateTransiton";
-import Settings from "../../screens/HomeScreens/SettingsScreen/Settings";
+import Accounts from "../../screens/AccountsScreens/Accounts";
+import AccountInfo from "../../screens/AccountsScreens/AccountInfoScreen/AccountInfo";
+import CreateTranstion from "../../screens/AccountsScreens/AccountInfoScreen/CreateTransiton";
 
 
 export type AccountStackParamsList = {

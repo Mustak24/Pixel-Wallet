@@ -12,6 +12,7 @@ import { AppStorage } from "../../Database/Storage";
 import TypingText from "../../components/Text/TypingText";
 import DateSelectorModal from "../../components/Modal/DateSelectorModal";
 import { HomeStackParamsList } from "../../Navigation/StackNavigation/HomeStackNavigator";
+import HaveNoTransition from "../../components/HaveNoTransition";
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const years = Array.from({length: new Date().getFullYear() - 2000 + 1}, (_, i) => i + 2000).reverse();
@@ -156,6 +157,8 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                     <View style={{borderBottomColor: 'gray', borderWidth: 1, width: '100%', marginBlock: 32, opacity: .5}}></View>
 
                     <View style={[styles.center, {gap: 20}]}>
+                        {transitions.length == 0 ? <HaveNoTransition/> : null}
+
                         {
                             transitions.map( ({id, mode, fromAccountId, amount, title, description, createOn, toAccountId}) => (
                                 <TransitionCard 
@@ -223,8 +226,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexDirection: 'row',
         width: '100%',
-        height: 50,
         paddingInline: 20,
+        paddingBottom: 14
     },
 
     topHeader_mounthSelector: {
