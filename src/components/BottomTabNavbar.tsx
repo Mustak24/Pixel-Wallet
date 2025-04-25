@@ -7,7 +7,7 @@ import FeatherIcons from 'react-native-vector-icons/Feather';
 import BottomModal from "./Modal/BottomModal";
 import Calculator from "./Calculator";
 import AccountModal from "../Database/Models/AccountModal";
-import { AppContext } from "../Contexts/App";
+import { AppContext } from "../Contexts/AppContext";
 
 
 export default function BottomTabNavbar({navigation, state}: BottomTabBarProps): React.JSX.Element {

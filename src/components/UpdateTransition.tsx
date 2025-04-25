@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 import BottomModal from "../components/Modal/BottomModal";
 import Calculator from "../components/Calculator";
 import AccountModal from "../Database/Models/AccountModal";
-import { AppContext } from "../Contexts/App";
+import { AppContext } from "../Contexts/AppContext";
 import { HomeStackParamsList } from "../Navigation/StackNavigation/HomeStackNavigator";
 import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../Navigation/StackNavigation/AccountsStackNavigator";

@@ -2,7 +2,7 @@ import { View } from "react-native";
 import style from '../../AppStyle'
 import FeatherIcons from 'react-native-vector-icons/Feather'
 import { useContext } from "react";
-import { AppContext } from "../Contexts/App";
+import { AppContext } from "../Contexts/AppContext";
 import { Text } from "react-native-gesture-handler";
 
 export default function HaveNoTransition(): React.JSX.Element {

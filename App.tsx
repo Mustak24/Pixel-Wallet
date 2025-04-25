@@ -1,10 +1,11 @@
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import AppContextProvider from "./src/Contexts/App";
+import AppContextProvider from "./src/Contexts/AppContext";
 import AccountModal from "./src/Database/Models/AccountModal";
 import style from './AppStyle'
 import TabNavigation from "./src/Navigation/TabNavigation";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { AppStorage } from "./src/Database/Storage";
 
 export default function App(): React.JSX.Element {
 
@@ -21,6 +22,8 @@ export default function App(): React.JSX.Element {
 
   if(!hasCashAccount) AccountModal.create({name: 'Cash', balance: 0, backgroundColor: 'rgb(25,200,150)'});
   if(!hasBankAccount) AccountModal.create({name: 'Bank', balance: 0, backgroundColor: 'rgb(130,100,255)'});
+  if(!AppStorage.contains('color')) AppStorage.set('color', 'white');
+  if(!AppStorage.contains('backgroundColor')) AppStorage.set('backgroundColor', 'black');
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>

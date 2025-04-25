@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState, createContext, Dispatch, SetStateAction } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, TouchableOpacity, View } from "react-native";
+import { useContext, useEffect, useState, Dispatch, SetStateAction } from "react";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import AnimateButton from "../../components/Buttons/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FeatherIcons from 'react-native-vector-icons/Feather';
@@ -7,7 +7,7 @@ import TransitionCard from "../../components/Cards/TransitionCard";
 import TransitionModal from "../../Database/Models/TransitionModal";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import BottomModal from "../../components/Modal/BottomModal";
-import { AppContext } from "../../Contexts/App";
+import { AppContext } from "../../Contexts/AppContext";
 import { AppStorage } from "../../Database/Storage";
 import TypingText from "../../components/Text/TypingText";
 import DateSelectorModal from "../../components/Modal/DateSelectorModal";
@@ -16,7 +16,6 @@ import HaveNoTransition from "../../components/HaveNoTransition";
 import AccountModal from "../../Database/Models/AccountModal";
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const years = Array.from({length: new Date().getFullYear() - 2000 + 1}, (_, i) => i + 2000).reverse();
 
 
 type AppContextType = {
@@ -42,11 +41,9 @@ const defaultState: AppContextType = {
 }
 
 
-export const HomeContext = createContext<AppContextType>(defaultState);
-
 export default function Home({ navigation }: BottomTabScreenProps<HomeStackParamsList, 'home'>): React.JSX.Element {
 
-    const {totalBalance, setTotalBalance} = useContext(AppContext);
+    const {totalBalance, setTotalBalance, username, setUsername} = useContext(AppContext);
 
     const [month, setMonth] = useState(new Date().getMonth());
     const [year, setYear] = useState(new Date().getFullYear());
@@ -56,8 +53,6 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
 
     const [isDateModalVisible, setDateModalVisible] = useState<boolean>(false);
     const [isNameModalVisible, setNameModalVisible] = useState<boolean>(!AppStorage.contains('username'));
-
-    const [username, setUsername] = useState<string>(isNameModalVisible ? "" : AppStorage.getString('username') ?? 'Hii');
 
     function handleScroll({nativeEvent}: {nativeEvent: {contentOffset: {x: number, y: number}}}): void{
         let isClose: boolean = (nativeEvent?.contentOffset?.y < 55);
@@ -88,16 +83,8 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
         setTotalBalance(AccountModal.getTotalBalance());
     }, [month, year]);
 
-
-    const states: AppContextType = {
-        month, setMonth,
-        year, setYear,
-        transitions, setTransitions,
-        transitionsRecord, setTransitionsRecord
-    }
-    
     return (
-        <HomeContext.Provider value={states}>
+        <>
             <View style={styles.root}>
                 <View style={styles.topHeader}>
                     <View style={{display: 'flex', flexDirection: isScrollCloseTop ? 'row' : 'column'}}>
@@ -202,7 +189,7 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                     />
                 </BottomModal>
             </View>
-        </HomeContext.Provider>
+        </>
     )
 }
 

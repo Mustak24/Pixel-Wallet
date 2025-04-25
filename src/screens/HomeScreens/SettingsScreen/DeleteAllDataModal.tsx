@@ -3,7 +3,7 @@ import BottomModal from "../../../components/Modal/BottomModal";
 import { Text, TextInput } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useState } from "react";
-import { AppContext } from "../../../Contexts/App";
+import { AppContext } from "../../../Contexts/AppContext";
 import { AppStorage } from "../../../Database/Storage";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import AccountModal from "../../../Database/Models/AccountModal";

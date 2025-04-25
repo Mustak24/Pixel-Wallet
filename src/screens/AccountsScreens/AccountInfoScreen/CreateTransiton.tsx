@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
 import AccountModal from "../../../Database/Models/AccountModal";
 import style from '../../../../AppStyle'
-import { AppContext, months } from "../../../Contexts/App";
+import { AppContext, months } from "../../../Contexts/AppContext";
 import { ScrollView, Text, TextInput } from "react-native-gesture-handler";
 import AnimateButton from "../../../components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather'

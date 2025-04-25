@@ -1,5 +1,6 @@
 import { createContext, Dispatch, SetStateAction, useEffect, useState } from "react"
 import AccountModal from "../Database/Models/AccountModal";
+import { AppStorage } from "../Database/Storage";
 
 type AppContextType = {
     totalBalance: number,
@@ -14,8 +15,8 @@ type AppContextType = {
     backgroundColor: string,
     setBackgroundColor: Dispatch<SetStateAction<string>>,
 
-    isTabBarHide: boolean,
-    setTabBarHide: Dispatch<SetStateAction<boolean>>,
+    username: string,
+    setUsername: Dispatch<SetStateAction<string>>,
 }
 
 
@@ -24,7 +25,7 @@ const defaultState = {
     accounts: [], setAccounts: ()=>{},
     color: 'white', setColor: ()=>{},
     backgroundColor: 'black', setBackgroundColor: ()=>{},
-    isTabBarHide: false, setTabBarHide: ()=>{}
+    username: 'Undefinde', setUsername: ()=>{}
 }
 
 
@@ -36,16 +37,16 @@ export default function AppContextProvider({children}: {children: React.ReactNod
 
     const [totalBalance, setTotalBalance] = useState<number>(AccountModal.getTotalBalance());
     const [accounts, setAccounts] = useState<AccountModal[]>(AccountModal.getAll());
-    const [color, setColor] = useState<string>('white');
-    const [backgroundColor, setBackgroundColor] = useState<string>('black');
-    const [isTabBarHide, setTabBarHide] = useState<boolean>(false);
+    const [color, setColor] = useState<string>(AppStorage.getString('color') ?? 'white');
+    const [backgroundColor, setBackgroundColor] = useState<string>(AppStorage.getString('backgroundColor') ?? 'black');
+    const [username, setUsername] = useState<string>(AppStorage.getString('username') ?? 'Undefinde');
 
     const states: AppContextType = {
         totalBalance, setTotalBalance, 
         accounts, setAccounts,
         color, setColor,
         backgroundColor, setBackgroundColor,
-        isTabBarHide, setTabBarHide
+        username, setUsername
     }
 
     return <AppContext.Provider value={states}>

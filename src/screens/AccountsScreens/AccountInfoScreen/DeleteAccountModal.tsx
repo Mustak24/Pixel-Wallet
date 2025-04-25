@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useState } from "react";
-import { AppContext } from "../../../Contexts/App";
+import { AppContext } from "../../../Contexts/AppContext";
 import AccountModal from "../../../Database/Models/AccountModal";
 import BottomModal from "../../../components/Modal/BottomModal";
 import { View } from "react-native";

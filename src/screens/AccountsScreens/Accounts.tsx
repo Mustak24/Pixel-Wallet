@@ -3,7 +3,7 @@ import TypingText from "../../components/Text/TypingText";
 import AccountModal from "../../Database/Models/AccountModal";
 import AccountCard from "../../components/Cards/AccountCard";
 import { useContext } from "react";
-import { AppContext } from "../../Contexts/App";
+import { AppContext } from "../../Contexts/AppContext";
 import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../../Navigation/StackNavigation/AccountsStackNavigator";
 

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useContext, useState } from "react";
-import { AppContext } from "../../../Contexts/App";
+import { AppContext } from "../../../Contexts/AppContext";
 import AccountModal from "../../../Database/Models/AccountModal";
 import BottomModal from "../../../components/Modal/BottomModal";
 import { View, Text, TextInput, ScrollView, Pressable } from "react-native";

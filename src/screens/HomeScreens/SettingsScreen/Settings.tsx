@@ -4,7 +4,7 @@ import { ScrollView, Text, TextInput } from "react-native-gesture-handler";
 import AnimateButton from "../../../components/Buttons/AnimateButton";
 import style from '../../../../AppStyle'
 import { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../../../Contexts/App";
+import { AppContext } from "../../../Contexts/AppContext";
 import { useNavigation } from "@react-navigation/native";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
@@ -15,11 +15,9 @@ import DeleteAllData from "./DeleteAllDataModal";
 
 
 export default function Settings(): React.JSX.Element {
-    const {color, backgroundColor} = useContext(AppContext);
+    const {color, backgroundColor, username} = useContext(AppContext);
 
     const navigation = useNavigation();
-
-    const [name, setName] = useState(AppStorage.getString('username') ?? 'Undefined');
 
     const [isUpdateNameModalVisible, setUpdateNameModalVisible] = useState<boolean>(false);
     const [isDeleteDataModalVisible, setDeleteDataModalVisible] = useState<boolean>(false);
@@ -68,7 +66,7 @@ export default function Settings(): React.JSX.Element {
                     
                     <View style={[style.flex, style.itemCenter, style.flexRow, {gap: 16, marginTop: 16}]}>
                         <FeatherIcons name="user" size={26} color={color} />
-                        <TextTheme style={{fontWeight: '900', fontSize: 16}}>{name}</TextTheme>
+                        <TextTheme style={{fontWeight: '900', fontSize: 16}}>{username}</TextTheme>
                     </View>
                 </Container>
 
@@ -124,7 +122,7 @@ export default function Settings(): React.JSX.Element {
                 <View style={{height: 150}}></View>
             </ScrollView>
 
-            <UpdateNameModal visible={isUpdateNameModalVisible} setVisible={setUpdateNameModalVisible} onUpdate={setName} />
+            <UpdateNameModal visible={isUpdateNameModalVisible} setVisible={setUpdateNameModalVisible} />
             <DeleteAllData visible={isDeleteDataModalVisible} setVisible={setDeleteDataModalVisible} />
         </View>
     )

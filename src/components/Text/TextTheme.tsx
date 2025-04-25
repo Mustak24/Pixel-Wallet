@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Text, TextProps } from "react-native";
-import { AppContext } from "../../Contexts/App";
+import { AppContext } from "../../Contexts/AppContext";
 
 
 export default function TextTheme({style, children, numberOfLines}: TextProps): React.JSX.Element {
