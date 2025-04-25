@@ -8,7 +8,10 @@ type Props = {accounts: AccountModal[], useAccount: AccountModal, setUseAccount:
 
 export default function AccountSelector({accounts, useAccount, setUseAccount, title}: Props) {
     
-    const [selAcc, setSelAcc] = useState(accounts.indexOf(useAccount))
+    let index = 0;
+    for(let i=0; i<accounts.length; i++) if(accounts[i].id == useAccount.id){ index = i; break; }
+
+    const [selAcc, setSelAcc] = useState<number>(index)
 
     return (
         <View style={{display: 'flex', width: '100%', alignItems: 'flex-start'}} >
