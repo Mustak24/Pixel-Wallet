@@ -4,6 +4,7 @@ import AccountModal from "../../Database/Models/AccountModal";
 import Accounts from "../../screens/AccountsScreens/Accounts";
 import AccountInfo from "../../screens/AccountsScreens/AccountInfoScreen/AccountInfo";
 import CreateTranstion from "../../screens/AccountsScreens/AccountInfoScreen/CreateTransiton";
+import UpdateTransition from "../../components/UpdateTransition";
 
 
 export type AccountStackParamsList = {
@@ -13,14 +14,15 @@ export type AccountStackParamsList = {
     'create-transition': {account: AccountModal, mode: 'income' | 'expense'}
 }
 
-const HomeStack = createStackNavigator<AccountStackParamsList>();
+const AccountsStack = createStackNavigator<AccountStackParamsList>();
 
 export default function AccountsStackNavigator(): React.JSX.Element {
     return (
-        <HomeStack.Navigator screenOptions={{headerShown: false}}>
-            <HomeStack.Screen name="accounts" component={Accounts} />
-            <HomeStack.Screen name="account-info" component={AccountInfo} />
-            <HomeStack.Screen name="create-transition" component={CreateTranstion} />
-        </HomeStack.Navigator>
+        <AccountsStack.Navigator screenOptions={{headerShown: false}}>
+            <AccountsStack.Screen name="accounts" component={Accounts} />
+            <AccountsStack.Screen name="account-info" component={AccountInfo} />
+            <AccountsStack.Screen name="create-transition" component={CreateTranstion} />
+            <AccountsStack.Screen name="update-transition" component={UpdateTransition} />
+        </AccountsStack.Navigator>
     )
 }

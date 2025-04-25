@@ -4,6 +4,7 @@ import AppContextProvider from "./src/Contexts/App";
 import AccountModal from "./src/Database/Models/AccountModal";
 import style from './AppStyle'
 import TabNavigation from "./src/Navigation/TabNavigation";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App(): React.JSX.Element {
 
@@ -22,15 +23,17 @@ export default function App(): React.JSX.Element {
   if(!hasBankAccount) AccountModal.create({name: 'Bank', balance: 0, backgroundColor: 'rgb(130,100,255)'});
 
   return (
-    <AppContextProvider>
-      <NavigationContainer>
-        <View style={[style.center, style.width100, style.height100]}>
-          <View style={{width: '100%', flex: 1, height: '100%'}}>
-            <TabNavigation />
+    <GestureHandlerRootView style={{flex: 1}}>
+      <AppContextProvider>
+        <NavigationContainer>
+          <View style={[style.center, style.width100, style.height100]}>
+            <View style={{width: '100%', flex: 1, height: '100%'}}>
+              <TabNavigation />
+            </View>
           </View>
-        </View>
-      </NavigationContainer>
-    </AppContextProvider>
+        </NavigationContainer>
+      </AppContextProvider>
+    </GestureHandlerRootView>
   )
 }
 

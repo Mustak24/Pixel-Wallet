@@ -40,7 +40,7 @@ export default function BottomModal({visible, setVisible, children, style, backd
                             actionButtons?.map(({title, onPress, color='white', backgroundColor='black', icon}) => (
                                 <TouchableOpacity key={title} onPress={onPress}>
                                     <View 
-                                        style={{height: 44, borderRadius: 100, paddingInline: 20, display: 'flex', alignItems: 'center', flexDirection: 'row', gap: 10, backgroundColor}}
+                                        style={{height: 44, borderRadius: 100, paddingInline: 20, display: 'flex', alignItems: 'center', flexDirection: 'row', gap: 10, backgroundColor, overflow: 'hidden'}}
                                     >
                                         {icon ? icon : null}
                                         <Text style={{color, fontWeight: '900', fontSize: 14}}>{title}</Text>

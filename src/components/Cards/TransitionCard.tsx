@@ -1,12 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import AccountModal from "../../Database/Models/AccountModal";
-import TransitionModal, { createOnType } from "../../Database/Models/TransitionModal";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { useContext, useState } from "react";
-import BottomModal from "../Modal/BottomModal";
-import { AppContext } from "../../Contexts/App";
-import { HomeContext } from "../../screens/HomeScreens/Home";
+import { createOnType } from "../../Database/Models/TransitionModal";
+import AnimateButton from "../Buttons/AnimateButton";
 
 
 type TransitionCardProps = {
@@ -18,32 +14,17 @@ type TransitionCardProps = {
     toAccountId: string
     createOn: createOnType
     amount: number,
+    onPress?: () => void
 }
 const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export default function TransitionCard({id, mode, title, description, fromAccountId, toAccountId, createOn, amount}: TransitionCardProps): React.JSX.Element {
-
-    const {setTotalBalance, setAccounts} = useContext(AppContext);
-    const {month, year, setTransitions, setTransitionsRecord} = useContext(HomeContext)
-
-    const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+export default function TransitionCard({id, mode, title, description, fromAccountId, toAccountId, createOn, amount, onPress=()=>{}}: TransitionCardProps): React.JSX.Element {
 
     const color = mode == 'income' ? 'rgb(25,200,150)' : mode == 'expense' ? 'gray' : 'rgb(130,100,255)';
     const fromAccountName = AccountModal.findById(fromAccountId)?.name;
     const toAccountName = AccountModal.findById(toAccountId)?.name;
 
-    const date: string = `${months[createOn.month]} ${createOn.date}`;
-
-    function deleteTransition(){
-        if(!TransitionModal.deleteById(id)) return;
-        
-        setDeleteModalOpen(false);
-        setTransitions(TransitionModal.findByDate(month, year));
-        setTransitionsRecord(TransitionModal.getRecordByDate(month, year));
-        setTotalBalance(AccountModal.getTotalBalance());
-        setAccounts(AccountModal.getAll());
-    }
-    
+    const date: string = `${months[createOn.month]} ${createOn.date}`;    
 
     return (
         <View style={styles.root}>
@@ -55,7 +36,8 @@ export default function TransitionCard({id, mode, title, description, fromAccoun
                         <Text> INR</Text>
                 </Text>
             </View>
-            <View style={[styles.card]}>
+
+            <AnimateButton onPress={onPress} scale={15} style={styles.card}>
                 <View style={styles.mode}>
                     <Text style={{color: 'white', fontSize: 14, fontWeight: 900}}>{fromAccountName || ''}</Text>
                     {
@@ -80,24 +62,7 @@ export default function TransitionCard({id, mode, title, description, fromAccoun
                         <Text> INR</Text>
                     </Text>
                 </View>
-
-                <TouchableOpacity 
-                    onPress={() => setDeleteModalOpen(true)}
-                    style={{backgroundColor: 'white', width: 44, aspectRatio: 1, borderRadius: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 8, right: 8}}
-                >
-                    <MaterialIcons name="delete-outline" size={22} color={'crimson'} />
-                </TouchableOpacity>
-
-            </View>
-
-            <BottomModal 
-                visible={isDeleteModalOpen} 
-                setVisible={setDeleteModalOpen} 
-                actionButtons={[{title: 'Delete', onPress: deleteTransition, backgroundColor: 'crimson'}]} 
-            >
-                <Text style={{color: 'white', paddingLeft: 20}}>Are you sure you want to delete this transitions?</Text>
-            </BottomModal>
-
+            </AnimateButton>
         </View>
     )
 }

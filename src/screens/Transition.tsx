@@ -12,6 +12,7 @@ import AccountModal from "../Database/Models/AccountModal";
 import { AppContext } from "../Contexts/App";
 import { TabParamsList } from "../Navigation/TabNavigation";
 import { useNavigation } from "@react-navigation/native";
+import AccountSelector from "../components/AccountSelector";
 
 
 type transitionInfoType = {
@@ -52,7 +53,7 @@ const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 export default function Transition({route, navigation}: BottomTabScreenProps<TabParamsList, 'transition'>): React.JSX.Element {
 
-    const {accounts, setTotalBalance, setAccounts, backgroundColor} = useContext(AppContext)
+    const {accounts, setTotalBalance, setAccounts, backgroundColor} = useContext(AppContext);
 
     const [amount, setAmount] = useState<number>(0)
     const [transitionMode, setTransitionMode] = useState<transitionMode>(route.params.mode);
@@ -73,6 +74,8 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
 
 
     function createTransiton() {
+        if(!fromAccount) return;
+
         let tra = TransitionModal.create({
             title, description, fromAccountId: fromAccount.id, mode: transitionMode, amount, 
             createOn: {year, month, date, hour, minute}, 
@@ -88,8 +91,6 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
 
     useEffect(() => {
         let unsubscribe = navigation.addListener('focus', () => {
-            setFromAccount(accounts[0]);
-            setToAccount(accounts[0]);
             setAmount(0);
             setTitle('');
             setDescription('');
@@ -109,7 +110,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
 
     
     return (<>
-        <KeyboardAvoidingView style={[styles.root, {backgroundColor}]}>
+        <KeyboardAvoidingView  behavior='padding' style={[styles.root, {backgroundColor}]}>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.topNav}>
                     <AnimateButton style={styles.topNav_closeBtn} onPress={() => navigation.navigate('home-stack-navigator')}>
@@ -268,38 +269,10 @@ function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, 
                     }
                 ]}
             >
-                <AccountSelector accounts={accounts} useAccount={fromAccount} setUseAccount={setFromAccount} title={heading}/>
+                <AccountSelector accounts={accounts} useAccount={fromAccount} setUseAccount={setFromAccount} title={heading} />
 
                 <Calculator onResult={setAmount} value={amount}/>
             </BottomModal>
-        </View>
-    )
-}
-
-
-function AccountSelector({accounts, useAccount, setUseAccount, title}: {accounts: AccountModal[], useAccount: AccountModal, setUseAccount: (acc: AccountModal) => void, title: string}) {
-    
-    return (
-        <View style={{display: 'flex', width: '100%', alignItems: 'flex-start'}} >
-            <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 20}}>{title}</Text>
-
-            <ScrollView style={{width: '100%', height: 50, marginBlock: 16}} horizontal={true} showsHorizontalScrollIndicator={false} >   
-                {
-                    accounts.map((acc) => {
-                        return (
-                            <Pressable key={acc.name} onPress={() => setUseAccount(acc)} style={{marginLeft: 16}}>
-                                <RoundedView  
-                                    key={acc.id} 
-                                    title={acc.name} 
-                                    color="white" 
-                                    backgroundColor={acc.id == useAccount.id ? acc.backgroundColor : 'transparent'}
-                                    style={{borderWidth: 1, borderColor: 'gray'}} 
-                                />
-                            </Pressable>
-                        )
-                    })
-                }
-            </ScrollView>
         </View>
     )
 }

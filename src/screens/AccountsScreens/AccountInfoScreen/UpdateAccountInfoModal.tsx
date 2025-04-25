@@ -65,7 +65,7 @@ export default function UpdateAccountInfoModal({visible, setVisible, account, se
     }
 
     return (
-        <BottomModal backgroundColor="rgba(0,0,0,.94)" visible={visible} setVisible={setVisible} actionButtons={[{title: 'Save', onPress: update, backgroundColor: 'rgb(25, 200, 150)'}]}  >
+        <BottomModal backdropColor="rgba(0,0,0,.94)" visible={visible} setVisible={setVisible} actionButtons={[{title: 'Save', onPress: update, backgroundColor: 'rgb(25, 200, 150)'}]}  >
             <View style={{paddingBlock: 10}}>
                 <View style={{display: 'flex', paddingInline: 20, width: '100%'}}>
                     <Text style={{color: 'white', fontSize: 18, fontWeight: 900}}>Account Options</Text>

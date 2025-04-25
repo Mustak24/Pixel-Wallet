@@ -28,21 +28,19 @@ export default function DeleteAllData({visible, setVisible}: PropsType): React.J
 
 
     function deleteAccount(){
-        try{
-            let accounts = AccountModal.getAll();
-            for(let acc of accounts) {
-                if(acc.name == 'Cash' || acc.name == 'Bank') continue;
-                AccountModal.deleteById(acc.id);
-            }
-            
-            let transitions = TransitionModal.getAll();
-            for(let tra of transitions) {
-                TransitionModal.deleteById(tra.id);
-            }
+        if(username != textValue) return;
 
+        try{
+            AccountModal.getAll().forEach(acc => AccountModal.deleteById(acc.id));
+            
+            TransitionModal.getAll().forEach(tra => TransitionModal.deleteById(tra.id));
+
+            AccountModal.create({name: 'Cash', balance: 0, backgroundColor: 'rgb(25,200,150)'});
+            AccountModal.create({name: 'Bank', balance: 0, backgroundColor: 'rgb(130,100,255)'});
+            
             setAccounts(AccountModal.getAll());
             setTotalBalance(AccountModal.getTotalBalance());
-                
+
             navigation.goBack();
         } catch(e) {
             console.log(e);

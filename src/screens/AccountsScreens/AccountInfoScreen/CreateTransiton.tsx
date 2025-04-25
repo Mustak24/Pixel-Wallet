@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { useContext, useEffect, useState } from "react";
-import { KeyboardAvoidingView, Pressable, View } from "react-native";
+import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
 import AccountModal from "../../../Database/Models/AccountModal";
 import style from '../../../../AppStyle'
 import { AppContext, months } from "../../../Contexts/App";
@@ -56,7 +56,9 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
     const [isDescriptionModalOpen ,setDescriptionModalOpen] = useState<boolean>(false);
     const [isCalOpen, setCalOpen] = useState<boolean>(true);
 
-    function createTransition(){
+    
+    function createTransition(){ 
+
         let tra = TransitionModal.create({
             title, description, fromAccountId: account.id, mode: transitionMode, amount, 
             createOn: {year, month, date, hour, minute}, 
@@ -82,6 +84,7 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
 
     return (<>
         <KeyboardAvoidingView 
+            behavior='padding'
             style={[style.flex, style.itemCenter, style.justifyBetween, style.width100, style.height100, {backgroundColor, paddingTop: 44}]}
         >
             <ScrollView 

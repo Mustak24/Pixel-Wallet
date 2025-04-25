@@ -9,12 +9,13 @@ import TransitionModal from '../../../Database/Models/TransitionModal';
 import AccountModal from '../../../Database/Models/AccountModal';
 import DateSelectorModal from '../../../components/Modal/DateSelectorModal';
 import TransitionCard from '../../../components/Cards/TransitionCard';
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { AccountStackParamsList } from '../../../Navigation/StackNavigation/AccountsStackNavigator';
 import AnimateButton from '../../../components/Buttons/AnimateButton';
 import UpdateAccountInfoModal from './UpdateAccountInfoModal';
 import DeleteAccountModal from './DeleteAccountModal';
 import HaveNoTransition from '../../../components/HaveNoTransition';
+import { useNavigation } from '@react-navigation/native';
 
 
 type accountInfoCardType = {
@@ -27,12 +28,13 @@ type accountInfoCardType = {
 export default function AccountInfo({route, navigation}: StackScreenProps<AccountStackParamsList, 'account-info'>): React.JSX.Element {
     const {color, backgroundColor} = useContext(AppContext);
 
-    const {account} = route.params;
-    const transitionsRecord: {income: TransitionModal[], expense: TransitionModal[]} = account.getTransitionsRecord();
+    const {account: acc} = route.params;
+    const transitionsRecord: {income: TransitionModal[], expense: TransitionModal[]} = acc.getTransitionsRecord();
   
     const [isDeleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
     const [isUpdateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
-    
+
+    const [account, setAccount] = useState(acc);
     const [transitions, setTransitions] = useState<TransitionModal[]>([])
     const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState(new Date().getMonth());
@@ -45,6 +47,7 @@ export default function AccountInfo({route, navigation}: StackScreenProps<Accoun
 
     useEffect(() => {
         let unsubscribe = navigation.addListener('focus', () => {
+            setAccount(AccountModal.findById(acc.id) ?? acc);
             setTransitions(TransitionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id || tra.toAccountId == account.id))
         });
         return unsubscribe
@@ -155,6 +158,7 @@ function TransitionsRecords({account, month, setMonth, year, setYear, transition
     const {color} = useContext(AppContext);
 
     const [isDateModalVisible, setDateModalVisible] = useState<boolean>(false)
+    const navigation = useNavigation<StackNavigationProp<AccountStackParamsList, 'account-info'>>();
 
     useEffect(() => {
         setTransitions(TransitionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id || tra.toAccountId == account.id));
@@ -198,17 +202,18 @@ function TransitionsRecords({account, month, setMonth, year, setYear, transition
                 {transitions.length == 0 ? <HaveNoTransition/> : null}
 
                 {
-                    transitions.map(({id, mode, fromAccountId, amount, title, description, createOn, toAccountId}) => (
-                        <TransitionCard
-                            key={id} 
-                            id={id} 
-                            mode={mode} 
-                            fromAccountId={fromAccountId} 
-                            toAccountId={toAccountId}
-                            amount={amount} 
-                            title={title} 
-                            description={description} 
-                            createOn={createOn} 
+                   transitions.map( (transition) => (
+                        <TransitionCard 
+                            key={transition.id} 
+                            id={transition.id} 
+                            mode={transition.mode} 
+                            fromAccountId={transition.fromAccountId} 
+                            toAccountId={transition.toAccountId}
+                            amount={transition.amount} 
+                            title={transition.title} 
+                            description={transition.description} 
+                            createOn={transition.createOn} 
+                            onPress={() => {navigation.push('update-transition', {transition})}}
                         />
                     ))
                 }

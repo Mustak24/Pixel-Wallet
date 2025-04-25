@@ -46,6 +46,25 @@ export default class TransitionModal{
         this.toAccountId = toAccountId;
     }
 
+    save(): boolean {
+        let keys: string[] = Storage.getAllKeys();
+        
+        for(let key of keys) {
+            if(key == this.id) {
+                Storage.set(this.id, JSON.stringify(this));
+                return true;
+            }
+        }
+        return false;
+    }   
+    // updateInfo({title, description, createOn}: {title: string, description: string, createOn: createOnType}): void {
+    //     this.title = title;
+    //     this.description = description;
+    //     this.createOn = createOn;
+
+    //     Storage.set(this.id, se)
+    // }
+
     static createId(): string {
         let keys: string[] = Storage.getAllKeys();
         

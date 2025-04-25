@@ -53,7 +53,7 @@ export default function DateSelectorModal({visible, setVisible, month, setMonth,
                             }, 0);
                         }
                     }}
-                    >
+                >
                     {
                         months.map((monthName, index) => (
                             <AnimateButton key={index} onPress={() => {setSelMonth(index);}} style={{borderRadius: 100, backgroundColor: selMonth == index ? 'rgb(25,200,150)' : 'gray', height: 44, display: 'flex', justifyContent: 'center', alignItems: 'center', marginInline: 10, width: 60}}>

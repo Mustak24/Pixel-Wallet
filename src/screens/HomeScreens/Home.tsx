@@ -13,6 +13,7 @@ import TypingText from "../../components/Text/TypingText";
 import DateSelectorModal from "../../components/Modal/DateSelectorModal";
 import { HomeStackParamsList } from "../../Navigation/StackNavigation/HomeStackNavigator";
 import HaveNoTransition from "../../components/HaveNoTransition";
+import AccountModal from "../../Database/Models/AccountModal";
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const years = Array.from({length: new Date().getFullYear() - 2000 + 1}, (_, i) => i + 2000).reverse();
@@ -45,7 +46,7 @@ export const HomeContext = createContext<AppContextType>(defaultState);
 
 export default function Home({ navigation }: BottomTabScreenProps<HomeStackParamsList, 'home'>): React.JSX.Element {
 
-    const {totalBalance} = useContext(AppContext);
+    const {totalBalance, setTotalBalance} = useContext(AppContext);
 
     const [month, setMonth] = useState(new Date().getMonth());
     const [year, setYear] = useState(new Date().getFullYear());
@@ -73,17 +74,18 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            setScrollCloseTop(true);
+            setScrollCloseTop(true); 
             setTransitions(TransitionModal.findByDate(month, year));
             setTransitionsRecord(TransitionModal.getRecordByDate(month, year));
         });
 
         return unsubscribe;
-    }, [navigation]);
+    }, []);
 
     useEffect(() => {
         setTransitions(TransitionModal.findByDate(month, year));
         setTransitionsRecord(TransitionModal.getRecordByDate(month, year));
+        setTotalBalance(AccountModal.getTotalBalance());
     }, [month, year]);
 
 
@@ -160,18 +162,19 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                         {transitions.length == 0 ? <HaveNoTransition/> : null}
 
                         {
-                            transitions.map( ({id, mode, fromAccountId, amount, title, description, createOn, toAccountId}) => (
-                                <TransitionCard 
-                                    key={id} 
-                                    id={id} 
-                                    mode={mode} 
-                                    fromAccountId={fromAccountId} 
-                                    toAccountId={toAccountId}
-                                    amount={amount} 
-                                    title={title} 
-                                    description={description} 
-                                    createOn={createOn} 
-                                />
+                            transitions.map( (transition) => (
+                                    <TransitionCard 
+                                        key={transition.id} 
+                                        id={transition.id} 
+                                        mode={transition.mode} 
+                                        fromAccountId={transition.fromAccountId} 
+                                        toAccountId={transition.toAccountId}
+                                        amount={transition.amount} 
+                                        title={transition.title} 
+                                        description={transition.description} 
+                                        createOn={transition.createOn} 
+                                        onPress={() => navigation.navigate('update-transition', {transition})}
+                                    />
                             ))
                         }
                     </View>
