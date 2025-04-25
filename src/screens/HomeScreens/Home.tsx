@@ -146,7 +146,7 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                     <View style={{borderBottomColor: 'gray', borderWidth: 1, width: '100%', marginBlock: 32, opacity: .5}}></View>
 
                     <View style={[styles.center, {gap: 20}]}>
-                        {transitions.length == 0 ? <HaveNoTransition/> : null}
+                        {transitions.length == 0 ? <HaveNoTransition text="You don't have any transition, You can add by tapping '+' button" /> : null}
 
                         {
                             transitions.map( (transition) => (

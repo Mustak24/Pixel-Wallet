@@ -62,7 +62,7 @@ export default function DeleteAllData({visible, setVisible}: PropsType): React.J
         >
             <View style={{paddingInline: 20}}>
                 <Text style={{fontSize: 16, fontWeight: '900', color: 'rgb(250,60,60)'}}>To confirm, type "{username}"</Text>
-                <Text style={{opacity: 0.6, color: 'rgb(250,60,60)'}}>Once you delete a Data, there is no going back.</Text>
+                <Text style={{opacity: 0.8, color: 'rgb(250,60,60)'}}>Once you delete a Data, there is no going back.</Text>
 
                 <TextInput 
                     value={textValue} 

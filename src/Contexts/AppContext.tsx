@@ -25,7 +25,7 @@ const defaultState = {
     accounts: [], setAccounts: ()=>{},
     color: 'white', setColor: ()=>{},
     backgroundColor: 'black', setBackgroundColor: ()=>{},
-    username: 'Undefinde', setUsername: ()=>{}
+    username: 'Guest', setUsername: ()=>{}
 }
 
 
@@ -39,7 +39,7 @@ export default function AppContextProvider({children}: {children: React.ReactNod
     const [accounts, setAccounts] = useState<AccountModal[]>(AccountModal.getAll());
     const [color, setColor] = useState<string>(AppStorage.getString('color') ?? 'white');
     const [backgroundColor, setBackgroundColor] = useState<string>(AppStorage.getString('backgroundColor') ?? 'black');
-    const [username, setUsername] = useState<string>(AppStorage.getString('username') ?? 'Undefinde');
+    const [username, setUsername] = useState<string>(AppStorage.getString('username') ?? 'Guest');
 
     const states: AppContextType = {
         totalBalance, setTotalBalance, 
