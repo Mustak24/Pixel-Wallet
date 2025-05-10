@@ -105,6 +105,10 @@ class AccountModal {
     }
 
     static create({name, balance, backgroundColor}: CreateProps): AccountModal {
+
+        let accs: AccountModal[] = AccountModal.getAll();
+        for(let acc of accs) if(acc.name == name) return acc;
+
         let id: string = AccountModal.createId();
         let createOn = Date.now();
         let acc: AccountModal = new AccountModal({name, balance, backgroundColor, id, createOn});

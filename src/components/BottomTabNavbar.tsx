@@ -11,8 +11,6 @@ import { AppContext } from "../Contexts/AppContext";
 
 
 export default function BottomTabNavbar({navigation, state}: BottomTabBarProps): React.JSX.Element {
-    
-    const {isTabBarHide} = useContext(AppContext);
 
     const currentRouteName = state.routes[state.index].name;
     const isActive = (route: string) => route === currentRouteName;
@@ -60,7 +58,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
         if(currentRouteName == 'home-stack-navigator') handleMenuAnime(isMenuOpen);
     }, [isMenuOpen])
 
-    return isTabBarHide ? <></> : (<>
+    return (<>
         <View style={[styles.center, {position: 'relative', backgroundColor: 'rgb(25,25,25)'}]}>
             <View style={[styles.navbarContener]}>
                 <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('home-stack-navigator')} >

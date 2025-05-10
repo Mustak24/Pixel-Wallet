@@ -1,15 +1,13 @@
-import { Animated, Linking, Modal, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Animated, Linking, TouchableOpacity, View, ViewStyle, Share } from "react-native";
 import TextTheme from "../../../components/Text/TextTheme";
-import { ScrollView, Text, TextInput } from "react-native-gesture-handler";
+import { ScrollView, Text } from "react-native-gesture-handler";
 import AnimateButton from "../../../components/Buttons/AnimateButton";
 import style from '../../../../AppStyle'
 import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../../../Contexts/AppContext";
 import { useNavigation } from "@react-navigation/native";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import AntDesignIcons from 'react-native-vector-icons/AntDesign'
-import BottomModal from "../../../components/Modal/BottomModal";
-import { AppStorage } from "../../../Database/Storage";
+import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import UpdateNameModal from "./UpdateNameModal";
 import DeleteAllData from "./DeleteAllDataModal";
 
@@ -73,21 +71,41 @@ export default function Settings(): React.JSX.Element {
 
                 <TextTheme style={{opacity: 0.5, paddingLeft: 4, fontWeight: '900', fontSize: 20, marginTop: 24}}>Other</TextTheme>
 
-                <Container style={{marginBlock: 14}} backgroundColor="rgb(50,150,250)">
+                <Container 
+                    style={{marginBlock: 14}} 
+                    backgroundColor="rgb(50,150,250)"
+                    onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.E_Wallet.pixelProphet')}
+                >
                     <View style={[style.flex, style.itemCenter, style.flexRow, {gap: 16}]}>
                         <FeatherIcons name="star" size={26} color={color} />
                         <TextTheme style={{fontWeight: '900', fontSize: 16}}>Rate us on Google Play</TextTheme>
                     </View>
                 </Container>
                 
-                <Container style={{marginBlock: 14}} backgroundColor="rgb(250,50,150)">
+                <Container 
+                    style={{marginBlock: 14}} 
+                    backgroundColor="rgb(250,50,150)"
+                    onPress={async () => {
+                        try {
+                            await Share.share({
+                                message: 'Check out E Wallet ( Android App )\n Download now: https://play.google.com/store/apps/details?id=com.E_Wallet.pixelProphet',
+                                title: 'E Wallet App'
+                            });
+                        } catch (error) {
+                            console.error('Error sharing:', error);
+                        }
+                    }}
+                >
                     <View style={[style.flex, style.itemCenter, style.flexRow, {gap: 16}]}>
                         <FeatherIcons name="share-2" size={26} color={color} />
                         <TextTheme style={{fontWeight: '900', fontSize: 16}}>Share E Wallet</TextTheme>
                     </View>
                 </Container>
 
-                <Container style={{marginBlock: 14}}>
+                <Container 
+                    style={{marginBlock: 14}}
+                    onPress={() => Linking.openURL('https://github.com/Mustak24/E-Wallet-privacy-policy')}
+                >
                     <View style={[style.flex, style.itemCenter, style.flexRow, {gap: 16}]}>
                         <FeatherIcons name="file-text" size={26} color={color} />
                         <TextTheme style={{fontWeight: '900', fontSize: 16}}>Privacy Policy</TextTheme>

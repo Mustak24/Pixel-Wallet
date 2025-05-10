@@ -57,13 +57,6 @@ export default class TransitionModal{
         }
         return false;
     }   
-    // updateInfo({title, description, createOn}: {title: string, description: string, createOn: createOnType}): void {
-    //     this.title = title;
-    //     this.description = description;
-    //     this.createOn = createOn;
-
-    //     Storage.set(this.id, se)
-    // }
 
     static createId(): string {
         let keys: string[] = Storage.getAllKeys();
