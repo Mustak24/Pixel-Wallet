@@ -5,7 +5,6 @@ import AccountModal from "./src/Database/Models/AccountModal";
 import style from './AppStyle'
 import TabNavigation from "./src/Navigation/TabNavigation";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { AppStorage } from "./src/Database/Storage";
 import ThemeProvider from "./src/Contexts/ThemeProvider";
 
 export default function App(): React.JSX.Element {

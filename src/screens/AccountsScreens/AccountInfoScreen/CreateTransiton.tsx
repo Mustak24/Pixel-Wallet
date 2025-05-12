@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { useContext, useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
+import { KeyboardAvoidingView, Pressable, View } from "react-native";
 import AccountModal from "../../../Database/Models/AccountModal";
 import style from '../../../../AppStyle'
 import { AppContext, months } from "../../../Contexts/AppContext";

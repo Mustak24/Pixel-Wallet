@@ -1,10 +1,9 @@
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput } from "react-native";
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TextInput } from "react-native";
 import { View } from "react-native";
 import AnimateButton from "../components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import { useContext, useEffect, useState } from "react";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import RoundedView from "../components/RoundedView";
 import BottomModal from "../components/Modal/BottomModal";
 import Calculator from "../components/Calculator";
 import TransitionModal from "../Database/Models/TransitionModal";

@@ -4,7 +4,6 @@ import FeatherIcons from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import TextTheme from '../../../components/Text/TextTheme';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
-import { AppContext } from '../../../Contexts/AppContext';
 import TransitionModal from '../../../Database/Models/TransitionModal';
 import AccountModal from '../../../Database/Models/AccountModal';
 import DateSelectorModal from '../../../components/Modal/DateSelectorModal';

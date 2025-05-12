@@ -1,7 +1,6 @@
 
 import { Modal,  PressableProps, StyleSheet, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
-import FeatherIcons from 'react-native-vector-icons/Feather'
-import RoundedView from "../RoundedView";
+import FeatherIcons from 'react-native-vector-icons/Feather';
 import { Text } from "react-native-gesture-handler";
 import { useContext } from "react";
 import { ThemeContext } from "../../Contexts/ThemeProvider";

@@ -2,7 +2,7 @@ import { Pressable, View } from "react-native"
 import { ScrollView, Text } from "react-native-gesture-handler"
 import RoundedView from "./RoundedView"
 import AccountModal from "../Database/Models/AccountModal"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { ThemeContext } from "../Contexts/ThemeProvider"
 
 type Props = {accounts: AccountModal[], useAccount: AccountModal, setUseAccount: (acc: AccountModal) => void, title: string}
