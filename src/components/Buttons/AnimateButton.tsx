@@ -1,6 +1,7 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { Animated, findNodeHandle, Pressable, PressableProps, Text, UIManager, View, ViewStyle } from "react-native";
 import { GestureResponderEvent } from "react-native";
+import { ThemeContext } from "../../Contexts/ThemeProvider";
 
 type AnimateButtonProps = {
     children?: ReactNode,
@@ -16,6 +17,8 @@ type AnimateButtonProps = {
 
 
 export default function AnimateButton({children, style={}, duration=300, scale=10, onPress=()=>{}, props={}, title='Click', color='white', delay=200}: AnimateButtonProps ): React.JSX.Element {
+
+    const {secondaryColor} = useContext(ThemeContext)
 
     const [pressPoints, setPressPoints] = useState<{x: number, y: number}>({x: -1, y: -1});
 
@@ -63,7 +66,7 @@ export default function AnimateButton({children, style={}, duration=300, scale=1
             <Animated.View  style={{
                 position: 'absolute', aspectRatio: 1, borderRadius: 10000, left: pressPoints.x - 5, top: pressPoints.y - 5, 
                 opacity: opacityAnime, transform: [{scale: scaleAnime}],
-                borderWidth: 10, borderColor: 'white'
+                borderWidth: 10, borderColor: secondaryColor
             }}></Animated.View>
             {children || <Text style={{color}}>{title}</Text>}
         </Pressable>

@@ -6,16 +6,19 @@ import { useContext } from "react";
 import { AppContext } from "../../Contexts/AppContext";
 import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../../Navigation/StackNavigation/AccountsStackNavigator";
+import { ThemeContext } from "../../Contexts/ThemeProvider";
+import TextTheme from "../../components/Text/TextTheme";
 
 
 export default function Accounts({navigation}: StackScreenProps<AccountStackParamsList, 'accounts'>): React.JSX.Element {
 
     const {accounts, totalBalance} = useContext(AppContext);
+    const {primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
 
     return (
-        <View style={styles.root}>
+        <View style={[styles.root, {backgroundColor}]}>
             <TypingText text="Accounts" style={styles.topHeading} />
-            <Text style={styles.topHeading_balance}>{`Total: INR ${totalBalance || '0.00'}`}</Text>
+            <TextTheme style={styles.topHeading_balance}>{`Total: INR ${totalBalance || '0.00'}`}</TextTheme>
             
             <ScrollView style={{width: '100%', height: '100%', paddingBlock: 20, paddingInline: 20}}>
                 {
@@ -47,7 +50,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '100%',
         flex: 1,
-        backgroundColor: 'black',
         paddingTop: 44,
     },
 
@@ -66,7 +68,6 @@ const styles = StyleSheet.create({
     },
 
     topHeading_balance: {
-        color: 'white',
         fontSize: 14,
         fontWeight: 900,
         opacity: 0.70,

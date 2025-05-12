@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import BottomModal from "./BottomModal";
 import TextTheme from "../Text/TextTheme";
 import AnimateButton from "../Buttons/AnimateButton";
@@ -33,7 +33,7 @@ export default function DateSelectorModal({visible, setVisible, month, setMonth,
                         setYear(selYear);
                         setVisible(false);
                     }, 
-                    backgroundColor: 'rgb(25,200,150)'}
+                    backgroundColor: 'rgb(15, 180, 150)'}
             ]} 
             onClose={() => {
                 setSelMonth(month);
@@ -56,8 +56,8 @@ export default function DateSelectorModal({visible, setVisible, month, setMonth,
                 >
                     {
                         months.map((monthName, index) => (
-                            <AnimateButton key={index} onPress={() => {setSelMonth(index);}} style={{borderRadius: 100, backgroundColor: selMonth == index ? 'rgb(25,200,150)' : 'gray', height: 44, display: 'flex', justifyContent: 'center', alignItems: 'center', marginInline: 10, width: 60}}>
-                                <TextTheme style={{color: 'white', fontWeight: '900'}}>{monthName}</TextTheme>
+                            <AnimateButton key={index} onPress={() => {setSelMonth(index);}} style={{borderRadius: 100, backgroundColor: selMonth == index ? 'rgb(15, 180, 150)' : 'gray', height: 44, display: 'flex', justifyContent: 'center', alignItems: 'center', marginInline: 10, width: 60}}>
+                                <Text style={{color: 'white', fontWeight: '900'}}>{monthName}</Text>
                             </AnimateButton>
                         ))
                     }
@@ -84,10 +84,10 @@ export default function DateSelectorModal({visible, setVisible, month, setMonth,
                                     setSelYear(year); 
                                 }} 
                                 style={{
-                                    borderRadius: 100, backgroundColor: year == selYear ? 'rgb(25,200,150)' : 'gray', height: 44, display: 'flex', justifyContent: 'center', marginInline: 10, width: 80, alignItems: 'center'
+                                    borderRadius: 100, backgroundColor: year == selYear ? 'rgb(15, 180, 150)' : 'gray', height: 44, display: 'flex', justifyContent: 'center', marginInline: 10, width: 80, alignItems: 'center'
                                 }}
                             >
-                                <TextTheme style={{color: 'white', fontWeight: '900'}}>{year}</TextTheme>
+                                <Text style={{color: 'white', fontWeight: '900'}}>{year}</Text>
                             </AnimateButton>
                         ))
                     }

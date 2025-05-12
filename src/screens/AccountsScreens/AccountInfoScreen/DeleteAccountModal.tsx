@@ -5,6 +5,7 @@ import AccountModal from "../../../Database/Models/AccountModal";
 import BottomModal from "../../../components/Modal/BottomModal";
 import { View } from "react-native";
 import { Text, TextInput } from "react-native-gesture-handler";
+import { ThemeContext } from "../../../Contexts/ThemeProvider";
 
 
 type PropsType = {
@@ -15,7 +16,9 @@ type PropsType = {
 
 export default function DeleteAccountModal({visible, setVisible, account}: PropsType): React.JSX.Element {
 
-    const {color, setAccounts, setTotalBalance} = useContext(AppContext);
+    const {setAccounts, setTotalBalance} = useContext(AppContext);
+    const {primaryColor: color} = useContext(ThemeContext);
+    
     const [textValue, setTextValue] = useState('');
 
     const navigation = useNavigation();

@@ -2,16 +2,18 @@ import { Pressable, View } from "react-native"
 import { ScrollView, Text } from "react-native-gesture-handler"
 import RoundedView from "./RoundedView"
 import AccountModal from "../Database/Models/AccountModal"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { ThemeContext } from "../Contexts/ThemeProvider"
 
 type Props = {accounts: AccountModal[], useAccount: AccountModal, setUseAccount: (acc: AccountModal) => void, title: string}
 
 export default function AccountSelector({accounts, useAccount, setUseAccount, title}: Props) {
 
+    const {primaryColor: color} = useContext(ThemeContext)
 
     return (
         <View style={{display: 'flex', width: '100%', alignItems: 'flex-start'}} >
-            <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 20}}>{title}</Text>
+            <Text style={{color, fontSize: 16, fontWeight: '900', paddingLeft: 20}}>{title}</Text>
 
             <ScrollView 
                 style={{width: '100%', height: 50, marginBlock: 16}} 
@@ -39,7 +41,7 @@ export default function AccountSelector({accounts, useAccount, setUseAccount, ti
                                 <RoundedView  
                                     key={acc.id} 
                                     title={acc.name} 
-                                    color="white" 
+                                    color={useAccount.id == acc.id ? 'white' : color}
                                     backgroundColor={useAccount.id == acc.id ? acc.backgroundColor : 'transparent'}
                                     style={{borderWidth: 1, borderColor: 'gray'}} 
                                 />

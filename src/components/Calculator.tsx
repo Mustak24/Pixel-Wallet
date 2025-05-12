@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import AnimateButton from "./Buttons/AnimateButton";
 import Feathericons from 'react-native-vector-icons/Feather';
+import TextTheme from "./Text/TextTheme";
 
 type CalculatorProps = {
     value?: number
@@ -17,7 +18,7 @@ type buttonObject = {
 
 
 export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResult=()=>{}}: CalculatorProps): React.JSX.Element {
-    
+
     const [value, setValue] = useState<string>(String(val || ''));
 
     const buttons = useRef<buttonObject[][]>([
@@ -90,10 +91,10 @@ export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResu
 
     return (
         <View style={styles.root}>
-            <Text style={styles.resultScreen}>
+            <TextTheme style={styles.resultScreen}>
                 <Text>{value || '0.00'}</Text>
                 {isResult() && <Text> INR</Text>}
-            </Text>
+            </TextTheme>
 
             <View style={styles.buttonBox}>
                 <View style={styles.buttonBox_colums}>
@@ -108,9 +109,9 @@ export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResu
                                             onPress={onPress} 
                                             delay={0}
                                         >
-                                            <Text style={{color: textColor, fontWeight: 900, fontSize: 18}} >
+                                            <TextTheme style={{color: textColor, fontWeight: 900, fontSize: 18}} >
                                                {innerText}
-                                            </Text>
+                                            </TextTheme>
                                         </AnimateButton>
                                     ))
                                 }
@@ -133,8 +134,7 @@ const styles = StyleSheet.create({
 
     resultScreen: {
         fontSize: 18,
-        fontWeight: 900,
-        color: 'white'
+        fontWeight: 900
     },
 
     buttonBox: {
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         width: 60,
         aspectRatio: 1,
         borderRadius: 100,
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: 'gray',
         display: 'flex',
         alignItems: "center",

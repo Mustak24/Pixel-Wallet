@@ -8,9 +8,13 @@ import BottomModal from "./Modal/BottomModal";
 import Calculator from "./Calculator";
 import AccountModal from "../Database/Models/AccountModal";
 import { AppContext } from "../Contexts/AppContext";
+import TextTheme from "./Text/TextTheme";
+import { ThemeContext } from "../Contexts/ThemeProvider";
 
 
 export default function BottomTabNavbar({navigation, state}: BottomTabBarProps): React.JSX.Element {
+
+    const {primaryColor: color, secondaryBackgroundColor} = useContext(ThemeContext)
 
     const currentRouteName = state.routes[state.index].name;
     const isActive = (route: string) => route === currentRouteName;
@@ -59,16 +63,16 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
     }, [isMenuOpen])
 
     return (<>
-        <View style={[styles.center, {position: 'relative', backgroundColor: 'rgb(25,25,25)'}]}>
-            <View style={[styles.navbarContener]}>
+        <View style={[styles.center, {position: 'relative', backgroundColor: secondaryBackgroundColor}]}>
+            <View style={[styles.navbarContener, {backgroundColor: secondaryBackgroundColor}]}>
                 <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('home-stack-navigator')} >
-                    <MaterialIcons name="home" size={22} color={isActive('home-stack-navigator') ? 'royalblue' : 'white'} />
-                    <Text style={[styles.navigatorBtn_text, {color: isActive('home-stack-navigator') ? 'royalblue' : 'white'}]}>Home</Text>
+                    <MaterialIcons name="home" size={22} color={isActive('home-stack-navigator') ? 'royalblue' : color} />
+                    <Text style={[styles.navigatorBtn_text, {color: isActive('home-stack-navigator') ? 'royalblue' : color}]}>Home</Text>
                 </AnimateButton>
 
                 <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('accounts-stack-navigator')}>
-                    <MaterialIcons name="account-balance-wallet" size={22} color={isActive('accounts-stack-navigator') ? 'royalblue' : 'white'} />
-                    <Text style={[styles.navigatorBtn_text, {color: isActive('accounts-stack-navigator') ? 'royalblue' : 'white'}]}>Accounts</Text>
+                    <MaterialIcons name="account-balance-wallet" size={22} color={isActive('accounts-stack-navigator') ? 'royalblue' : color} />
+                    <Text style={[styles.navigatorBtn_text, {color: isActive('accounts-stack-navigator') ? 'royalblue' : color}]}>Accounts</Text>
                 </AnimateButton>
             </View>
 
@@ -157,6 +161,7 @@ type CreateAccountModalProps = {
 function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): React.JSX.Element {
 
     const {setAccounts, setTotalBalance} = useContext(AppContext);
+    const {primaryColor: color} = useContext(ThemeContext)
 
     const [name, setName] = useState<string>('');
     const [balance, setBalance] = useState<number>(0);
@@ -180,7 +185,7 @@ function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): Rea
         <BottomModal visible={visible} setVisible={setVisible} actionButtons={[{title: 'Add', onPress: create, backgroundColor: 'rgb(25, 200, 150)'}]}  >
             <View style={{paddingBlock: 10}}>
                 <View style={{display: 'flex', paddingInline: 20, width: '100%'}}>
-                    <Text style={{color: 'white', fontSize: 18, fontWeight: 900}}>Account Options</Text>
+                    <TextTheme style={{color: 'white', fontSize: 18, fontWeight: 900}}>Account Options</TextTheme>
 
                     <View style={{display: 'flex', alignItems: 'center', flexDirection: 'row', gap: 10, width: '100%', position: 'relative', marginBlock: 20}}>
                         <MaterialIcons name="account-balance-wallet" size={22} color={'rgba(255,255,255,.6)'} style={{backgroundColor, padding: 10, borderRadius: 1000}} />
@@ -188,7 +193,7 @@ function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): Rea
                             <TextInput 
                                 value={name} 
                                 placeholder="Account Name" 
-                                style={{fontSize: 18, fontWeight: '900', color: 'white'}} 
+                                style={{fontSize: 18, fontWeight: '900', color}} 
                                 onChangeText={setName}
                                 />
                             <View style={{width: '100%', backgroundColor: 'gray', height: 1, position: 'relative', top: -5}}></View>
@@ -196,15 +201,15 @@ function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): Rea
                     </View>
                 </View>
 
-                <Text style={{paddingInline: 20, marginBlock: 10, color: 'white', fontSize: 16, fontWeight: 900}}>Select Color</Text>
+                <TextTheme style={{paddingInline: 20, marginBlock: 10, color: 'white', fontSize: 16, fontWeight: 900}}>Select Color</TextTheme>
 
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{marginBlock: 20}} >
                     {
                         colors.map(color => (
                             <Pressable 
-                            key={color} 
-                            onPress={() => setBackgroundColor(color)} 
-                            style={{display: 'flex', width: 40, aspectRatio: 1, borderRadius: 100, boxSizing: 'border-box', position: 'relative', marginLeft: 10, backgroundColor: color}}
+                                key={color} 
+                                onPress={() => setBackgroundColor(color)} 
+                                style={{display: 'flex', width: 40, aspectRatio: 1, borderRadius: 100, boxSizing: 'border-box', position: 'relative', marginLeft: 10, backgroundColor: color}}
                             >
                                 {
                                     backgroundColor == color ? (
@@ -217,15 +222,15 @@ function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): Rea
                 </ScrollView>
 
                 <Pressable onPress={() => setCalOpen(true)} style={{marginTop: 20, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                    <Text style={{color: 'white', opacity: .5, fontSize: 10, fontWeight: 800}}>Enter Account Balance</Text>
-                    <Text style={{color: 'white', fontSize: 28, fontWeight: 900}}>
+                    <TextTheme style={{color: 'white', opacity: .5, fontSize: 10, fontWeight: 800}}>Enter Account Balance</TextTheme>
+                    <TextTheme style={{color: 'white', fontSize: 28, fontWeight: 900}}>
                         <Text>{balance || '0.00'}</Text>
                         <Text> INR</Text>
-                    </Text>
+                    </TextTheme>
                 </Pressable>
 
                 <BottomModal visible={isCalOpen} setVisible={setCalOpen} actionButtons={[{title: 'Set', onPress: () => setCalOpen(false), backgroundColor}]} >
-                    <Text style={{color: 'white', fontSize: 12, fontWeight: 800, paddingLeft: 20, marginBottom: 20, opacity: .5}}>Enter Account Balance :</Text>
+                    <TextTheme style={{color: 'white', fontSize: 14, fontWeight: 800, paddingLeft: 20, marginBottom: 20, opacity: .6}}>Enter Account Balance :</TextTheme>
                     <Calculator value={balance} onResult={setBalance} />
                 </BottomModal>
             </View>

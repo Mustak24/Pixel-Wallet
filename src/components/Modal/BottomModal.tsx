@@ -3,6 +3,8 @@ import { Modal,  PressableProps, StyleSheet, TouchableHighlight, TouchableOpacit
 import FeatherIcons from 'react-native-vector-icons/Feather'
 import RoundedView from "../RoundedView";
 import { Text } from "react-native-gesture-handler";
+import { useContext } from "react";
+import { ThemeContext } from "../../Contexts/ThemeProvider";
 
 type BottomModalProps = {
     visible: boolean,
@@ -20,6 +22,7 @@ type BottomModalProps = {
 
 export default function BottomModal({visible, setVisible, children, style, backdropColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}, onClose=()=>{}}: BottomModalProps): React.JSX.Element {
 
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useContext(ThemeContext)
 
     return (
         <Modal backdropColor={backdropColor} animationType={animationType} visible={visible} onRequestClose={() => {setVisible(!closeOnBack); onClose();}}>
@@ -28,11 +31,11 @@ export default function BottomModal({visible, setVisible, children, style, backd
                     <View style={{width: '100%', flex: 1}}></View>
                 </TouchableWithoutFeedback>
 
-                <View style={[styles.modalContener, style]}>{children}</View>
+                <View style={[styles.modalContener, {backgroundColor} ,style]}>{children}</View>
 
-                <View style={[styles.bottomOpations, bottomOpationStyle]}>
-                    <TouchableHighlight style={styles.closeBtn} onPress={() => {setVisible(false); onClose();}}>
-                        <FeatherIcons name="plus" size={16} color={'white'} style={{transform: 'rotate(45deg)'}} />
+                <View style={[styles.bottomOpations, {backgroundColor}, bottomOpationStyle]}>
+                    <TouchableHighlight style={[styles.closeBtn, {backgroundColor: secondaryBackgroundColor}]} onPress={() => {setVisible(false); onClose();}}>
+                        <FeatherIcons name="plus" size={16} color={color} style={{transform: 'rotate(45deg)'}} />
                     </TouchableHighlight>
                     
                     <View style={styles.actionsButtonsBox}>
@@ -75,8 +78,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         paddingBottom: 40,
-        paddingTop: 20,
-        backgroundColor: 'black'
+        paddingTop: 20
     },
 
     bottomOpations: {
@@ -89,8 +91,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0,
         height: 24,
         width: '100%',
-        paddingInline: 20,
-        backgroundColor: 'black'
+        paddingInline: 20
     },
 
     closeBtn: {
