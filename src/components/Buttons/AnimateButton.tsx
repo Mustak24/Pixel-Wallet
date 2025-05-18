@@ -16,7 +16,7 @@ type AnimateButtonProps = {
 }
 
 
-export default function AnimateButton({children, style={}, duration=300, scale=10, onPress=()=>{}, props={}, title='Click', color='white', delay=200}: AnimateButtonProps ): React.JSX.Element {
+export default function AnimateButton({children, style={}, duration=300, scale=10, onPress=()=>{}, props={}, title='Click', color='white', delay=100}: AnimateButtonProps ): React.JSX.Element {
 
     const {secondaryColor} = useContext(ThemeContext)
 

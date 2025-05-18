@@ -6,13 +6,15 @@ import AnimateButton from "../Buttons/AnimateButton";
 import { useContext } from "react";
 import { ThemeContext } from "../../Contexts/ThemeProvider";
 import TextTheme from "../Text/TextTheme";
+import style from '../../../AppStyle'
 
 
 type TransitionCardProps = {
     id: string
     mode: 'income' | 'expense' | 'transfer'
-    title?: string
-    description?: string
+    title: string
+    category: string
+    description: string
     fromAccountId: string
     toAccountId: string
     createOn: createOnType
@@ -21,9 +23,9 @@ type TransitionCardProps = {
 }
 const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export default function TransitionCard({id, mode, title, description, fromAccountId, toAccountId, createOn, amount, onPress=()=>{}}: TransitionCardProps): React.JSX.Element {
+export default function TransitionCard({id, mode, title, category, description, fromAccountId, toAccountId, createOn, amount, onPress=()=>{}}: TransitionCardProps): React.JSX.Element {
 
-    const {secondaryBackgroundColor} = useContext(ThemeContext);
+    const {secondaryBackgroundColor, primaryColor, primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
 
     const color = mode == 'income' ? 'rgb(25,200,150)' : mode == 'expense' ? 'gray' : 'rgb(130,100,255)';
     const fromAccountName = AccountModal.findById(fromAccountId)?.name;
@@ -43,16 +45,25 @@ export default function TransitionCard({id, mode, title, description, fromAccoun
             </View>
 
             <AnimateButton onPress={onPress} scale={15} style={{...styles.card, backgroundColor: secondaryBackgroundColor}}>
-                <View style={styles.mode}>
-                    <Text style={{color: 'white', fontSize: 14, fontWeight: 900}}>{fromAccountName || ''}</Text>
+                <View style={[style.center, style.flexRow, {gap: 10}]}>
                     {
-                        mode == 'transfer' ? (
-                            <>
-                                <FeatherIcons name="chevrons-right" size={14} color={'white'} style={{marginHorizontal: 4}} />
-                                <Text style={{color: 'white', fontSize: 14, fontWeight: 900}}> {toAccountName || ''} </Text>
-                            </>
-                        ): null
+                        category && (
+                            <View style={[styles.mode, {backgroundColor}]}>
+                                <TextTheme style={{fontWeight: 800}} >{category}</TextTheme>
+                            </View>
+                        )
                     }
+                    <View style={[styles.mode, {backgroundColor}]}>
+                        <Text style={{color: primaryColor, fontSize: 14, fontWeight: 900}}>{fromAccountName || ''}</Text>
+                        {
+                            mode == 'transfer' ? (
+                                <>
+                                    <FeatherIcons name="chevrons-right" size={14} color={backgroundColor} style={{marginHorizontal: 4}} />
+                                    <Text style={{color: backgroundColor, fontSize: 14, fontWeight: 900}}> {toAccountName || ''} </Text>
+                                </>
+                            ): null
+                        }
+                    </View>
                 </View>
 
                 <View style={{paddingLeft: 10}}>

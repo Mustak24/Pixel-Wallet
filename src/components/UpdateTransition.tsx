@@ -14,6 +14,8 @@ import TransitionModal from "../Database/Models/TransitionModal";
 import AccountSelector from "./AccountSelector";
 import { ThemeContext } from "../Contexts/ThemeProvider";
 import TextTheme from "./Text/TextTheme";
+import style from '../../AppStyle'
+import CategorySelectorModal from "./Modal/CategorySelectorModal";
 
 
 type transitionInfoType = {
@@ -64,6 +66,7 @@ export default function UpdateTransition({navigation, route}: Props): React.JSX.
     const [fromAccount, setFromAccount] = useState<AccountModal>(AccountModal.findById(transition.fromAccountId) ?? accounts[0]);
     const [toAccount, setToAccount] = useState<AccountModal>(AccountModal.findById(transition.toAccountId) ?? accounts[0]);
     const [title, setTitle] = useState<string>(transition.title);
+    const [category, setCategory] = useState<string>(transition.category);
     const [description, setDescription] = useState<string>(transition.description);
     const [year, setYear] = useState<number>(transition.createOn.year)
     const [month, setMonth] = useState<number>(transition.createOn.month)
@@ -73,6 +76,7 @@ export default function UpdateTransition({navigation, route}: Props): React.JSX.
 
     const [isDescriptionModalOpen, setDescriptionModalOpen] = useState<boolean>(false);
     const [isDeleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
+    const [isCategoryModalOpen, setCategoryModalOpen] = useState<boolean>(false)
     
     const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expense' ? 1 : 2]
 
@@ -88,7 +92,7 @@ export default function UpdateTransition({navigation, route}: Props): React.JSX.
             title, description, 
             createOn : {
                 year, month, date, minute, hour
-            }
+            }, category
         })
 
         setAccounts(AccountModal.getAll());
@@ -153,6 +157,14 @@ export default function UpdateTransition({navigation, route}: Props): React.JSX.
                         />
                 </View>
 
+                <AnimateButton 
+                    style={{...style.flex, ...style.flexRow, ...style.itemCenter, borderWidth: 2, borderColor: secondaryBackgroundColor, borderRadius: 100, paddingInline: 20, height: 44, alignSelf: 'flex-start', gap: 4, marginBlock: 10}}
+                    onPress={() => setCategoryModalOpen(true)}
+                >
+                    {category ? null : <FeatherIcons name="plus" size={16} style={{fontWeight: 900, color}} />}
+                    <TextTheme style={{fontWeight: 900, fontSize: 16}}>{category || 'Add Category'}</TextTheme>
+                </AnimateButton>
+
                 <View style={[styles.center, {gap: 10}]}>
                     <AnimateButton style={{display: 'flex', padding: 20, borderRadius: 20, backgroundColor: secondaryBackgroundColor, width: '100%', justifyContent: 'center'}} onPress={() => setDescriptionModalOpen(true)}>
                         <View style={{display: 'flex', alignItems: 'center', flexDirection: 'row', gap: 14}}>
@@ -194,7 +206,7 @@ export default function UpdateTransition({navigation, route}: Props): React.JSX.
                     
                     <View style={styles.actionsButtonsBox}>
                         <AnimateButton style={{...styles.actionBtn, backgroundColor: 'rgb(25,200,150)'}} onPress={updateTransition}>
-                            <TextTheme style={{fontWeight: '900'}}>Save</TextTheme>
+                            <Text style={{fontWeight: '900', color: 'white'}}>Save</Text>
                         </AnimateButton>
                     </View>
                 </View>
@@ -233,6 +245,14 @@ export default function UpdateTransition({navigation, route}: Props): React.JSX.
             <Text style={{color: 'rgb(250,60,60)', fontWeight: '900', fontSize: 24, marginBottom: 10}}>Alert !!!</Text>
             <Text style={{color: 'rgb(250,60,60)', fontWeight: '900', fontSize: 14}}>Once you delete a Transition, there is no going back.</Text>
         </BottomModal>
+
+        <CategorySelectorModal 
+            visible={isCategoryModalOpen} 
+            setVisible={setCategoryModalOpen} 
+            selected={category}
+            setSelected={setCategory}
+        />
+
     </>)
 }
 

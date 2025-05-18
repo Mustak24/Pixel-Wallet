@@ -13,6 +13,7 @@ import Calculator from "../../../components/Calculator";
 import TransitionModal from "../../../Database/Models/TransitionModal";
 import { AccountStackParamsList } from "../../../Navigation/StackNavigation/AccountsStackNavigator";
 import { ThemeContext } from "../../../Contexts/ThemeProvider";
+import CategorySelectorModal from "../../../components/Modal/CategorySelectorModal";
 
 type transitionInfoType = {
     mode: 'income' | 'expense',
@@ -48,6 +49,7 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
     const [transitionMode, setTransitionMode] = useState<'income' | 'expense' | 'transfer'>(route.params.mode);
     const [amount, setAmount] = useState<number>(0);
     const [title, setTitle] = useState<string>('');
+    const [category, setCategory] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState<number>(new Date().getMonth());
@@ -57,6 +59,7 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
 
     const [isDescriptionModalOpen ,setDescriptionModalOpen] = useState<boolean>(false);
     const [isCalOpen, setCalOpen] = useState<boolean>(true);
+    const [isCategoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
 
     
     function createTransition(){ 
@@ -64,12 +67,12 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
         let tra = TransitionModal.create({
             title, description, fromAccountId: account.id, mode: transitionMode, amount, 
             createOn: {year, month, date, hour, minute}, 
-            toAccountId: ''
+            toAccountId: '', category
         });
 
         if(!tra) return;
 
-        setAmount(0); setTitle(''); setDescription('');
+        setAmount(0); setTitle(''); setCategory(''); setDescription('');
         setYear(new Date().getFullYear()); setMonth(new Date().getMonth())
         setDate(new Date().getDate()); setHour(new Date().getHours())
         setMinute(new Date().getMinutes())
@@ -136,6 +139,14 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
                         placeholderTextColor={color}     
                     />
                 </View>
+
+                <AnimateButton 
+                    style={{...style.flex, ...style.flexRow, ...style.itemCenter, borderWidth: 2, borderColor: secondaryBackgroundColor, borderRadius: 100, paddingInline: 20, height: 44, alignSelf: 'flex-start', gap: 4, marginBlock: 10}}
+                    onPress={() => setCategoryModalOpen(true)}
+                >
+                    {category || <FeatherIcons name="plus" size={16} style={{fontWeight: 900, color}} />}
+                    <TextTheme style={{fontWeight: 900, fontSize: 16}}>{category || 'Add Category'}</TextTheme>
+                </AnimateButton>
 
                 <View style={[style.center, {gap: 10}]}>
                     <AnimateButton style={{display: 'flex', padding: 20, borderRadius: 20, backgroundColor: secondaryBackgroundColor, width: '100%', justifyContent: 'center'}} onPress={() => setDescriptionModalOpen(true)}>
@@ -217,5 +228,12 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
                 </View>
             </View>
         </BottomModal>
+
+        <CategorySelectorModal
+            visible={isCategoryModalOpen} 
+            setVisible={setCategoryModalOpen} 
+            selected={category}
+            setSelected={setCategory}
+        />
     </>)
 }

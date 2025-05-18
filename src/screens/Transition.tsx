@@ -14,6 +14,8 @@ import { useNavigation } from "@react-navigation/native";
 import AccountSelector from "../components/AccountSelector";
 import { ThemeContext } from "../Contexts/ThemeProvider";
 import TextTheme from "../components/Text/TextTheme";
+import style from '../../AppStyle'
+import CategorySelectorModal from "../components/Modal/CategorySelectorModal";
 
 
 type transitionInfoType = {
@@ -62,6 +64,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
     const [fromAccount, setFromAccount] = useState<AccountModal>(accounts[0]);
     const [toAccount, setToAccount] = useState<AccountModal>(accounts[0]);
     const [title, setTitle] = useState<string>('');
+    const [category, setCategory] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [year, setYear] = useState<number>(new Date().getFullYear())
     const [month, setMonth] = useState<number>(new Date().getMonth())
@@ -70,6 +73,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
     const [minute, setMinute] = useState<number>(new Date().getMinutes())
 
     const [isDescriptionModalOpen, setDescriptionModalOpen] = useState<boolean>(false);
+    const [isCategoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
     
     const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expense' ? 1 : 2]
 
@@ -81,7 +85,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
         let tra = TransitionModal.create({
             title, description, fromAccountId: fromAccount.id, mode: transitionMode, amount, 
             createOn: {year, month, date, hour, minute}, 
-            toAccountId: toAccount.id
+            toAccountId: toAccount.id, category
         });
 
         if(!tra) return;
@@ -95,6 +99,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
         let unsubscribe = navigation.addListener('focus', () => {
             setAmount(0);
             setTitle('');
+            setCategory('');
             setDescription('');
             setYear(new Date().getFullYear())
             setMonth(new Date().getMonth())
@@ -151,6 +156,14 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
                         onChangeText={setTitle}
                         />
                 </View>
+
+                <AnimateButton 
+                    style={{...style.flex, ...style.flexRow, ...style.itemCenter, borderWidth: 2, borderColor: secondaryBackgroundColor, borderRadius: 100, paddingInline: 20, height: 44, alignSelf: 'flex-start', gap: 4, marginBlock: 10}}
+                    onPress={() => setCategoryModalOpen(true)}
+                >
+                    {category || <FeatherIcons name="plus" size={16} style={{fontWeight: 900, color}} />}
+                    <TextTheme style={{fontWeight: 900, fontSize: 16}}>{category || 'Add Category'}</TextTheme>
+                </AnimateButton>
 
                 <View style={[styles.center, {gap: 10}]}>
                     <AnimateButton 
@@ -220,6 +233,13 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
                 onChangeText={setDescription}
             />
         </BottomModal>
+
+        <CategorySelectorModal 
+            visible={isCategoryModalOpen} 
+            setVisible={setCategoryModalOpen} 
+            selected={category}
+            setSelected={setCategory}
+        />
     </>)
 }
 

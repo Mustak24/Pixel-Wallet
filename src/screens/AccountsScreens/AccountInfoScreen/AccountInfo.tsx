@@ -218,6 +218,7 @@ function TransitionsRecords({account, month, setMonth, year, setYear, transition
                             title={transition.title} 
                             description={transition.description} 
                             createOn={transition.createOn} 
+                            category={transition.category}
                             onPress={() => {navigation.push('update-transition', {transition})}}
                         />
                     ))

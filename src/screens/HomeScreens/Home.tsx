@@ -25,7 +25,8 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
 
     const {totalBalance, setTotalBalance, username, setUsername} = useContext(AppContext);
 
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useContext(ThemeContext)
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
+    
 
     const [month, setMonth] = useState(new Date().getMonth());
     const [year, setYear] = useState(new Date().getFullYear());
@@ -99,7 +100,7 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                         </View>
 
                         <View style={[styles.center, {flexDirection: 'row', gap: 12, position: 'relative'}]}>
-                            <Pressable style={{height: 100, backgroundColor: 'rgb(25,200,150)', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
+                            <Pressable onPress={() => {}} style={{height: 100, backgroundColor: 'rgb(25,200,150)', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
                                 <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
                                     <FeatherIcons name="download" size={24} color={'white'} />
                                     <Text style={{fontWeight: 800, color: 'white'}}>INCOME</Text>
@@ -140,6 +141,7 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                                         toAccountId={transition.toAccountId}
                                         amount={transition.amount} 
                                         title={transition.title} 
+                                        category={transition.category}
                                         description={transition.description} 
                                         createOn={transition.createOn} 
                                         onPress={() => navigation.navigate('update-transition', {transition})}
