@@ -1,4 +1,4 @@
-package com.e_wallet
+package com.e_wallet.pixelProphet
 
 import android.app.Application
 import com.facebook.react.PackageList

@@ -1,4 +1,4 @@
-package com.e_wallet
+package com.e_wallet.pixelProphet
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
