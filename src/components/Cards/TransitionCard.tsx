@@ -3,13 +3,18 @@ import FeatherIcons from 'react-native-vector-icons/Feather';
 import AccountModal from "../../Database/Models/AccountModal";
 import { createOnType } from "../../Database/Models/TransitionModal";
 import AnimateButton from "../Buttons/AnimateButton";
+import { useContext } from "react";
+import { ThemeContext } from "../../Contexts/ThemeProvider";
+import TextTheme from "../Text/TextTheme";
+import style from '../../../AppStyle'
 
 
 type TransitionCardProps = {
     id: string
     mode: 'income' | 'expense' | 'transfer'
-    title?: string
-    description?: string
+    title: string
+    category: string
+    description: string
     fromAccountId: string
     toAccountId: string
     createOn: createOnType
@@ -18,7 +23,9 @@ type TransitionCardProps = {
 }
 const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export default function TransitionCard({id, mode, title, description, fromAccountId, toAccountId, createOn, amount, onPress=()=>{}}: TransitionCardProps): React.JSX.Element {
+export default function TransitionCard({id, mode, title, category, description, fromAccountId, toAccountId, createOn, amount, onPress=()=>{}}: TransitionCardProps): React.JSX.Element {
+
+    const {secondaryBackgroundColor, primaryColor, primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
 
     const color = mode == 'income' ? 'rgb(25,200,150)' : mode == 'expense' ? 'gray' : 'rgb(130,100,255)';
     const fromAccountName = AccountModal.findById(fromAccountId)?.name;
@@ -29,30 +36,39 @@ export default function TransitionCard({id, mode, title, description, fromAccoun
     return (
         <View style={styles.root}>
             <View style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', width: '100%', flexDirection: 'row', paddingInline: 0}}>
-                <Text style={styles.date}>{date}</Text>
+                <TextTheme style={styles.date}>{date}</TextTheme>
 
-                <Text style={{color, fontSize: 14}}>
+                <TextTheme style={{color, fontSize: 14}}>
                         <Text style={{fontWeight: 800}}>{mode == 'income' ? '+' : mode == 'expense' ? '-' : ''}{amount}</Text>
                         <Text> INR</Text>
-                </Text>
+                </TextTheme>
             </View>
 
-            <AnimateButton onPress={onPress} scale={15} style={styles.card}>
-                <View style={styles.mode}>
-                    <Text style={{color: 'white', fontSize: 14, fontWeight: 900}}>{fromAccountName || ''}</Text>
+            <AnimateButton onPress={onPress} scale={15} style={{...styles.card, backgroundColor: secondaryBackgroundColor}}>
+                <View style={[style.center, style.flexRow, {gap: 10}]}>
                     {
-                        mode == 'transfer' ? (
-                            <>
-                                <FeatherIcons name="chevrons-right" size={14} color={'white'} style={{marginHorizontal: 4}} />
-                                <Text style={{color: 'white', fontSize: 14, fontWeight: 900}}> {toAccountName || ''} </Text>
-                            </>
-                        ): null
+                        category && (
+                            <View style={[styles.mode, {backgroundColor}]}>
+                                <TextTheme style={{fontWeight: 800}} >{category}</TextTheme>
+                            </View>
+                        )
                     }
+                    <View style={[styles.mode, {backgroundColor}]}>
+                        <Text style={{color: primaryColor, fontSize: 14, fontWeight: 900}}>{fromAccountName || ''}</Text>
+                        {
+                            mode == 'transfer' ? (
+                                <>
+                                    <FeatherIcons name="chevrons-right" size={14} color={backgroundColor} style={{marginHorizontal: 4}} />
+                                    <Text style={{color: backgroundColor, fontSize: 14, fontWeight: 900}}> {toAccountName || ''} </Text>
+                                </>
+                            ): null
+                        }
+                    </View>
                 </View>
 
                 <View style={{paddingLeft: 10}}>
-                    {title && <Text style={styles.title}>{title}</Text>}
-                    {description && <Text numberOfLines={10} style={styles.description}>{description}{description?.at(-1) === '.' ? '' : '.'}</Text>}
+                    {title && <TextTheme style={styles.title}>{title}</TextTheme>}
+                    {description && <TextTheme numberOfLines={10} style={styles.description}>{description}{description?.at(-1) === '.' ? '' : '.'}</TextTheme>}
                 </View>
                 
                 <View style={{display: "flex", gap: 10, flexDirection: 'row', paddingLeft: 10, alignItems: 'center'}}>
@@ -86,7 +102,6 @@ const styles = StyleSheet.create({
         borderRadius: 14, 
         position: 'relative',
         gap: 10,
-        backgroundColor: 'rgb(20,20,20)',
     },
 
     mode: {

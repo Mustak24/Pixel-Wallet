@@ -1,10 +1,9 @@
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput } from "react-native";
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TextInput } from "react-native";
 import { View } from "react-native";
 import AnimateButton from "../components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import { useContext, useEffect, useState } from "react";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import RoundedView from "../components/RoundedView";
 import BottomModal from "../components/Modal/BottomModal";
 import Calculator from "../components/Calculator";
 import TransitionModal from "../Database/Models/TransitionModal";
@@ -13,6 +12,10 @@ import { AppContext } from "../Contexts/AppContext";
 import { TabParamsList } from "../Navigation/TabNavigation";
 import { useNavigation } from "@react-navigation/native";
 import AccountSelector from "../components/AccountSelector";
+import { ThemeContext } from "../Contexts/ThemeProvider";
+import TextTheme from "../components/Text/TextTheme";
+import style from '../../AppStyle'
+import CategorySelectorModal from "../components/Modal/CategorySelectorModal";
 
 
 type transitionInfoType = {
@@ -53,13 +56,15 @@ const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 export default function Transition({route, navigation}: BottomTabScreenProps<TabParamsList, 'transition'>): React.JSX.Element {
 
-    const {accounts, setTotalBalance, setAccounts, backgroundColor} = useContext(AppContext);
+    const {accounts, setTotalBalance, setAccounts} = useContext(AppContext);
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useContext(ThemeContext)
 
     const [amount, setAmount] = useState<number>(0)
     const [transitionMode, setTransitionMode] = useState<transitionMode>(route.params.mode);
     const [fromAccount, setFromAccount] = useState<AccountModal>(accounts[0]);
     const [toAccount, setToAccount] = useState<AccountModal>(accounts[0]);
     const [title, setTitle] = useState<string>('');
+    const [category, setCategory] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [year, setYear] = useState<number>(new Date().getFullYear())
     const [month, setMonth] = useState<number>(new Date().getMonth())
@@ -68,6 +73,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
     const [minute, setMinute] = useState<number>(new Date().getMinutes())
 
     const [isDescriptionModalOpen, setDescriptionModalOpen] = useState<boolean>(false);
+    const [isCategoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
     
     const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expense' ? 1 : 2]
 
@@ -79,7 +85,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
         let tra = TransitionModal.create({
             title, description, fromAccountId: fromAccount.id, mode: transitionMode, amount, 
             createOn: {year, month, date, hour, minute}, 
-            toAccountId: toAccount.id
+            toAccountId: toAccount.id, category
         });
 
         if(!tra) return;
@@ -93,6 +99,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
         let unsubscribe = navigation.addListener('focus', () => {
             setAmount(0);
             setTitle('');
+            setCategory('');
             setDescription('');
             setYear(new Date().getFullYear())
             setMonth(new Date().getMonth())
@@ -114,25 +121,26 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
             <ScrollView style={styles.scrollView}>
                 <View style={styles.topNav}>
                     <AnimateButton style={styles.topNav_closeBtn} onPress={() => navigation.navigate('home-stack-navigator')}>
-                        <FeatherIcons name="plus" size={20} color={'white'} style={{transform: 'rotate(45deg)'}} />
+                        <FeatherIcons name="plus" size={20} color={color} style={{transform: 'rotate(45deg)'}} />
                     </AnimateButton>
 
                     <View style={[styles.center, {flexDirection: 'row', gap: 6}]}>
                         {
                             transitionInfo.map(({backgroundColor, iconName, mode}) => (
                                 <AnimateButton 
-                                key={mode}
-                                style={{
-                                    ...styles.topNav_modeSelector, 
-                                    backgroundColor: mode == transitionMode ?  backgroundColor : 'transparent'
-                                }} 
-                                onPress={() => setTransitionMode(mode)}
+                                    key={mode}
+                                    style={{
+                                        ...styles.topNav_modeSelector, 
+                                        backgroundColor: mode == transitionMode ?  backgroundColor : 'transparent',
+                                        borderWidth: mode == transitionMode ? 0 : 2
+                                    }} 
+                                    onPress={() => setTransitionMode(mode)}
                                 >
                                         <FeatherIcons
-                                            color={'white'} 
+                                            color={mode == transitionMode ? 'white' : color} 
                                             size={20}
                                             name={iconName} 
-                                            />
+                                        />
                                     </AnimateButton>
                                 )
                             )
@@ -143,29 +151,42 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
                 <View style={{marginBlock: 20}}>
                     <TextInput 
                         value={title}
-                        style={styles.titleInput} 
+                        style={[styles.titleInput, {color}]} 
                         placeholder={`${transitionMode[0].toLocaleUpperCase() + transitionMode.slice(1)} title`} 
                         onChangeText={setTitle}
                         />
                 </View>
 
+                <AnimateButton 
+                    style={{...style.flex, ...style.flexRow, ...style.itemCenter, borderWidth: 2, borderColor: secondaryBackgroundColor, borderRadius: 100, paddingInline: 20, height: 44, alignSelf: 'flex-start', gap: 4, marginBlock: 10}}
+                    onPress={() => setCategoryModalOpen(true)}
+                >
+                    {category || <FeatherIcons name="plus" size={16} style={{fontWeight: 900, color}} />}
+                    <TextTheme style={{fontWeight: 900, fontSize: 16}}>{category || 'Add Category'}</TextTheme>
+                </AnimateButton>
+
                 <View style={[styles.center, {gap: 10}]}>
-                    <AnimateButton style={{display: 'flex', padding: 20, borderRadius: 20, backgroundColor: 'rgb(24,24,24)', width: '100%', justifyContent: 'center'}} onPress={() => setDescriptionModalOpen(true)}>
+                    <AnimateButton 
+                        style={{display: 'flex', padding: 20, borderRadius: 20, backgroundColor: secondaryBackgroundColor, width: '100%', justifyContent: 'center'}} 
+                        onPress={() => setDescriptionModalOpen(true)}
+                    >
                         <View style={{display: 'flex', alignItems: 'center', flexDirection: 'row', gap: 14}}>
-                            <FeatherIcons name="align-left" size={20} color={'white'} />
-                            <Text style={{color: 'white', fontWeight: '900'}}>Add description</Text>
+                            <FeatherIcons name="align-left" size={20} color={color} />
+                            <TextTheme style={{fontWeight: '900'}}>Add description</TextTheme>
                         </View>
-                        {description && <Text style={{color: 'white', fontSize: 12, opacity: 0.8}} numberOfLines={8}>{description}</Text>}
+                        {description && <TextTheme style={{fontSize: 12, opacity: 0.8}} numberOfLines={8}>{description}</TextTheme>}
                     </AnimateButton>
 
-                    <AnimateButton style={{...styles.box, justifyContent: 'space-between'}}>
+                    <AnimateButton 
+                        style={{...styles.box, justifyContent: 'space-between', backgroundColor: secondaryBackgroundColor}}
+                    >
                         <View style={[styles.center, {gap: 14, flexDirection: 'row'}]}>
-                            <FeatherIcons name="calendar" size={20} color={'white'} />
-                            <Text style={{color: 'white', fontWeight: '900', opacity: 0.4}}>Created on</Text>
+                            <FeatherIcons name="calendar" size={20} color={color} />
+                            <TextTheme style={{fontWeight: '900', opacity: 0.4}}>Created on</TextTheme>
                         </View>
-                        <Text style={{color: 'white', fontWeight: '900'}}>
+                        <TextTheme style={{color: 'white', fontWeight: '900'}}>
                             {mouths[month]} {hour%12 || 12}:{minute < 10 ? `0${minute}` : minute} {hour >= 12 ? 'PM' : 'AM'}
-                        </Text>
+                        </TextTheme>
                     </AnimateButton>
                 </View>
             </ScrollView>
@@ -203,15 +224,22 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
             style={{paddingInline: 20}}
             actionButtons={[{title: 'Add', backgroundColor: 'rgb(25,200,150)', onPress: () => setDescriptionModalOpen(false)}]}
         >
-            <Text style={{color: 'white', fontSize: 16, fontWeight: '900', paddingLeft: 8}}>Add Description</Text>
+            <Text style={{color, fontSize: 16, fontWeight: '900', paddingLeft: 8}}>Add Description</Text>
             <TextInput 
                 value={description}
-                style={{fontSize: 14, color: 'white', maxHeight: 280, opacity: 0.8}} 
+                style={{fontSize: 14, color, maxHeight: 280, opacity: 0.8}} 
                 multiline={true}
                 placeholder="Add description ..." 
                 onChangeText={setDescription}
             />
         </BottomModal>
+
+        <CategorySelectorModal 
+            visible={isCategoryModalOpen} 
+            setVisible={setCategoryModalOpen} 
+            selected={category}
+            setSelected={setCategory}
+        />
     </>)
 }
 
@@ -229,6 +257,8 @@ type AmountBoxProps = {
 }
 
 function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, setToAccount, fromAccount, toAccount}: AmountBoxProps){
+
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
 
     const navigation = useNavigation();
 
@@ -249,18 +279,18 @@ function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, 
             {mode == 'transfer' && <AccountSelector accounts={accounts} useAccount={toAccount} setUseAccount={setToAccount} title="To" />}
 
             <Pressable style={[styles.center, {width: '100%', alignSelf: 'center', marginBottom: 20}]} onPress={() => setOpenCal(true)}>
-                <Text style={{fontWeight: 800, fontSize: 14, color: 'white', opacity: 0.6}}>Enter Amount</Text>
-                <Text style={{fontWeight: '900', fontSize: 28, color: 'white'}}>
+                <TextTheme style={{fontWeight: 800, fontSize: 14, opacity: 0.6}}>Enter Amount</TextTheme>
+                <TextTheme style={{fontWeight: '900', fontSize: 28}}>
                     <Text>{amount || '0.00'}</Text>
                     <Text> INR</Text>
-                </Text>
+                </TextTheme>
             </Pressable>
 
             <BottomModal 
                 visible={isOpenCal} 
                 setVisible={setOpenCal}
-                backdropColor="rgba(0,0,0,.8)" 
-                style={{backgroundColor: 'black', paddingInline: 20}}
+                backdropColor="rgba(0,0,0,.6)" 
+                style={{backgroundColor, paddingInline: 20}}
                 actionButtons={[
                     {
                         title: 'Set', 
@@ -318,7 +348,7 @@ const styles = StyleSheet.create({
         width: 44,
         aspectRatio: 1,
         borderRadius: 1000,
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: 'gray'
     },
 
@@ -329,7 +359,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 44,
         aspectRatio: 1,
-        borderWidth: 1,
         borderColor: 'gray',
         borderRadius: 1000,
         gap: 4
@@ -342,7 +371,6 @@ const styles = StyleSheet.create({
         fontWeight: 900,
         borderBottomWidth: 1,
         borderBottomColor: 'gray',
-        color: "white"
     },
 
     box: {

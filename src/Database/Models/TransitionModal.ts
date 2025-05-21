@@ -17,10 +17,11 @@ type CreateProps = {
     mode: 'income' | 'expense' | 'transfer',
     fromAccountId: string,
     amount: number,
-    title?: string,
-    description?: string,
+    title: string,
+    description: string,
     createOn: createOnType,
-    toAccountId?: string,
+    toAccountId: string,
+    category: string
 }
 
 type TransitionModalProps = CreateProps & {id: string}
@@ -34,8 +35,9 @@ export default class TransitionModal{
     description: string;
     createOn: createOnType;
     toAccountId: string;
+    category: string;
 
-    constructor({mode, fromAccountId, amount, title='', description='', id, createOn, toAccountId=''}: TransitionModalProps) {
+    constructor({mode, fromAccountId, amount, title, description, id, createOn, toAccountId, category}: TransitionModalProps) {
         this.id = id;
         this.mode = mode;
         this.fromAccountId = fromAccountId;
@@ -44,6 +46,7 @@ export default class TransitionModal{
         this.description = description;
         this.createOn = createOn;
         this.toAccountId = toAccountId;
+        this.category = category;
     }
 
     save(): boolean {
@@ -57,13 +60,6 @@ export default class TransitionModal{
         }
         return false;
     }   
-    // updateInfo({title, description, createOn}: {title: string, description: string, createOn: createOnType}): void {
-    //     this.title = title;
-    //     this.description = description;
-    //     this.createOn = createOn;
-
-    //     Storage.set(this.id, se)
-    // }
 
     static createId(): string {
         let keys: string[] = Storage.getAllKeys();
@@ -74,10 +70,10 @@ export default class TransitionModal{
         return id;
     }
 
-    static create({mode, fromAccountId, amount, title, description, createOn, toAccountId}: CreateProps): TransitionModal {
+    static create({mode, fromAccountId, amount, title, description, createOn, toAccountId, category}: CreateProps): TransitionModal {
 
         let id: string = TransitionModal.createId();
-        let transiton = new TransitionModal({mode, fromAccountId, amount, title, description, id, createOn, toAccountId});
+        let transiton = new TransitionModal({mode, fromAccountId, amount, title, description, id, createOn, toAccountId, category});
 
         Storage.set(id, JSON.stringify(transiton));
 

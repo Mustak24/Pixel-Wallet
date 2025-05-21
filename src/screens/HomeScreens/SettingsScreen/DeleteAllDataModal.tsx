@@ -8,6 +8,7 @@ import { AppStorage } from "../../../Database/Storage";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import AccountModal from "../../../Database/Models/AccountModal";
 import TransitionModal from "../../../Database/Models/TransitionModal";
+import { ThemeContext } from "../../../Contexts/ThemeProvider";
 
 
 type PropsType = {
@@ -22,7 +23,9 @@ export default function DeleteAllData({visible, setVisible}: PropsType): React.J
     const navigation = useNavigation();
     
     
-    const {color, setAccounts, setTotalBalance} = useContext(AppContext);
+    const {setAccounts, setTotalBalance} = useContext(AppContext);
+    const {primaryColor: color} = useContext(ThemeContext);
+
     const [textValue, setTextValue] = useState('');
 
 

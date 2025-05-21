@@ -5,6 +5,7 @@ import { AppContext } from "../../../Contexts/AppContext";
 import TextTheme from "../../../components/Text/TextTheme";
 import { TextInput } from "react-native-gesture-handler";
 import FeatherIcons from 'react-native-vector-icons/Feather';
+import { ThemeContext } from "../../../Contexts/ThemeProvider";
 
 type UpdateNameModalProps = {
     visible: boolean,
@@ -13,7 +14,8 @@ type UpdateNameModalProps = {
 
 export default function UpdateNameModal({visible, setVisible}: UpdateNameModalProps): React.JSX.Element {
     
-    const {color, setUsername} = useContext(AppContext);
+    const {setUsername} = useContext(AppContext);
+    const {primaryColor: color} = useContext(ThemeContext);
 
     const [name, setName] = useState<string>(AppStorage.getString('username') ?? 'Undefined');
 
@@ -33,7 +35,7 @@ export default function UpdateNameModal({visible, setVisible}: UpdateNameModalPr
             actionButtons={[
                 {
                     title: 'Save',
-                    backgroundColor: 'rgb(50,200,150)',
+                    backgroundColor: 'rgb(15,150,100)',
                     onPress: updateName,
                     icon: <FeatherIcons name="save" size={20} color={'white'} />
                 }

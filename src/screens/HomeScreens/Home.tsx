@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, Dispatch, SetStateAction } from "react";
+import { useContext, useEffect, useState} from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import AnimateButton from "../../components/Buttons/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -14,36 +14,19 @@ import DateSelectorModal from "../../components/Modal/DateSelectorModal";
 import { HomeStackParamsList } from "../../Navigation/StackNavigation/HomeStackNavigator";
 import HaveNoTransition from "../../components/HaveNoTransition";
 import AccountModal from "../../Database/Models/AccountModal";
+import TextTheme from "../../components/Text/TextTheme";
+import { ThemeContext } from "../../Contexts/ThemeProvider";
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-
-type AppContextType = {
-    month: number,
-    setMonth: Dispatch<SetStateAction<number>>,
-    
-    year: number,
-    setYear: Dispatch<SetStateAction<number>>,
-
-    transitions: TransitionModal[],
-    setTransitions: Dispatch<SetStateAction<TransitionModal[]>>,
-    
-    transitionsRecord: {income: number, expense: number},
-    setTransitionsRecord: Dispatch<SetStateAction<{income: number, expense: number}>>,
-    
-}
-
-const defaultState: AppContextType = {
-    month: 0, setMonth: ()=>{},
-    year: 0, setYear: ()=>{},
-    transitions: [], setTransitions: ()=>{},
-    transitionsRecord: {income: 0, expense: 0}, setTransitionsRecord: ()=>{}
-}
 
 
 export default function Home({ navigation }: BottomTabScreenProps<HomeStackParamsList, 'home'>): React.JSX.Element {
 
     const {totalBalance, setTotalBalance, username, setUsername} = useContext(AppContext);
+
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
+    
 
     const [month, setMonth] = useState(new Date().getMonth());
     const [year, setYear] = useState(new Date().getFullYear());
@@ -85,22 +68,22 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
 
     return (
         <>
-            <View style={styles.root}>
+            <View style={[styles.root, {backgroundColor}]}>
                 <View style={styles.topHeader}>
                     <View style={{display: 'flex', flexDirection: isScrollCloseTop ? 'row' : 'column'}}>
-                        <Text style={{fontSize: isScrollCloseTop ? 16 : 12, color: 'white', fontWeight: '900'}}>
+                        <TextTheme style={{fontSize: isScrollCloseTop ? 16 : 12, fontWeight: '900'}}>
                             {isScrollCloseTop ? 'Hi, ' : 'INR'}
-                        </Text>
+                        </TextTheme>
 
-                        <Text style={{fontSize: 16, color: 'white', fontWeight: '900'}}>
+                        <TextTheme style={{fontSize: 16, fontWeight: '900'}}>
                             {isScrollCloseTop ? username : totalBalance || '0.00'}
-                        </Text>
+                        </TextTheme>
                     </View>
 
                     <View style={[styles.center, {flexDirection: 'row', gap: 20}]}>
                         <AnimateButton style={styles.topHeader_mounthSelector} onPress={() => setDateModalVisible(true)}>
-                            <MaterialIcons name="calendar-today" size={16} color={'white'} />
-                            <Text style={{color: 'white', fontWeight: '900', fontSize: 16}}>{months[month]}, {year}</Text>
+                            <MaterialIcons name="calendar-today" size={16} color={color} />
+                            <TextTheme style={{color, fontWeight: '900', fontSize: 16}}>{months[month]}, {year}</TextTheme>
                         </AnimateButton>
 
                         <TouchableOpacity onPress={() => navigation.navigate('settings')} style={styles.topHeader_menu}>
@@ -112,18 +95,18 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                 <ScrollView onScroll={handleScroll} style={{flex: 1, width: '100%', display: 'flex', paddingInline: 20}} >
                     <View style={{display: 'flex', alignItems: 'flex-start', gap: 20, flexDirection: 'column', width: '100%', marginTop: 32}}>
                         <View style={{display: 'flex', flexDirection: 'row', gap: 5, alignItems: 'flex-end'}}>
-                            <Text style={{color: 'white', fontWeight: '900', fontSize: 24}}>INR:</Text>
-                            <Text style={{fontSize: 24, color: 'white', fontWeight: '900'}}>{totalBalance || '0.00'}</Text>
+                            <TextTheme style={{fontWeight: '900', fontSize: 24}}>INR:</TextTheme>
+                            <TextTheme style={{fontSize: 24, fontWeight: '900'}}>{totalBalance || '0.00'}</TextTheme>
                         </View>
 
                         <View style={[styles.center, {flexDirection: 'row', gap: 12, position: 'relative'}]}>
-                            <Pressable style={{height: 100, backgroundColor: 'rgb(25,200,150)', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
+                            <Pressable onPress={() => {}} style={{height: 100, backgroundColor: 'rgb(25,200,150)', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
                                 <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
                                     <FeatherIcons name="download" size={24} color={'white'} />
-                                    <Text style={{color: 'white', fontWeight: 800}}>INCOME</Text>
+                                    <Text style={{fontWeight: 800, color: 'white'}}>INCOME</Text>
                                 </View>
 
-                                <Text style={{color: 'white', fontSize: 22}}>
+                                <Text style={{fontSize: 22, color: 'white'}}>
                                     <Text style={{fontWeight: 800}}>{transitionsRecord.income || '0.00'}</Text>
                                     <Text> INR</Text>
                                 </Text>
@@ -132,10 +115,10 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                             <View style={{height: 100, backgroundColor: 'gray', borderRadius: 20, flex: 1, display: 'flex', padding: 20, gap: 12}}>
                                 <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
                                     <FeatherIcons name="upload" size={24} color={'white'} />
-                                    <Text style={{color: 'white', fontWeight: 800}}>EXPENSES</Text>
+                                    <Text style={{fontWeight: 800, color: 'white'}}>EXPENSES</Text>
                                 </View>
 
-                                <Text style={{color: 'white', fontSize: 22}}>
+                                <Text style={{fontSize: 22, color: 'white'}}>
                                     <Text style={{fontWeight: 800}}>{transitionsRecord.expense || '0.00'}</Text>
                                     <Text> INR</Text>
                                 </Text>
@@ -158,6 +141,7 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                                         toAccountId={transition.toAccountId}
                                         amount={transition.amount} 
                                         title={transition.title} 
+                                        category={transition.category}
                                         description={transition.description} 
                                         createOn={transition.createOn} 
                                         onPress={() => navigation.navigate('update-transition', {transition})}
@@ -178,13 +162,13 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                     <TypingText 
                         text="Welcome" 
                         speed={200}
-                        style={{color: 'white', fontSize: 18, fontWeight: 900, marginBottom: 20}} 
+                        style={{color, fontSize: 18, fontWeight: 900, marginBottom: 20}} 
                     />
                     <TextInput
                         placeholder="Enter Your Name"
                         value={username}
                         onChangeText={setUsername}
-                        style={{fontSize: 20, fontWeight: 900, color: 'white', paddingInline: 2, borderBottomColor: 'gray', borderBottomWidth: 1}}
+                        style={{fontSize: 20, fontWeight: 900, color: color, paddingInline: 2, borderBottomColor: 'gray', borderBottomWidth: 1}}
                         autoFocus={true}
                     />
                 </BottomModal>
@@ -200,7 +184,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '100%',
         flex: 1,
-        backgroundColor: 'black',
         paddingTop: 44,
     },
 

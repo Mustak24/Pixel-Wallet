@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Text } from 'react-native';
+import TextTheme from './TextTheme';
 
 type TypingHeadingProps = {
     text: string;
@@ -22,5 +22,5 @@ export default function TypingText({ text, speed = 100, style } : TypingHeadingP
     return () => clearInterval(interval);
   }, []);
 
-  return <Text style={style}>{displayedText}</Text>;
+  return <TextTheme style={style}>{displayedText}</TextTheme>;
 };
