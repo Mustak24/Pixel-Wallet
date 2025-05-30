@@ -2,13 +2,13 @@ import { View } from "react-native";
 import BottomModal from "../../../components/Modal/BottomModal";
 import { Text, TextInput } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useState } from "react";
-import { AppContext } from "../../../Contexts/AppContext";
+import { useState } from "react";
+import { useAppContext } from "../../../Contexts/AppContext";
 import { AppStorage } from "../../../Database/Storage";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import AccountModal from "../../../Database/Models/AccountModal";
 import TransitionModal from "../../../Database/Models/TransitionModal";
-import { ThemeContext } from "../../../Contexts/ThemeProvider";
+import { useTheme } from "../../../Contexts/ThemeProvider";
 
 
 type PropsType = {
@@ -23,8 +23,8 @@ export default function DeleteAllData({visible, setVisible}: PropsType): React.J
     const navigation = useNavigation();
     
     
-    const {setAccounts, setTotalBalance} = useContext(AppContext);
-    const {primaryColor: color} = useContext(ThemeContext);
+    const {setAccounts, setTotalBalance} = useAppContext();
+    const {primaryColor: color} = useTheme();
 
     const [textValue, setTextValue] = useState('');
 
@@ -71,7 +71,7 @@ export default function DeleteAllData({visible, setVisible}: PropsType): React.J
                     value={textValue} 
                     onChangeText={setTextValue}
                     placeholder='Type here...'
-                    style={{fontSize: 18, fontWeight: 900, color, opacity: textValue ? 1 : 0.4, borderBottomColor: 'gray', borderBottomWidth: 1, marginTop: 20}}
+                    style={{fontSize: 18, fontWeight: 900, color, opacity: textValue ? 1 : 0.5, borderBottomColor: 'gray', borderBottomWidth: 1, marginTop: 20}}
                     placeholderTextColor={color}
                     autoFocus={true}
                 />

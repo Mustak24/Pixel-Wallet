@@ -1,11 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useState } from "react";
-import { AppContext } from "../../../Contexts/AppContext";
+import { useState } from "react";
+import { useAppContext } from "../../../Contexts/AppContext";
 import AccountModal from "../../../Database/Models/AccountModal";
 import BottomModal from "../../../components/Modal/BottomModal";
 import { View } from "react-native";
 import { Text, TextInput } from "react-native-gesture-handler";
-import { ThemeContext } from "../../../Contexts/ThemeProvider";
+import { useTheme } from "../../../Contexts/ThemeProvider";
 
 
 type PropsType = {
@@ -16,8 +16,8 @@ type PropsType = {
 
 export default function DeleteAccountModal({visible, setVisible, account}: PropsType): React.JSX.Element {
 
-    const {setAccounts, setTotalBalance} = useContext(AppContext);
-    const {primaryColor: color} = useContext(ThemeContext);
+    const {setAccounts, setTotalBalance} = useAppContext();
+    const {primaryColor: color} = useTheme();
     
     const [textValue, setTextValue] = useState('');
 
@@ -52,7 +52,7 @@ export default function DeleteAccountModal({visible, setVisible, account}: Props
                     value={textValue} 
                     onChangeText={setTextValue}
                     placeholder='Enter Account Name'
-                    style={{fontSize: 18, fontWeight: 900, color, opacity: textValue ? 1 : 0.4, borderBottomColor: 'gray', borderBottomWidth: 1, marginTop: 20}}
+                    style={{fontSize: 18, fontWeight: 900, color, opacity: textValue ? 1 : 0.5, borderBottomColor: 'gray', borderBottomWidth: 1, marginTop: 20}}
                     placeholderTextColor={color}
                     autoFocus={true}
                 />

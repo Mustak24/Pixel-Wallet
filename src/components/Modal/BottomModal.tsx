@@ -2,8 +2,8 @@
 import { Modal,  PressableProps, StyleSheet, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View, ViewStyle } from "react-native";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import { Text } from "react-native-gesture-handler";
-import { useContext } from "react";
-import { ThemeContext } from "../../Contexts/ThemeProvider";
+import { useTheme } from "../../Contexts/ThemeProvider";
+import AlertCard from "../Alert/AlertCard";
 
 type BottomModalProps = {
     visible: boolean,
@@ -16,15 +16,17 @@ type BottomModalProps = {
     backdropColor?: string,
     closeOnBack?: boolean,
     animationType?: "none" | "slide" | "fade",
-    onClose?: () => void
+    onClose?: () => void,
+    alertId?: string
 }
 
-export default function BottomModal({visible, setVisible, children, style, backdropColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}, onClose=()=>{}}: BottomModalProps): React.JSX.Element {
+export default function BottomModal({visible, setVisible, children, style, backdropColor='rgba(0, 0, 0, 0.50)', actionButtons, closeOnBack=true, animationType='slide', bottomOpationStyle={}, onClose=()=>{}, alertId}: BottomModalProps): React.JSX.Element {
 
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useContext(ThemeContext)
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useTheme()
 
     return (
         <Modal backdropColor={backdropColor} animationType={animationType} visible={visible} onRequestClose={() => {setVisible(!closeOnBack); onClose();}}>
+            {alertId && <AlertCard id={alertId} />}
             <View style={[styles.root]}>
                 <TouchableWithoutFeedback onPress={() => setVisible(false)} >
                     <View style={{width: '100%', flex: 1}}></View>

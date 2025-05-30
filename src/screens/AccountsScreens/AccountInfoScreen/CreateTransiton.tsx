@@ -1,9 +1,9 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Pressable, View } from "react-native";
 import AccountModal from "../../../Database/Models/AccountModal";
 import style from '../../../../AppStyle'
-import { AppContext, months } from "../../../Contexts/AppContext";
+import { months, useAppContext } from "../../../Contexts/AppContext";
 import { ScrollView, Text, TextInput } from "react-native-gesture-handler";
 import AnimateButton from "../../../components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather'
@@ -12,8 +12,9 @@ import BottomModal from "../../../components/Modal/BottomModal";
 import Calculator from "../../../components/Calculator";
 import TransitionModal from "../../../Database/Models/TransitionModal";
 import { AccountStackParamsList } from "../../../Navigation/StackNavigation/AccountsStackNavigator";
-import { ThemeContext } from "../../../Contexts/ThemeProvider";
+import { useTheme } from "../../../Contexts/ThemeProvider";
 import CategorySelectorModal from "../../../components/Modal/CategorySelectorModal";
+import SafeView from "../../../components/SafeView";
 
 type transitionInfoType = {
     mode: 'income' | 'expense',
@@ -40,8 +41,8 @@ const transitionInfo: transitionInfoType[] = [
 
 export default function CreateTranstion({route, navigation}: StackScreenProps<AccountStackParamsList, 'create-transition'>): React.JSX.Element {
 
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useContext(ThemeContext);
-    const {setTotalBalance, setAccounts} = useContext(AppContext);
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useTheme();
+    const {setTotalBalance, setAccounts} = useAppContext();
     
 
     const [account, setAccount] = useState<AccountModal>(route.params.account);
@@ -90,8 +91,9 @@ export default function CreateTranstion({route, navigation}: StackScreenProps<Ac
     return (<>
         <KeyboardAvoidingView 
             behavior='padding'
-            style={[style.flex, style.itemCenter, style.justifyBetween, style.width100, style.height100, {backgroundColor, paddingTop: 44}]}
+            style={[style.flex, style.itemCenter, style.justifyBetween, style.width100, style.height100, {backgroundColor}]}
         >
+            <SafeView/>
             <ScrollView 
                 style={[style.flex, style.width100, style.height100, {paddingBlock: 10, paddingInline: 20}]}
             >

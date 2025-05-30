@@ -1,11 +1,11 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import BottomModal from "../../../components/Modal/BottomModal";
 import { AppStorage } from "../../../Database/Storage";
-import { AppContext } from "../../../Contexts/AppContext";
+import { useAppContext } from "../../../Contexts/AppContext";
 import TextTheme from "../../../components/Text/TextTheme";
 import { TextInput } from "react-native-gesture-handler";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import { ThemeContext } from "../../../Contexts/ThemeProvider";
+import { useTheme } from "../../../Contexts/ThemeProvider";
 
 type UpdateNameModalProps = {
     visible: boolean,
@@ -14,8 +14,8 @@ type UpdateNameModalProps = {
 
 export default function UpdateNameModal({visible, setVisible}: UpdateNameModalProps): React.JSX.Element {
     
-    const {setUsername} = useContext(AppContext);
-    const {primaryColor: color} = useContext(ThemeContext);
+    const {setUsername} = useAppContext();
+    const {primaryColor: color} = useTheme();
 
     const [name, setName] = useState<string>(AppStorage.getString('username') ?? 'Undefined');
 
@@ -47,7 +47,8 @@ export default function UpdateNameModal({visible, setVisible}: UpdateNameModalPr
                 value={name}
                 onChangeText={setName}
                 placeholder="Enter Name..."
-                style={{color, fontWeight: 900, fontSize: 28}}
+                placeholderTextColor={color}
+                style={{color, fontWeight: 900, fontSize: 28, opacity: name ? 1 : 0.5}}
                 autoCapitalize="sentences"
                 autoFocus={true}
             />

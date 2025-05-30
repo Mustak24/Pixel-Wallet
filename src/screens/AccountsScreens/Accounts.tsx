@@ -2,21 +2,22 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import TypingText from "../../components/Text/TypingText";
 import AccountModal from "../../Database/Models/AccountModal";
 import AccountCard from "../../components/Cards/AccountCard";
-import { useContext } from "react";
-import { AppContext } from "../../Contexts/AppContext";
+import { useAppContext } from "../../Contexts/AppContext";
 import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../../Navigation/StackNavigation/AccountsStackNavigator";
-import { ThemeContext } from "../../Contexts/ThemeProvider";
+import { useTheme } from "../../Contexts/ThemeProvider";
 import TextTheme from "../../components/Text/TextTheme";
+import SafeView from "../../components/SafeView";
 
 
 export default function Accounts({navigation}: StackScreenProps<AccountStackParamsList, 'accounts'>): React.JSX.Element {
 
-    const {accounts, totalBalance} = useContext(AppContext);
-    const {primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
+    const {accounts, totalBalance} = useAppContext();
+    const {primaryBackgroundColor: backgroundColor} = useTheme();
 
     return (
         <View style={[styles.root, {backgroundColor}]}>
+            <SafeView/>
             <TypingText text="Accounts" style={styles.topHeading} />
             <TextTheme style={styles.topHeading_balance}>{`Total: INR ${totalBalance || '0.00'}`}</TextTheme>
             
@@ -49,8 +50,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'column',
         width: '100%',
-        flex: 1,
-        paddingTop: 44,
+        flex: 1
     },
 
     center: {

@@ -1,12 +1,11 @@
 import { View } from "react-native";
 import style from '../../AppStyle'
-import FeatherIcons from 'react-native-vector-icons/Feather'
-import { useContext } from "react";
+import FeatherIcons from 'react-native-vector-icons/Feather';
 import TextTheme from "./Text/TextTheme";
-import { ThemeContext } from "../Contexts/ThemeProvider";
+import { useTheme } from "../Contexts/ThemeProvider";
 
 export default function HaveNoTransition({text="You don't have any transition."}:{text?: string}): React.JSX.Element {
-    const {primaryColor: color} = useContext(ThemeContext);
+    const {primaryColor: color} = useTheme();
 
     return (
         <View style={[style.center, style.width100, {padding: 30, opacity: 0.6}]}>

@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction, useEffect, useState } from "react"
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import { AppStorage } from "../Database/Storage"
 
 
@@ -20,7 +20,7 @@ type ThemeContextType = {
     setSecondaryBackgroundColor: Dispatch<SetStateAction<string>>
 }
 
-export const ThemeContext = createContext<ThemeContextType>({
+const ThemeContext = createContext<ThemeContextType>({
     theme: 'light', setTheme: () => {},
     primaryColor: '', setPrimaryColor: () => {},
     secondaryColor: '', setSecondaryColor: () => {},
@@ -82,4 +82,9 @@ export default function ThemeProvider ({children}: {children: React.ReactNode}):
     }
 
     return <ThemeContext.Provider value={states} >{children}</ThemeContext.Provider>
+}
+
+
+export function useTheme(): ThemeContextType{
+    return useContext(ThemeContext);
 }

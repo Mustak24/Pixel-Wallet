@@ -2,9 +2,8 @@
 import BottomModal from "./BottomModal";
 import TextTheme from "../Text/TextTheme";
 import { View } from "react-native";
-import style from '../../../AppStyle'
-import { useContext } from "react";
-import { ThemeContext } from "../../Contexts/ThemeProvider";
+import style from '../../../AppStyle';
+import { useTheme } from "../../Contexts/ThemeProvider";
 import AnimateButton from "../Buttons/AnimateButton";
 
 type PropsType = {
@@ -25,7 +24,7 @@ const categorys: string[] = [
 
 export default function CategorySelectorModal({visible, setVisible, selected, setSelected}: PropsType): React.JSX.Element {
 
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useContext(ThemeContext);
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useTheme();
 
     return (
         <BottomModal 

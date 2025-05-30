@@ -2,19 +2,20 @@ import { Animated, Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInpu
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AnimateButton from "./Buttons/AnimateButton";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import BottomModal from "./Modal/BottomModal";
 import Calculator from "./Calculator";
 import AccountModal from "../Database/Models/AccountModal";
-import { AppContext } from "../Contexts/AppContext";
+import { useAppContext } from "../Contexts/AppContext";
 import TextTheme from "./Text/TextTheme";
-import { ThemeContext } from "../Contexts/ThemeProvider";
+import { useTheme } from "../Contexts/ThemeProvider";
+import { useAlert } from "./Alert/AlertProvider";
 
 
 export default function BottomTabNavbar({navigation, state}: BottomTabBarProps): React.JSX.Element {
 
-    const {primaryColor: color, secondaryBackgroundColor} = useContext(ThemeContext)
+    const {primaryColor: color, secondaryBackgroundColor} = useTheme()
 
     const currentRouteName = state.routes[state.index].name;
     const isActive = (route: string) => route === currentRouteName;
@@ -160,8 +161,9 @@ type CreateAccountModalProps = {
 
 function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): React.JSX.Element {
 
-    const {setAccounts, setTotalBalance} = useContext(AppContext);
-    const {primaryColor: color} = useContext(ThemeContext)
+    const {setAccounts, setTotalBalance} = useAppContext();
+    const {primaryColor: color} = useTheme();
+    const {alert, setAlert} = useAlert();
 
     const [name, setName] = useState<string>('');
     const [balance, setBalance] = useState<number>(0);
@@ -170,7 +172,7 @@ function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): Rea
     const [isCalOpen, setCalOpen] = useState(false);
 
     function create() {
-        if(!name) return;
+        if(!name) return setAlert({type: 'error', massage: 'Plase enter account name', id: 'modal'});
         AccountModal.create({name, balance, backgroundColor});
 
         setName('');
@@ -192,10 +194,11 @@ function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): Rea
                         <View style={{display: 'flex', justifyContent: 'flex-end', flex: 1}}>
                             <TextInput 
                                 value={name} 
-                                placeholder="Account Name" 
-                                style={{fontSize: 18, fontWeight: '900', color}} 
+                                placeholder="Account Name"
+                                placeholderTextColor={color} 
+                                style={{fontSize: 18, fontWeight: '900', color, opacity: name ? 1 : 0.5}} 
                                 onChangeText={setName}
-                                />
+                            />
                             <View style={{width: '100%', backgroundColor: 'gray', height: 1, position: 'relative', top: -5}}></View>
                         </View>
                     </View>

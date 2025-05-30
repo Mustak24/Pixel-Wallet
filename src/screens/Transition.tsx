@@ -2,20 +2,21 @@ import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TextInpu
 import { View } from "react-native";
 import AnimateButton from "../components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import BottomModal from "../components/Modal/BottomModal";
 import Calculator from "../components/Calculator";
 import TransitionModal from "../Database/Models/TransitionModal";
 import AccountModal from "../Database/Models/AccountModal";
-import { AppContext } from "../Contexts/AppContext";
+import { useAppContext } from "../Contexts/AppContext";
 import { TabParamsList } from "../Navigation/TabNavigation";
 import { useNavigation } from "@react-navigation/native";
 import AccountSelector from "../components/AccountSelector";
-import { ThemeContext } from "../Contexts/ThemeProvider";
+import { useTheme } from "../Contexts/ThemeProvider";
 import TextTheme from "../components/Text/TextTheme";
 import style from '../../AppStyle'
 import CategorySelectorModal from "../components/Modal/CategorySelectorModal";
+import SafeView from "../components/SafeView";
 
 
 type transitionInfoType = {
@@ -56,8 +57,8 @@ const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 export default function Transition({route, navigation}: BottomTabScreenProps<TabParamsList, 'transition'>): React.JSX.Element {
 
-    const {accounts, setTotalBalance, setAccounts} = useContext(AppContext);
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useContext(ThemeContext)
+    const {accounts, setTotalBalance, setAccounts} = useAppContext();
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useTheme()
 
     const [amount, setAmount] = useState<number>(0)
     const [transitionMode, setTransitionMode] = useState<transitionMode>(route.params.mode);
@@ -118,6 +119,7 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
     
     return (<>
         <KeyboardAvoidingView  behavior='padding' style={[styles.root, {backgroundColor}]}>
+            <SafeView/>
             <ScrollView style={styles.scrollView}>
                 <View style={styles.topNav}>
                     <AnimateButton style={styles.topNav_closeBtn} onPress={() => navigation.navigate('home-stack-navigator')}>
@@ -151,10 +153,11 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
                 <View style={{marginBlock: 20}}>
                     <TextInput 
                         value={title}
-                        style={[styles.titleInput, {color}]} 
+                        style={[styles.titleInput, {color, opacity: title ? 1 : 0.5}]} 
                         placeholder={`${transitionMode[0].toLocaleUpperCase() + transitionMode.slice(1)} title`} 
                         onChangeText={setTitle}
-                        />
+                        placeholderTextColor={color}
+                    />
                 </View>
 
                 <AnimateButton 
@@ -227,10 +230,11 @@ export default function Transition({route, navigation}: BottomTabScreenProps<Tab
             <Text style={{color, fontSize: 16, fontWeight: '900', paddingLeft: 8}}>Add Description</Text>
             <TextInput 
                 value={description}
-                style={{fontSize: 14, color, maxHeight: 280, opacity: 0.8}} 
+                style={{fontSize: 14, color, maxHeight: 280, opacity: description ? 0.8 : 0.5}} 
                 multiline={true}
                 placeholder="Add description ..." 
                 onChangeText={setDescription}
+                placeholderTextColor={color}
             />
         </BottomModal>
 
@@ -258,7 +262,7 @@ type AmountBoxProps = {
 
 function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, setToAccount, fromAccount, toAccount}: AmountBoxProps){
 
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useTheme();
 
     const navigation = useNavigation();
 
@@ -314,8 +318,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
-        height: '100%',
-        paddingTop: 44,
+        height: '100%'
     },
     
     scrollView: {

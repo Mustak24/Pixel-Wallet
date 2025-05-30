@@ -3,7 +3,7 @@ import { Pressable, ScrollView, Text, TouchableHighlight, View } from "react-nat
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import TextTheme from '../../../components/Text/TextTheme';
-import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import TransitionModal from '../../../Database/Models/TransitionModal';
 import AccountModal from '../../../Database/Models/AccountModal';
 import DateSelectorModal from '../../../components/Modal/DateSelectorModal';
@@ -15,7 +15,8 @@ import UpdateAccountInfoModal from './UpdateAccountInfoModal';
 import DeleteAccountModal from './DeleteAccountModal';
 import HaveNoTransition from '../../../components/HaveNoTransition';
 import { useNavigation } from '@react-navigation/native';
-import { ThemeContext } from '../../../Contexts/ThemeProvider';
+import { useTheme } from '../../../Contexts/ThemeProvider';
+import SafeView from '../../../components/SafeView';
 
 
 type accountInfoCardType = {
@@ -26,7 +27,7 @@ type accountInfoCardType = {
 }
 
 export default function AccountInfo({route, navigation}: StackScreenProps<AccountStackParamsList, 'account-info'>): React.JSX.Element {
-    const {primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
+    const {primaryBackgroundColor: backgroundColor} = useTheme();
 
     const {account: acc} = route.params;
     const transitionsRecord: {income: TransitionModal[], expense: TransitionModal[]} = acc.getTransitionsRecord();
@@ -55,7 +56,8 @@ export default function AccountInfo({route, navigation}: StackScreenProps<Accoun
 
     return (
         <>
-            <ScrollView style={{width: '100%', height: '100%', backgroundColor: account.backgroundColor, paddingTop: 44}}>
+            <ScrollView style={{width: '100%', height: '100%', backgroundColor: account.backgroundColor}}>
+                <SafeView/>
                 <View style={[style.flex, style.itemCenter, style.justifyBetween, style.flexRow, {paddingInline: 20, paddingBottom: 14}]}>
                     <Pressable 
                         onPress={() => navigation.goBack()} 
@@ -160,7 +162,7 @@ type TransitionsRecordsType = {
 }
 
 function TransitionsRecords({account, month, setMonth, year, setYear, transitions, setTransitions}: TransitionsRecordsType): React.JSX.Element {
-    const {primaryColor: color} = useContext(ThemeContext);
+    const {primaryColor: color} = useTheme();
 
     const [isDateModalVisible, setDateModalVisible] = useState<boolean>(false)
     const navigation = useNavigation<StackNavigationProp<AccountStackParamsList, 'account-info'>>();

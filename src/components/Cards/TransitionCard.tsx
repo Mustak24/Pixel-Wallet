@@ -3,8 +3,7 @@ import FeatherIcons from 'react-native-vector-icons/Feather';
 import AccountModal from "../../Database/Models/AccountModal";
 import { createOnType } from "../../Database/Models/TransitionModal";
 import AnimateButton from "../Buttons/AnimateButton";
-import { useContext } from "react";
-import { ThemeContext } from "../../Contexts/ThemeProvider";
+import { useTheme } from "../../Contexts/ThemeProvider";
 import TextTheme from "../Text/TextTheme";
 import style from '../../../AppStyle'
 
@@ -25,7 +24,7 @@ const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'
 
 export default function TransitionCard({id, mode, title, category, description, fromAccountId, toAccountId, createOn, amount, onPress=()=>{}}: TransitionCardProps): React.JSX.Element {
 
-    const {secondaryBackgroundColor, primaryColor, primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
+    const {secondaryBackgroundColor, primaryColor, primaryBackgroundColor: backgroundColor} = useTheme();
 
     const color = mode == 'income' ? 'rgb(25,200,150)' : mode == 'expense' ? 'gray' : 'rgb(130,100,255)';
     const fromAccountName = AccountModal.findById(fromAccountId)?.name;

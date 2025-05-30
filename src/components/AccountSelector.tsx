@@ -1,15 +1,14 @@
 import { Pressable, View } from "react-native"
 import { ScrollView, Text } from "react-native-gesture-handler"
 import RoundedView from "./RoundedView"
-import AccountModal from "../Database/Models/AccountModal"
-import { useContext } from "react"
-import { ThemeContext } from "../Contexts/ThemeProvider"
+import AccountModal from "../Database/Models/AccountModal";
+import { useTheme } from "../Contexts/ThemeProvider"
 
 type Props = {accounts: AccountModal[], useAccount: AccountModal, setUseAccount: (acc: AccountModal) => void, title: string}
 
 export default function AccountSelector({accounts, useAccount, setUseAccount, title}: Props) {
 
-    const {primaryColor: color} = useContext(ThemeContext)
+    const {primaryColor: color} = useTheme()
 
     return (
         <View style={{display: 'flex', width: '100%', alignItems: 'flex-start'}} >

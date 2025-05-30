@@ -1,12 +1,12 @@
-import { Dispatch, SetStateAction, useContext, useState } from "react";
-import { AppContext } from "../../../Contexts/AppContext";
+import { Dispatch, SetStateAction, useState } from "react";
+import { useAppContext } from "../../../Contexts/AppContext";
 import AccountModal from "../../../Database/Models/AccountModal";
 import BottomModal from "../../../components/Modal/BottomModal";
 import { View, Text, TextInput, ScrollView, Pressable } from "react-native";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Calculator from "../../../components/Calculator";
 import TransitionModal from "../../../Database/Models/TransitionModal";
-import { ThemeContext } from "../../../Contexts/ThemeProvider";
+import { useTheme } from "../../../Contexts/ThemeProvider";
 import TextTheme from "../../../components/Text/TextTheme";
 
 const colors = ['rgb(170,50,50)', 'rgb(170,100,50)', 'rgb(170,140,50)', 'rgb(170,170,50)', 'rgb(50,170,100)', 'rgb(25,200,150)', 'rgb(50,150,120)', 'rgb(50,170,170)','rgb(50,130,170)', 'rgb(50,100,170)','rgb(100,50,170)', 'rgb(120,50,170)', 'rgb(170,50,150)', 'rgb(170,50,100)']
@@ -22,8 +22,8 @@ type UpdateAccountInfoModalProps = {
 
 export default function UpdateAccountInfoModal({visible, setVisible, account, setTransitions, month, year}: UpdateAccountInfoModalProps): React.JSX.Element {
 
-    const {setAccounts, setTotalBalance} = useContext(AppContext);
-    const {primaryColor: color} = useContext(ThemeContext);
+    const {setAccounts, setTotalBalance} = useAppContext();
+    const {primaryColor: color} = useTheme();
 
     const [name, setName] = useState<string>(account.name);
     const [balance, setBalance] = useState<number>(account.balance);
@@ -38,6 +38,8 @@ export default function UpdateAccountInfoModal({visible, setVisible, account, se
             let tra = TransitionModal.create({
                 mode: account.balance < balance ? 'income' : 'expense', 
                 title: 'Adjust Balance', 
+                description: '',    
+                category: '',
                 amount: Math.abs(balance - account.balance), 
                 fromAccountId: account.id, 
                 toAccountId: '', 
@@ -79,9 +81,10 @@ export default function UpdateAccountInfoModal({visible, setVisible, account, se
                             <TextInput
                                 value={name} 
                                 placeholder="Account Name" 
-                                style={{fontSize: 18, fontWeight: '900', color}} 
+                                placeholderTextColor={color}
+                                style={{fontSize: 18, fontWeight: '900', color, opacity: name ? 1 : 0.5}} 
                                 onChangeText={setName}
-                                />
+                            />
                             <View style={{width: '100%', backgroundColor: 'gray', height: 1, position: 'relative', top: -5}}></View>
                         </View>
                     </View>

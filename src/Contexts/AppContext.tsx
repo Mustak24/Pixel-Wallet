@@ -1,4 +1,4 @@
-import { createContext, Dispatch, SetStateAction, useEffect, useState } from "react"
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import AccountModal from "../Database/Models/AccountModal";
 import { AppStorage } from "../Database/Storage";
 
@@ -31,7 +31,7 @@ const defaultState = {
 
 export const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-export const AppContext = createContext<AppContextType>(defaultState);
+const AppContext = createContext<AppContextType>(defaultState);
 
 export default function AppContextProvider({children}: {children: React.ReactNode}){
 
@@ -52,4 +52,9 @@ export default function AppContextProvider({children}: {children: React.ReactNod
     return <AppContext.Provider value={states}>
         {children}
     </AppContext.Provider>
+}
+
+
+export function useAppContext(): AppContextType {
+    return useContext(AppContext);
 }

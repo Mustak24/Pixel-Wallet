@@ -2,17 +2,17 @@ import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TextInpu
 import { View } from "react-native";
 import AnimateButton from "../components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
-import { useContext, useState } from "react";
+import { useState } from "react";
 import BottomModal from "../components/Modal/BottomModal";
 import Calculator from "../components/Calculator";
 import AccountModal from "../Database/Models/AccountModal";
-import { AppContext } from "../Contexts/AppContext";
+import { useAppContext } from "../Contexts/AppContext";
 import { HomeStackParamsList } from "../Navigation/StackNavigation/HomeStackNavigator";
 import { StackScreenProps } from "@react-navigation/stack";
 import { AccountStackParamsList } from "../Navigation/StackNavigation/AccountsStackNavigator";
 import TransitionModal from "../Database/Models/TransitionModal";
 import AccountSelector from "./AccountSelector";
-import { ThemeContext } from "../Contexts/ThemeProvider";
+import { useTheme } from "../Contexts/ThemeProvider";
 import TextTheme from "./Text/TextTheme";
 import style from '../../AppStyle'
 import CategorySelectorModal from "./Modal/CategorySelectorModal";
@@ -57,8 +57,8 @@ type Props = StackScreenProps<HomeStackParamsList, 'update-transition'> | StackS
 
 export default function UpdateTransition({navigation, route}: Props): React.JSX.Element {
 
-    const {accounts, setAccounts, setTotalBalance} = useContext(AppContext);
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useContext(ThemeContext);
+    const {accounts, setAccounts, setTotalBalance} = useAppContext();
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useTheme();
     const {transition} = route.params;
 
     const [amount, setAmount] = useState<number>(transition.amount)
@@ -151,10 +151,11 @@ export default function UpdateTransition({navigation, route}: Props): React.JSX.
                 <View style={{marginBlock: 20}}>
                     <TextInput 
                         value={title}
-                        style={[styles.titleInput, {color}]} 
+                        style={[styles.titleInput, {color, opacity: title ? 1 : 0.5}]} 
                         placeholder={`${transitionMode[0].toLocaleUpperCase() + transitionMode.slice(1)} title`} 
+                        placeholderTextColor={color}
                         onChangeText={setTitle}
-                        />
+                    />
                 </View>
 
                 <AnimateButton 
@@ -271,7 +272,7 @@ type AmountBoxtransition = {
 
 function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, setToAccount, fromAccount, toAccount}: AmountBoxtransition){
 
-    const {primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
+    const {primaryBackgroundColor: backgroundColor} = useTheme();
 
     const [isOpenCal, setOpenCal] = useState<boolean>(false);
 

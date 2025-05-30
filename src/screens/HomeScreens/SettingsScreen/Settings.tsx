@@ -3,20 +3,21 @@ import TextTheme from "../../../components/Text/TextTheme";
 import { ScrollView, Text } from "react-native-gesture-handler";
 import AnimateButton from "../../../components/Buttons/AnimateButton";
 import style from '../../../../AppStyle'
-import { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../../../Contexts/AppContext";
+import { useEffect, useRef, useState } from "react";
+import { useAppContext } from "../../../Contexts/AppContext";
 import { useNavigation } from "@react-navigation/native";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import UpdateNameModal from "./UpdateNameModal";
 import DeleteAllData from "./DeleteAllDataModal";
-import { ThemeContext } from "../../../Contexts/ThemeProvider";
+import { useTheme } from "../../../Contexts/ThemeProvider";
+import SafeView from "../../../components/SafeView";
 
 
 export default function Settings(): React.JSX.Element {
-    const {username} = useContext(AppContext);
+    const {username} = useAppContext();
 
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor, theme, setTheme} = useContext(ThemeContext)
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor, theme, setTheme} = useTheme()
     const navigation = useNavigation();
 
     const [isUpdateNameModalVisible, setUpdateNameModalVisible] = useState<boolean>(false);
@@ -38,7 +39,8 @@ export default function Settings(): React.JSX.Element {
     }, [])
 
     return (
-        <View style={[style.flex, style.itemCenter, style.width100, style.height100, {paddingTop: 40, paddingInline: 20, backgroundColor}]}>
+        <View style={[style.flex, style.itemCenter, style.width100, style.height100, {paddingInline: 20, backgroundColor}]}>
+            <SafeView/>
             <View style={[style.flex, style.itemCenter, style.justifyBetween, style.flexRow, style.width100, {paddingBottom: 20}]}>
                 <TouchableOpacity
                     style={{...style.center, width: 44, aspectRatio: 1, borderRadius: 100, borderWidth: 2, borderColor: color}} 

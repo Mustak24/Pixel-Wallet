@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import AnimateButton from "../../components/Buttons/AnimateButton";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -7,7 +7,7 @@ import TransitionCard from "../../components/Cards/TransitionCard";
 import TransitionModal from "../../Database/Models/TransitionModal";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import BottomModal from "../../components/Modal/BottomModal";
-import { AppContext } from "../../Contexts/AppContext";
+import { useAppContext } from "../../Contexts/AppContext";
 import { AppStorage } from "../../Database/Storage";
 import TypingText from "../../components/Text/TypingText";
 import DateSelectorModal from "../../components/Modal/DateSelectorModal";
@@ -15,7 +15,8 @@ import { HomeStackParamsList } from "../../Navigation/StackNavigation/HomeStackN
 import HaveNoTransition from "../../components/HaveNoTransition";
 import AccountModal from "../../Database/Models/AccountModal";
 import TextTheme from "../../components/Text/TextTheme";
-import { ThemeContext } from "../../Contexts/ThemeProvider";
+import { useTheme } from "../../Contexts/ThemeProvider";
+import SafeView from "../../components/SafeView";
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -23,9 +24,9 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 export default function Home({ navigation }: BottomTabScreenProps<HomeStackParamsList, 'home'>): React.JSX.Element {
 
-    const {totalBalance, setTotalBalance, username, setUsername} = useContext(AppContext);
+    const {totalBalance, setTotalBalance, username, setUsername} = useAppContext();
 
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useContext(ThemeContext);
+    const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useTheme();
     
 
     const [month, setMonth] = useState(new Date().getMonth());
@@ -69,6 +70,7 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
     return (
         <>
             <View style={[styles.root, {backgroundColor}]}>
+                <SafeView/>
                 <View style={styles.topHeader}>
                     <View style={{display: 'flex', flexDirection: isScrollCloseTop ? 'row' : 'column'}}>
                         <TextTheme style={{fontSize: isScrollCloseTop ? 16 : 12, fontWeight: '900'}}>
@@ -166,9 +168,10 @@ export default function Home({ navigation }: BottomTabScreenProps<HomeStackParam
                     />
                     <TextInput
                         placeholder="Enter Your Name"
+                        placeholderTextColor={color}
                         value={username}
                         onChangeText={setUsername}
-                        style={{fontSize: 20, fontWeight: 900, color: color, paddingInline: 2, borderBottomColor: 'gray', borderBottomWidth: 1}}
+                        style={{fontSize: 20, fontWeight: 900, color, paddingInline: 2, borderBottomColor: 'gray', borderBottomWidth: 1, opacity: username ? 1 : 0.5}}
                         autoFocus={true}
                     />
                 </BottomModal>
@@ -183,8 +186,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'column',
         width: '100%',
-        flex: 1,
-        paddingTop: 44,
+        flex: 1
     },
 
     center: {
