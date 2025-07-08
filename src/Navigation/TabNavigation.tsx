@@ -1,37 +1,27 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeStackNavigator from "./StackNavigation/HomeStackNavigator";
-import AccountsStackNavigator from "./StackNavigation/AccountsStackNavigator";
-import Transition from "../screens/Transition";
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import BottomTabNavbar from "../components/BottomTabNavbar";
+import HomeScreen from "../Screen/TabNavigationScreens/HomeScreen";
+import AccountScreen from "../Screen/TabNavigationScreens/AccountScreens/AccountScreen";
 
 
 export type TabParamsList = {
-    'home-stack-navigator': undefined,
-    'accounts-stack-navigator': undefined,
-    'transition': {mode: 'income'| 'expense' | 'transfer'}
+    'home-screen': undefined,
+    'account-screen': undefined
 }
 
 const Tab = createBottomTabNavigator<TabParamsList>();
 
-const tabBarRoutesName: string[] = ['home-stack-navigator', 'accounts-stack-navigator', 'accounts', 'home']
-
 export default function TabNavigation(): React.JSX.Element {
     return (
         <Tab.Navigator
-            initialRouteName="home-stack-navigator"
-            screenOptions={{ headerShown: false, tabBarStyle:{display: 'none'}}}
-            
-            tabBar={(props) => {
-                let routeName = getFocusedRouteNameFromRoute(props.state.routes[props.state.index]) ?? props.state.routes[props.state.index].name;
-                return tabBarRoutesName.includes(routeName) ? (
-                    <BottomTabNavbar {...props} />
-                ) : null;
-            }}
+            initialRouteName="home-screen"
+            screenOptions={{ headerShown: false, tabBarStyle:{display: 'none'}, animation: 'shift'}}
+            tabBar={(props) => (
+                <BottomTabNavbar {...props} />
+            )}
         >
-            <Tab.Screen name='home-stack-navigator' component={HomeStackNavigator} />
-            <Tab.Screen name="accounts-stack-navigator" component={AccountsStackNavigator}  />
-            <Tab.Screen name="transition" component={Transition} />
+            <Tab.Screen name='home-screen' component={HomeScreen} />
+            <Tab.Screen name="account-screen" component={AccountScreen}  />
         </Tab.Navigator>
     )
 }

@@ -1,8 +1,8 @@
 import { ScrollView, Text, View } from "react-native";
 import BottomModal from "./BottomModal";
-import TextTheme from "../Text/TextTheme";
 import AnimateButton from "../Buttons/AnimateButton";
 import { useState } from "react";
+import { TextTheme } from "../../Contexts/ThemeProvider";
 
 type DateSelectorModalProps = {
     visible: boolean,

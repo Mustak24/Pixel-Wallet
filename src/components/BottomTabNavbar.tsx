@@ -1,21 +1,22 @@
-import { Animated, Dimensions, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Animated, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AnimateButton from "./Buttons/AnimateButton";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useEffect, useRef, useState } from "react";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import BottomModal from "./Modal/BottomModal";
-import Calculator from "./Calculator";
 import AccountModal from "../Database/Models/AccountModal";
 import { useAppContext } from "../Contexts/AppContext";
-import TextTheme from "./Text/TextTheme";
-import { useTheme } from "../Contexts/ThemeProvider";
+import { TextTheme, ThemeView } from "../Contexts/ThemeProvider";
 import { useAlert } from "./Alert/AlertProvider";
+import Calculator from "./Other/Calculator";
+import MaterialIcon from "./Icon/MaterialIcon";
+import NoralTextInput from "./Other/NoralTextInput";
+import navigator from "../Navigation/NavigationService";
+import SafeAreaFromBottom from "./SafeAreaView/SafeAreaFromBottom";
 
 
 export default function BottomTabNavbar({navigation, state}: BottomTabBarProps): React.JSX.Element {
-
-    const {primaryColor: color, secondaryBackgroundColor} = useTheme()
 
     const currentRouteName = state.routes[state.index].name;
     const isActive = (route: string) => route === currentRouteName;
@@ -60,26 +61,26 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
     }
 
     useEffect(() => {
-        if(currentRouteName == 'home-stack-navigator') handleMenuAnime(isMenuOpen);
+        if(currentRouteName == 'home-screen') handleMenuAnime(isMenuOpen);
     }, [isMenuOpen])
 
     return (<>
-        <View style={[styles.center, {position: 'relative', backgroundColor: secondaryBackgroundColor}]}>
-            <View style={[styles.navbarContener, {backgroundColor: secondaryBackgroundColor}]}>
-                <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('home-stack-navigator')} >
-                    <MaterialIcons name="home" size={22} color={isActive('home-stack-navigator') ? 'royalblue' : color} />
-                    <Text style={[styles.navigatorBtn_text, {color: isActive('home-stack-navigator') ? 'royalblue' : color}]}>Home</Text>
+        <ThemeView isPrimary={false} style={{...styles.center, position: 'relative'}}>
+            <ThemeView isPrimary={false} style={styles.navbarContener}>
+                <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('home-screen')} >
+                    <MaterialIcon name="home" size={22} color={isActive('home-screen') ? 'royalblue' : ''} />
+                    <TextTheme color={isActive('home-screen') ? 'royalblue' : ''} style={styles.navigatorBtn_text}>Home</TextTheme>
                 </AnimateButton>
 
-                <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('accounts-stack-navigator')}>
-                    <MaterialIcons name="account-balance-wallet" size={22} color={isActive('accounts-stack-navigator') ? 'royalblue' : color} />
-                    <Text style={[styles.navigatorBtn_text, {color: isActive('accounts-stack-navigator') ? 'royalblue' : color}]}>Accounts</Text>
+                <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('account-screen')}>
+                    <MaterialIcon name="account-balance-wallet" size={22} color={isActive('account-screen') ? 'royalblue' : ''} />
+                    <TextTheme color={isActive('account-screen') ? 'royalblue' : ''} style={styles.navigatorBtn_text}>Accounts</TextTheme>
                 </AnimateButton>
-            </View>
+            </ThemeView>
 
 
             {
-                currentRouteName === 'home-stack-navigator' ? (
+                currentRouteName === 'home-screen' ? (
                     <View style={[styles.center, {position: 'absolute', width: "100%", height: 80, flexDirection: 'row'}]}>
                         <Animated.View style={[styles.center, styles.menuBackCover, {height: screenInnerHeight, transform: [{translateY}]}]}>
                         </Animated.View>
@@ -90,7 +91,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                             <Pressable 
                                 onPress={() => {
                                     handleMenu();
-                                    navigation.navigate('transition', {mode: 'income'})
+                                    navigator.navigate('transition-screen', {mode: 'income'})
                                 }} 
                                 style={[styles.animateBalls, styles.center, {backgroundColor: 'rgb(25,200,150)'}]}
                             >
@@ -106,7 +107,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                             <Pressable
                                 onPress={() => {
                                     handleMenu();
-                                    navigation.navigate('transition', {mode: 'expense'})
+                                    navigator.navigate('transition-screen', {mode: 'expense'})
                                 }} 
                                 style={[styles.animateBalls, styles.center, {backgroundColor: 'gray'}]}
                             >
@@ -132,12 +133,12 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                             <Text style={styles.animateBalls_text}>TRANSFER</Text>
                         </Animated.View>
                     </View>
-                ) : currentRouteName === 'accounts-stack-navigator' ? (
+                ) : currentRouteName === 'account-screen' ? (
                     <CreateAccountModal visible={isMenuOpen} setVisible={setMenuOpen} />
                 ) : null
             }
 
-            <View style={[styles.center, {width: '100%', position: 'absolute'}]}>
+            <View style={[styles.center, {width: '100%', position: 'absolute', top: 0, transform: [{translateY: "-50%"}]}]}>
                 <AnimateButton delay={10} style={styles.createBtn} 
                     onPress={handleMenu}
                 >
@@ -146,7 +147,8 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
                     </Animated.View>
                 </AnimateButton>
             </View>
-        </View>
+            <SafeAreaFromBottom/>
+        </ThemeView>
     </>)
 }
 
@@ -162,7 +164,6 @@ type CreateAccountModalProps = {
 function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): React.JSX.Element {
 
     const {setAccounts, setTotalBalance} = useAppContext();
-    const {primaryColor: color} = useTheme();
     const {alert, setAlert} = useAlert();
 
     const [name, setName] = useState<string>('');
@@ -192,11 +193,10 @@ function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): Rea
                     <View style={{display: 'flex', alignItems: 'center', flexDirection: 'row', gap: 10, width: '100%', position: 'relative', marginBlock: 20}}>
                         <MaterialIcons name="account-balance-wallet" size={22} color={'rgba(255,255,255,.6)'} style={{backgroundColor, padding: 10, borderRadius: 1000}} />
                         <View style={{display: 'flex', justifyContent: 'flex-end', flex: 1}}>
-                            <TextInput 
+                            <NoralTextInput 
                                 value={name} 
                                 placeholder="Account Name"
-                                placeholderTextColor={color} 
-                                style={{fontSize: 18, fontWeight: '900', color, opacity: name ? 1 : 0.5}} 
+                                style={{fontSize: 18, fontWeight: '900'}} 
                                 onChangeText={setName}
                             />
                             <View style={{width: '100%', backgroundColor: 'gray', height: 1, position: 'relative', top: -5}}></View>
@@ -286,7 +286,6 @@ const styles = StyleSheet.create({
         position: 'relative', 
         width: 64, 
         aspectRatio: 1, 
-        top: -32, 
         backgroundColor: 'royalblue',
         borderRadius: 100,
     },

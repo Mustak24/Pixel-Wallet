@@ -3,9 +3,9 @@ import FeatherIcons from 'react-native-vector-icons/Feather';
 import AccountModal from "../../Database/Models/AccountModal";
 import { createOnType } from "../../Database/Models/TransitionModal";
 import AnimateButton from "../Buttons/AnimateButton";
-import { useTheme } from "../../Contexts/ThemeProvider";
-import TextTheme from "../Text/TextTheme";
+import { TextTheme, useTheme } from "../../Contexts/ThemeProvider";
 import style from '../../../AppStyle'
+import FeatherIcon from "../Icon/FeatherIcon";
 
 
 type TransitionCardProps = {
@@ -57,8 +57,8 @@ export default function TransitionCard({id, mode, title, category, description, 
                         {
                             mode == 'transfer' ? (
                                 <>
-                                    <FeatherIcons name="chevrons-right" size={14} color={backgroundColor} style={{marginHorizontal: 4}} />
-                                    <Text style={{color: backgroundColor, fontSize: 14, fontWeight: 900}}> {toAccountName || ''} </Text>
+                                    <FeatherIcon name="chevrons-right" size={14} style={{marginHorizontal: 4}} />
+                                    <TextTheme style={{fontSize: 14, fontWeight: 900}}> {toAccountName || ''}</TextTheme>
                                 </>
                             ): null
                         }

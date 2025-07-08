@@ -1,5 +1,6 @@
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import { AppStorage } from "../Database/Storage"
+import { Text, TextProps, TextStyle, View, ViewProps, ViewStyle } from "react-native"
 
 
 
@@ -87,4 +88,50 @@ export default function ThemeProvider ({children}: {children: React.ReactNode}):
 
 export function useTheme(): ThemeContextType{
     return useContext(ThemeContext);
+}
+
+
+type ThemeViewProps = ViewProps & {
+    backgroundColor?: string,
+    isPrimary?: boolean,
+    useInvertTheme?: boolean,
+    style?: ViewStyle
+}
+
+export function ThemeView({style, backgroundColor, isPrimary=true, useInvertTheme=false, ...props}: ThemeViewProps): React.JSX.Element {
+    const {primaryColor, secondaryColor, primaryBackgroundColor, secondaryBackgroundColor} = useTheme()
+    
+    if(!backgroundColor) {
+        if(useInvertTheme){
+            backgroundColor = isPrimary ? primaryColor : secondaryColor;
+        } else {
+            backgroundColor = isPrimary ? primaryBackgroundColor : secondaryBackgroundColor;
+        }
+    }
+    
+    return <View {...props} style={[style, {backgroundColor}]} />
+}
+
+
+type TextThemeProps = TextProps & {
+    style?: TextStyle,
+    color?: string,
+    isPrimary?: boolean,
+    useInvertTheme?: boolean
+}
+
+export function TextTheme({style, color, isPrimary, useInvertTheme, ...props}: TextThemeProps): React.JSX.Element {
+    const {primaryColor, secondaryColor, primaryBackgroundColor, secondaryBackgroundColor} = useTheme();
+    
+    if(!color) {
+        if(useInvertTheme) {
+            color = isPrimary ? primaryBackgroundColor : secondaryBackgroundColor;
+        } else {
+            color = isPrimary ? primaryColor : secondaryColor;
+        }
+    }
+
+    return (
+        <Text style={[style, {color}]} {...props} />
+    )
 }

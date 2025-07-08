@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import TextTheme from './TextTheme';
+import { TextTheme } from '../../Contexts/ThemeProvider';
 
 type TypingHeadingProps = {
     text: string;

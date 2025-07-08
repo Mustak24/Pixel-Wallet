@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import AccountModal from "../../Database/Models/AccountModal";
 import style from '../../../AppStyle'
-import TextTheme from "../Text/TextTheme";
+import { TextTheme } from "../../Contexts/ThemeProvider";
 
 type AccountCardProps = {
     id: string,

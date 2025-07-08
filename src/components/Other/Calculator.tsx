@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import AnimateButton from "./Buttons/AnimateButton";
 import Feathericons from 'react-native-vector-icons/Feather';
-import TextTheme from "./Text/TextTheme";
+import { TextTheme } from "../../Contexts/ThemeProvider";
+import AnimateButton from "../Buttons/AnimateButton";
 
 type CalculatorProps = {
     value?: number
@@ -103,7 +103,7 @@ export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResu
                             <View key={index + 'row'} style={styles.buttonBox_rows}>
                                 {
                                     row.map(({onPress, innerText, textColor}, col) => (
-                                        <AnimateButton 
+                                        <AnimateButton
                                             key={index +" "+ col} 
                                             style={styles.button}
                                             onPress={onPress} 
