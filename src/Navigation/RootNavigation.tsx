@@ -1,6 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack"
-import SplashScreen from "../Screen/SplashScreen";
+import { createStackNavigator } from "@react-navigation/stack";
 import AccountModal from "../Database/Models/AccountModal";
 import TransitionModal from "../Database/Models/TransitionModal";
 import SettingScreen from "../Screen/SettingScreen";
@@ -11,7 +10,6 @@ import TabNavigation from "./TabNavigation";
 import { NavigationRef } from "./NavigationService";
 
 export type RootNavigationParamsList = {
-    'splash-screen': undefined,
     'setting-screen': undefined,
     'transition-screen': { mode: 'income' | 'expense' | 'transfer', account?: AccountModal},
     'transition-update-screen': {transition: TransitionModal},
@@ -27,12 +25,9 @@ export default function RootNavitaion(): React.JSX.Element {
     return (
         <NavigationContainer ref={NavigationRef} >
             <Stack.Navigator 
-                initialRouteName="splash-screen" 
+                initialRouteName="tab-navigation" 
                 screenOptions={{headerShown: false}}
             >
-                <Stack.Screen name="splash-screen" component={SplashScreen} 
-                    options={{animation: 'scale_from_center'}}
-                />
                 <Stack.Screen name="setting-screen" component={SettingScreen} 
                     options={{animation: 'scale_from_center'}} 
                 />
