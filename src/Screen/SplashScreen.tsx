@@ -2,7 +2,6 @@ import { TextTheme } from "../Contexts/ThemeProvider";
 import { useEffect } from "react";
 import navigator from "../Navigation/NavigationService";
 import SafePaddingView from "../components/SafeAreaView/SafePaddingView";
-import { Text } from "react-native";
 
 export default function SplashScreen(): React.JSX.Element {
 

@@ -10,10 +10,12 @@ import navigator from "../Navigation/NavigationService";
 import FeatherIcon from "../components/Icon/FeatherIcon";
 import { AppStorage } from "../Database/Storage";
 import BottomModal from "../components/Modal/BottomModal";
+import AccountModal from "../Database/Models/AccountModal";
+import TransitionModal from "../Database/Models/TransitionModal";
 
 export default function SettingScreen(): React.JSX.Element {
 
-    const {username} = useAppContext();
+    const {username, setAccounts, setTotalBalance, setNeedTransitionRefresh} = useAppContext();
     
     const {primaryColor: color, secondaryBackgroundColor, theme, setTheme} = useTheme();
 
@@ -155,11 +157,26 @@ export default function SettingScreen(): React.JSX.Element {
             </ScrollView>
 
             <UpdateNameModal visible={isUpdateNameModalVisible} setVisible={setUpdateNameModalVisible} />
+           
             <DeleteModal 
                 visible={isDeleteDataModalVisible} setVisible={setDeleteDataModalVisible} 
                 passkey={username}
                 massage="Once you delete a Data, there is no going back."
-                handleDelete={() => {}}
+                handleDelete={() => {
+                    AccountModal.getAll().forEach(acc => AccountModal.deleteById(acc.id));
+            
+                    TransitionModal.getAll().forEach(tra => TransitionModal.deleteById(tra.id));
+
+                    AccountModal.create({name: 'Cash', balance: 0, backgroundColor: 'rgb(25,200,150)'});
+                    AccountModal.create({name: 'Bank', balance: 0, backgroundColor: 'rgb(130,100,255)'});
+                    
+                    setAccounts(AccountModal.getAll());
+                    setTotalBalance(AccountModal.getTotalBalance());
+                    setNeedTransitionRefresh(pre => ++pre)
+                    setDeleteDataModalVisible(false);
+
+                    navigator.goBack();
+                }}
             />
         
         </SafePaddingView>

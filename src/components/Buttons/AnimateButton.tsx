@@ -3,7 +3,7 @@ import { Animated, findNodeHandle, Pressable, PressableProps, Text, UIManager, V
 import { GestureResponderEvent } from "react-native";
 import { useTheme } from "../../Contexts/ThemeProvider";
 
-type AnimateButtonProps = {
+type AnimateButtonProps = PressableProps & {
     children?: ReactNode,
     style?: ViewStyle,
     title?: string,
@@ -12,11 +12,10 @@ type AnimateButtonProps = {
     onPress?: (event: GestureResponderEvent) => void,
     props?: PressableProps,
     color?: string,
-    delay?: number
 }
 
 
-export default function AnimateButton({children, style={}, duration=300, scale=10, onPress=()=>{}, props={}, title='Click', color='white', delay=100}: AnimateButtonProps ): React.JSX.Element {
+export default function AnimateButton({children, style={}, duration=300, scale=10, onPress=()=>{}, title='Click', color='white', ...props}: AnimateButtonProps ): React.JSX.Element {
 
     const {secondaryColor} = useTheme()
 
@@ -25,7 +24,6 @@ export default function AnimateButton({children, style={}, duration=300, scale=1
     const opacityAnime = useRef<Animated.Value>(new Animated.Value(.8)).current;
     const scaleAnime = useRef<Animated.Value>(new Animated.Value(0)).current;
     const button = useRef<View>(null);
-    const timeout = useRef<NodeJS.Timeout>(null);
 
     function animate(event: GestureResponderEvent): void{
         let {nativeEvent} = event;
@@ -39,8 +37,7 @@ export default function AnimateButton({children, style={}, duration=300, scale=1
             setPressPoints({x: pageX, y: pageY});
         });
 
-        if(timeout.current) clearTimeout(timeout.current);
-        timeout.current = setTimeout(() => onPress(event), delay);
+        if(onPress) onPress(event);
     }
 
     useEffect(() => {

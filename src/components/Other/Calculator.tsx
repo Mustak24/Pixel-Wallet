@@ -107,7 +107,6 @@ export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResu
                                             key={index +" "+ col} 
                                             style={styles.button}
                                             onPress={onPress} 
-                                            delay={0}
                                         >
                                             <TextTheme style={{color: textColor, fontWeight: 900, fontSize: 18}} >
                                                {innerText}

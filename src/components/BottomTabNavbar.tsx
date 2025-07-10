@@ -65,14 +65,14 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
     }, [isMenuOpen])
 
     return (<>
-        <ThemeView isPrimary={false} style={{...styles.center, position: 'relative'}}>
+        <ThemeView isPrimary={false} style={{...styles.center, position: 'relative', height: 80}}>
             <ThemeView isPrimary={false} style={styles.navbarContener}>
-                <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('home-screen')} >
+                <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('home-screen')} >
                     <MaterialIcon name="home" size={22} color={isActive('home-screen') ? 'royalblue' : ''} />
                     <TextTheme color={isActive('home-screen') ? 'royalblue' : ''} style={styles.navigatorBtn_text}>Home</TextTheme>
                 </AnimateButton>
 
-                <AnimateButton delay={10} style={styles.navigatorBtn} onPress={() => navigation.navigate('account-screen')}>
+                <AnimateButton style={styles.navigatorBtn} onPress={() => navigation.navigate('account-screen')}>
                     <MaterialIcon name="account-balance-wallet" size={22} color={isActive('account-screen') ? 'royalblue' : ''} />
                     <TextTheme color={isActive('account-screen') ? 'royalblue' : ''} style={styles.navigatorBtn_text}>Accounts</TextTheme>
                 </AnimateButton>
@@ -139,7 +139,7 @@ export default function BottomTabNavbar({navigation, state}: BottomTabBarProps):
             }
 
             <View style={[styles.center, {width: '100%', position: 'absolute', top: 0, transform: [{translateY: "-50%"}]}]}>
-                <AnimateButton delay={10} style={styles.createBtn} 
+                <AnimateButton style={styles.createBtn} 
                     onPress={handleMenu}
                 >
                     <Animated.View style={{transform: [{rotate: rotateMenuAnime.interpolate({inputRange: [0, 1], outputRange: ['0deg', '45deg']})}]}}>
@@ -253,11 +253,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         width: '100%',
-        height: 80,
         justifyContent: 'space-between',
         backgroundColor: 'rgb(25, 25, 25)',
         paddingInline: 20,
-        paddingBottom: 10
+        paddingBlock: 10
     },
 
     navigatorBtn: {
