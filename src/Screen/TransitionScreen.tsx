@@ -254,16 +254,9 @@ function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, 
 
     const {params} = useRoute<RouteProp<RootNavigationParamsList, 'transition-screen'>>();
 
-    const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useTheme();
+    const {primaryBackgroundColor: backgroundColor} = useTheme();
 
     const [isOpenCal, setOpenCal] = useState<boolean>(true);
-
-    // useEffect(() => {
-    //     let unsubscribe = navigator.addListener('focus', () => {
-    //         setOpenCal(true);
-    //     });
-    //     return unsubscribe;
-    // }, [])
 
     return (
         <View style={{display: 'flex', width: '100%', alignItems: 'flex-start'}} >
@@ -299,7 +292,7 @@ function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, 
             >
                 <AccountSelector accounts={accounts} useAccount={fromAccount} setUseAccount={setFromAccount} title={heading} />
 
-                <Calculator onResult={setAmount} value={amount}/>
+                <Calculator onResult={setAmount} value={amount} />
             </BottomModal>
         </View>
     )

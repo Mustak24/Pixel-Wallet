@@ -13,7 +13,7 @@ export default function SplashScreen(): React.JSX.Element {
 
     return (
         <SafePaddingView style={{alignItems: 'center', justifyContent: 'center'}} >
-            <TextTheme>Splash Screen</TextTheme>
+            <TextTheme>Pixel Wallet</TextTheme>
         </SafePaddingView>
     )
 }

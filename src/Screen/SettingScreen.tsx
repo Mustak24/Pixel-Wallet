@@ -12,6 +12,7 @@ import { AppStorage } from "../Database/Storage";
 import BottomModal from "../components/Modal/BottomModal";
 import AccountModal from "../Database/Models/AccountModal";
 import TransitionModal from "../Database/Models/TransitionModal";
+import { useAlert } from "../components/Alert/AlertProvider";
 
 export default function SettingScreen(): React.JSX.Element {
 
@@ -213,13 +214,17 @@ type UpdateNameModalProps = {
 
 function UpdateNameModal({visible, setVisible}: UpdateNameModalProps): React.JSX.Element {
     
+    const {setAlert} = useAlert()
     const {setUsername} = useAppContext();
     const {primaryColor: color} = useTheme();
 
     const [name, setName] = useState<string>(AppStorage.getString('username') ?? 'Undefined');
 
     function updateName() {
-        if(!name) return;
+        if(!name) {
+            setAlert({id: 'username-modal', type: 'error', massage: 'Please enter username !!!'})
+            return;
+        }
         AppStorage.set('username', name);
 
         setUsername(name);
@@ -229,6 +234,7 @@ function UpdateNameModal({visible, setVisible}: UpdateNameModalProps): React.JSX
 
     return (
         <BottomModal
+            alertId="username-modal"
             visible={visible} 
             setVisible={setVisible}
             actionButtons={[
