@@ -89,7 +89,7 @@ export default function SettingScreen(): React.JSX.Element {
                 <Container 
                     style={{marginBlock: 14}} 
                     backgroundColor="rgb(50,150,250)"
-                    onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.E_Wallet.pixelProphet')}
+                    onPress={() => Linking.openURL('https://play.google.com/store/apps/details?id=com.e_wallet.pixelProphet')}
                 >
                     <View style={[style.flex, style.itemCenter, style.flexRow, {gap: 16}]}>
                         <FeatherIcon name="star" size={26} color={'white'} />
@@ -103,7 +103,7 @@ export default function SettingScreen(): React.JSX.Element {
                     onPress={async () => {
                         try {
                             await Share.share({
-                                message: 'Check out E Wallet ( Android App )\n Download now: https://play.google.com/store/apps/details?id=com.E_Wallet.pixelProphet',
+                                message: 'Check out Pixel Wallet ( Android App )\n Download now: https://play.google.com/store/apps/details?id=com.e_wallet.pixelProphet',
                                 title: 'E Wallet App'
                             });
                         } catch (error) {
@@ -119,7 +119,7 @@ export default function SettingScreen(): React.JSX.Element {
 
                 <Container 
                     style={{marginBlock: 14}}
-                    onPress={() => Linking.openURL('https://github.com/Mustak24/E-Wallet-privacy-policy')}
+                    onPress={() => Linking.openURL('https://mustak24.github.io/Pixel-Wallet-privacy-policy/')}
                     backgroundColor={secondaryBackgroundColor}
                 >
                     <View style={[style.flex, style.itemCenter, style.flexRow, {gap: 16}]}>
@@ -130,7 +130,7 @@ export default function SettingScreen(): React.JSX.Element {
 
                 <Container 
                     style={{marginBlock: 14}} 
-                    onPress={() => Linking.openURL('https://github.com/Mustak24/E_Wallet')}
+                    onPress={() => Linking.openURL('https://github.com/Mustak24/Pixel-Wallet')}
                     backgroundColor={secondaryBackgroundColor}
                 >
                     <TextTheme style={{fontWeight: '900', opacity: 0.6}}>OPEN SOURCE</TextTheme>
@@ -139,7 +139,7 @@ export default function SettingScreen(): React.JSX.Element {
                         <FeatherIcon name="github" size={32} color={color} />
                         <View>
                             <TextTheme style={{fontWeight: '900', fontSize: 16, marginBottom: 2}}>E Wallet is Open-sorce !</TextTheme>
-                            <Text style={{fontWeight: '900', fontSize: 14, color: 'rgb(50,150,250)'}}>https://github.com/Mustak24/E_Wallet</Text>
+                            <Text style={{fontWeight: '900', fontSize: 14, color: 'rgb(50,150,250)'}}>https://github.com/Mustak24/Pixel-Wallet</Text>
                         </View>
                     </View>
                 </Container>
