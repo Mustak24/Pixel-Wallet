@@ -1,19 +1,19 @@
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import SafePaddingView from "../../components/SafeAreaView/SafePaddingView";
+import SafePaddingView from "../../Components/SafeAreaView/SafePaddingView";
 import { useAppContext } from "../../Contexts/AppContext";
 import { TextTheme, useTheme } from "../../Contexts/ThemeProvider";
 import { useEffect, useState } from "react";
 import TransitionModal from "../../Database/Models/TransitionModal";
 import { AppStorage } from "../../Database/Storage";
 import AccountModal from "../../Database/Models/AccountModal";
-import AnimateButton from "../../components/Buttons/AnimateButton";
-import MaterialIcon from "../../components/Icon/MaterialIcon";
-import FeatherIcon from "../../components/Icon/FeatherIcon";
-import HaveNoTransition from "../../components/Other/HaveNoTransition";
-import TransitionCard from "../../components/Cards/TransitionCard";
-import DateSelectorModal from "../../components/Modal/DateSelectorModal";
-import BottomModal from "../../components/Modal/BottomModal";
-import TypingText from "../../components/Text/TypingText";
+import AnimateButton from "../../Components/Buttons/AnimateButton";
+import MaterialIcon from "../../Components/Icon/MaterialIcon";
+import FeatherIcon from "../../Components/Icon/FeatherIcon";
+import HaveNoTransition from "../../Components/Other/HaveNoTransition";
+import TransitionCard from "../../Components/Cards/TransitionCard";
+import DateSelectorModal from "../../Components/Modal/DateSelectorModal";
+import BottomModal from "../../Components/Modal/BottomModal";
+import TypingText from "../../Components/Text/TypingText";
 import navigator from "../../Navigation/NavigationService";
 
 
@@ -22,7 +22,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
 export default function HomeScreen(): React.JSX.Element {
     
-    const {totalBalance, setTotalBalance, username, setUsername, isNeedTransitionRefresh} = useAppContext();
+    const {totalBalance, setTotalBalance, username, setUsername, isNeedTransitionRefresh, currency} = useAppContext();
 
     const {primaryColor: color, primaryBackgroundColor: backgroundColor} = useTheme();
     
@@ -61,7 +61,7 @@ export default function HomeScreen(): React.JSX.Element {
             <View style={styles.topHeader}>
                 <View style={{display: 'flex', flexDirection: isScrollCloseTop ? 'row' : 'column'}}>
                     <TextTheme style={{fontSize: isScrollCloseTop ? 16 : 12, fontWeight: '900'}}>
-                        {isScrollCloseTop ? 'Hi, ' : 'INR'}
+                        {isScrollCloseTop ? 'Hi, ' : '{currency}'}
                     </TextTheme>
 
                     <TextTheme style={{fontSize: 16, fontWeight: '900'}}>
@@ -84,7 +84,7 @@ export default function HomeScreen(): React.JSX.Element {
             <ScrollView onScroll={handleScroll} style={{flex: 1, width: '100%', display: 'flex', paddingInline: 20}} >
                 <View style={{display: 'flex', alignItems: 'flex-start', gap: 20, flexDirection: 'column', width: '100%', marginTop: 32}}>
                     <View style={{display: 'flex', flexDirection: 'row', gap: 5, alignItems: 'flex-end'}}>
-                        <TextTheme style={{fontWeight: '900', fontSize: 24}}>INR:</TextTheme>
+                        <TextTheme style={{fontWeight: '900', fontSize: 24}}>{currency}:</TextTheme>
                         <TextTheme style={{fontSize: 24, fontWeight: '900'}}>{totalBalance || '0.00'}</TextTheme>
                     </View>
 
@@ -97,7 +97,7 @@ export default function HomeScreen(): React.JSX.Element {
 
                             <Text style={{fontSize: 22, color: 'white'}}>
                                 <Text style={{fontWeight: 800}}>{transitionsRecord.income || '0.00'}</Text>
-                                <Text> INR</Text>
+                                <Text> {currency}</Text>
                             </Text>
                         </AnimateButton>
 
@@ -109,7 +109,7 @@ export default function HomeScreen(): React.JSX.Element {
 
                             <Text style={{fontSize: 22, color: 'white'}}>
                                 <Text style={{fontWeight: 800}}>{transitionsRecord.expense || '0.00'}</Text>
-                                <Text> INR</Text>
+                                <Text> {currency}</Text>
                             </Text>
                         </View>
                     </View>

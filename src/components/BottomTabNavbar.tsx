@@ -164,7 +164,7 @@ type CreateAccountModalProps = {
 
 function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): React.JSX.Element {
 
-    const {setAccounts, setTotalBalance} = useAppContext();
+    const {setAccounts, setTotalBalance, currency} = useAppContext();
     const {alert, setAlert} = useAlert();
 
     const [name, setName] = useState<string>('');
@@ -229,7 +229,7 @@ function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): Rea
                     <TextTheme style={{color: 'white', opacity: .5, fontSize: 10, fontWeight: 800}}>Enter Account Balance</TextTheme>
                     <TextTheme style={{color: 'white', fontSize: 28, fontWeight: 900}}>
                         <Text>{balance || '0.00'}</Text>
-                        <Text> INR</Text>
+                        <Text> {currency}</Text>
                     </TextTheme>
                 </Pressable>
 
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         gap: 10,
-        height: 40,
+        height: 44,
         paddingInline: 20,
         borderRadius: 100,
         width: 120

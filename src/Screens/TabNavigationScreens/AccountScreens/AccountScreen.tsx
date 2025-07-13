@@ -1,21 +1,21 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useAppContext } from "../../../Contexts/AppContext";
 import { TextTheme } from "../../../Contexts/ThemeProvider";
-import SafePaddingView from "../../../components/SafeAreaView/SafePaddingView";
-import TypingText from "../../../components/Text/TypingText";
+import SafePaddingView from "../../../Components/SafeAreaView/SafePaddingView";
+import TypingText from "../../../Components/Text/TypingText";
 import AccountModal from "../../../Database/Models/AccountModal";
-import AccountCard from "../../../components/Cards/AccountCard";
+import AccountCard from "../../../Components/Cards/AccountCard";
 import navigator from "../../../Navigation/NavigationService";
 
 
 export default function AccountScreen(): React.JSX.Element {
 
-    const {accounts, totalBalance} = useAppContext();
+    const {accounts, totalBalance, currency} = useAppContext();
 
     return (
         <SafePaddingView style={styles.root}>
             <TypingText text="Accounts" style={styles.topHeading} />
-            <TextTheme style={styles.topHeading_balance}>{`Total: INR ${totalBalance || '0.00'}`}</TextTheme>
+            <TextTheme style={styles.topHeading_balance}>{`Total: ${currency} ${totalBalance || '0.00'}`}</TextTheme>
             
             <ScrollView style={{width: '100%', height: '100%', paddingBlock: 20, paddingInline: 20}}>
                 {

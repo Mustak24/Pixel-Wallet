@@ -1,21 +1,21 @@
 import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, Text, TextInput } from "react-native";
 import { View } from "react-native";
-import AnimateButton from "../components/Buttons/AnimateButton";
+import AnimateButton from "../Components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import { useEffect, useState } from "react";
-import BottomModal from "../components/Modal/BottomModal";
+import BottomModal from "../Components/Modal/BottomModal";
 import TransitionModal from "../Database/Models/TransitionModal";
 import AccountModal from "../Database/Models/AccountModal";
 import { useAppContext } from "../Contexts/AppContext";
-import AccountSelector from "../components/AccountSelector";
+import AccountSelector from "../Components/AccountSelector";
 import { TextTheme, useTheme } from "../Contexts/ThemeProvider";
 import style from '../../AppStyle'
-import CategorySelectorModal from "../components/Modal/CategorySelectorModal";
+import CategorySelectorModal from "../Components/Modal/CategorySelectorModal";
 import navigator from "../Navigation/NavigationService";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { RootNavigationParamsList } from "../Navigation/RootNavigation";
-import Calculator from "../components/Other/Calculator";
-import SafePaddingView from "../components/SafeAreaView/SafePaddingView";
+import Calculator from "../Components/Other/Calculator";
+import SafePaddingView from "../Components/SafeAreaView/SafePaddingView";
 
 
 type transitionInfoType = {
@@ -255,6 +255,7 @@ function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, 
     const {params} = useRoute<RouteProp<RootNavigationParamsList, 'transition-screen'>>();
 
     const {primaryBackgroundColor: backgroundColor} = useTheme();
+    const {currency} = useAppContext()
 
     const [isOpenCal, setOpenCal] = useState<boolean>(true);
 
@@ -273,7 +274,7 @@ function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, 
                 <TextTheme style={{fontWeight: 800, fontSize: 14, opacity: 0.6}}>Enter Amount</TextTheme>
                 <TextTheme style={{fontWeight: '900', fontSize: 28}}>
                     <Text>{amount || '0.00'}</Text>
-                    <Text> INR</Text>
+                    <Text> {currency}</Text>
                 </TextTheme>
             </Pressable>
 

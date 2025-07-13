@@ -6,6 +6,7 @@ import AnimateButton from "../Buttons/AnimateButton";
 import { TextTheme, useTheme } from "../../Contexts/ThemeProvider";
 import style from '../../../AppStyle'
 import FeatherIcon from "../Icon/FeatherIcon";
+import { useAppContext } from "../../Contexts/AppContext";
 
 
 type TransitionCardProps = {
@@ -24,6 +25,7 @@ const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'
 
 export default function TransitionCard({id, mode, title, category, description, fromAccountId, toAccountId, createOn, amount, onPress=()=>{}}: TransitionCardProps): React.JSX.Element {
 
+    const {currency} = useAppContext()
     const {secondaryBackgroundColor, primaryColor, primaryBackgroundColor: backgroundColor} = useTheme();
 
     const color = mode == 'income' ? 'rgb(25,200,150)' : mode == 'expense' ? 'gray' : 'rgb(130,100,255)';
@@ -39,11 +41,11 @@ export default function TransitionCard({id, mode, title, category, description, 
 
                 <TextTheme style={{color, fontSize: 14}}>
                         <Text style={{fontWeight: 800}}>{mode == 'income' ? '+' : mode == 'expense' ? '-' : ''}{amount}</Text>
-                        <Text> INR</Text>
+                        <Text> {currency}</Text>
                 </TextTheme>
             </View>
 
-            <AnimateButton onPress={onPress} scale={15} style={{...styles.card, backgroundColor: secondaryBackgroundColor}}>
+            <AnimateButton onPress={onPress} bubbleScale={15} style={{...styles.card, backgroundColor: secondaryBackgroundColor}}>
                 <View style={[style.center, style.flexRow, {gap: 10}]}>
                     {
                         category && (
@@ -74,7 +76,7 @@ export default function TransitionCard({id, mode, title, category, description, 
                     <FeatherIcons name={mode == 'income' ? "download" : mode == 'expense' ? 'upload' : 'shuffle'} size={20} color={'white'} style={[styles.icon, {backgroundColor: color}]} />
                     <Text style={{color, fontSize: 20}}>
                         <Text style={{fontWeight: 800}}>{amount}</Text>
-                        <Text> INR</Text>
+                        <Text> {currency}</Text>
                     </Text>
                 </View>
             </AnimateButton>

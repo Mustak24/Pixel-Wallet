@@ -2,10 +2,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AccountModal from "../Database/Models/AccountModal";
 import TransitionModal from "../Database/Models/TransitionModal";
-import SettingScreen from "../Screen/SettingScreen";
-import TransitionScreen from "../Screen/TransitionScreen";
-import TransitionUpdateScreen from "../Screen/TransitionUpdateScreen";
-import AccountInfoScreen from "../Screen/TabNavigationScreens/AccountScreens/AccountInfoScreen";
+import SettingScreen from "../Screens/SettingScreen";
+import TransitionScreen from "../Screens/TransitionScreen";
+import TransitionUpdateScreen from "../Screens/TransitionUpdateScreen";
+import AccountInfoScreen from "../Screens/TabNavigationScreens/AccountScreens/AccountInfoScreen";
 import TabNavigation from "./TabNavigation";
 import { NavigationRef } from "./NavigationService";
 

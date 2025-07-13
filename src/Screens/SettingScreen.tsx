@@ -1,27 +1,29 @@
 import { Animated, Linking, ScrollView, Share, Switch, Text, TextInput, useAnimatedValue, View, ViewStyle } from "react-native";
-import SafePaddingView from "../components/SafeAreaView/SafePaddingView";
+import SafePaddingView from "../Components/SafeAreaView/SafePaddingView";
 import { TextTheme, useTheme } from "../Contexts/ThemeProvider";
-import AnimateButton from "../components/Buttons/AnimateButton";
-import DeleteModal from "../components/Modal/DeleteModal";
+import AnimateButton from "../Components/Buttons/AnimateButton";
+import DeleteModal from "../Components/Modal/DeleteModal";
 import { useAppContext } from "../Contexts/AppContext";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import style from '../../AppStyle'
 import navigator from "../Navigation/NavigationService";
-import FeatherIcon from "../components/Icon/FeatherIcon";
+import FeatherIcon from "../Components/Icon/FeatherIcon";
 import { AppStorage } from "../Database/Storage";
-import BottomModal from "../components/Modal/BottomModal";
+import BottomModal from "../Components/Modal/BottomModal";
 import AccountModal from "../Database/Models/AccountModal";
 import TransitionModal from "../Database/Models/TransitionModal";
-import { useAlert } from "../components/Alert/AlertProvider";
+import { useAlert } from "../Components/Alert/AlertProvider";
+import { ItemSelectorModal } from "../Components/Modal/ItemSelectorModal";
 
 export default function SettingScreen(): React.JSX.Element {
 
-    const {username, setAccounts, setTotalBalance, setNeedTransitionRefresh} = useAppContext();
+    const {username, setAccounts, setTotalBalance, setNeedTransitionRefresh, currency} = useAppContext();
     
     const {primaryColor: color, secondaryBackgroundColor, theme, setTheme} = useTheme();
 
     const [isUpdateNameModalVisible, setUpdateNameModalVisible] = useState<boolean>(false);
     const [isDeleteDataModalVisible, setDeleteDataModalVisible] = useState<boolean>(false);
+    const [isCurrencyModalVisible, setCurrencyModalVisible] = useState<boolean>(false);
 
     const hearAnimate = useAnimatedValue(0.98);
 
@@ -60,6 +62,22 @@ export default function SettingScreen(): React.JSX.Element {
                     <View style={[style.flex, style.itemCenter, style.flexRow, {gap: 16, marginTop: 16}]}>
                         <FeatherIcon name="user" size={26} color={color} />
                         <TextTheme style={{fontWeight: '900', fontSize: 16}}>{username}</TextTheme>
+                    </View>
+                </Container>
+                
+                <TextTheme style={{opacity: 0.5, paddingLeft: 4, fontWeight: '900', fontSize: 20, marginTop: 24}}>App</TextTheme>
+
+                <Container 
+                    style={{marginBlock: 14}} 
+                    onPress={() => {setCurrencyModalVisible(true); console.log('click')}}
+                    backgroundColor={secondaryBackgroundColor}
+                >
+                    <View style={[style.flex, style.itemCenter, style.flexRow, style.justifyBetween]}>
+                            <TextTheme style={{fontWeight: '900', fontSize: 16}}>Currency</TextTheme>
+                        <View style={[style.flexRow, style.itemCenter, {gap: 8}]} >
+                            <TextTheme style={{fontWeight: '900', fontSize: 16}}>{currency}</TextTheme>
+                            <FeatherIcon name="arrow-right" size={26} color={color} />
+                        </View>
                     </View>
                 </Container>
 
@@ -137,9 +155,11 @@ export default function SettingScreen(): React.JSX.Element {
                     
                     <View style={[style.flex, style.itemCenter, style.flexRow, {gap: 16, marginTop: 16}]}>
                         <FeatherIcon name="github" size={32} color={color} />
-                        <View>
+                        <View style={{flex: 1}} >
                             <TextTheme style={{fontWeight: '900', fontSize: 16, marginBottom: 2}}>E Wallet is Open-sorce !</TextTheme>
-                            <Text style={{fontWeight: '900', fontSize: 14, color: 'rgb(50,150,250)'}}>https://github.com/Mustak24/Pixel-Wallet</Text>
+                            <Text style={{fontWeight: '900', fontSize: 14, color: 'rgb(50,150,250)'}}>
+                                https://github.com/Mustak24/Pixel-Wallet
+                            </Text>
                         </View>
                     </View>
                 </Container>
@@ -180,6 +200,9 @@ export default function SettingScreen(): React.JSX.Element {
                 }}
             />
         
+            <CurrencyModal
+                visible={isCurrencyModalVisible} setVisible={setCurrencyModalVisible}
+            />
         </SafePaddingView>
     )
 }
@@ -198,7 +221,7 @@ function Container({children, backgroundColor='rgb(25,25,25)', style={}, onPress
         <AnimateButton
             style={{padding: 20, borderRadius: 20, backgroundColor, width: '100%', overflow: 'hidden', ...style}}
             onPress={onPress}
-            scale={30}
+            bubbleScale={30}
         >
             {children}
         </AnimateButton>
@@ -259,4 +282,53 @@ function UpdateNameModal({visible, setVisible}: UpdateNameModalProps): React.JSX
             />
         </BottomModal>
     )
+}
+
+
+function CurrencyModal({ visible, setVisible }: { visible: boolean, setVisible: Dispatch<SetStateAction<boolean>> }): React.JSX.Element {
+    type currencyInfo = {currency: string, country: string, currency_name: string}
+
+    const { currency, setCurrency } = useAppContext();
+    
+    const currencyData: currencyInfo[] = require('../Assets/Jsons/currency-data.json');
+    const selected = (currencyData.find(item => item.currency === currency) ?? null);
+    
+    function udpateCurrency(currencyInfo: currencyInfo){
+        setCurrency(currencyInfo.currency);
+    }
+    
+    useEffect(() => {
+        console.log(currencyData, visible)
+    }, [currencyData])
+
+    return (
+        <ItemSelectorModal<currencyInfo>
+            visible={visible}
+            setVisible={setVisible}
+            title='Select Currency'
+            onSelect={udpateCurrency}
+            allItems={currencyData}
+            selected={selected}
+            keyExtractor={(item) => item.country + item.currency}
+            filter={(item, val) => (
+                item.country.toLowerCase().startsWith(val) || 
+                item.currency.toLowerCase().startsWith(val)
+            )}
+            SelectedItemContent={
+                <View>
+                    <TextTheme color="white" style={{fontWeight: 400, fontSize: 14}} >
+                        {selected?.currency_name}
+                    </TextTheme>
+                    <TextTheme color="white" style={{fontWeight: 400, fontSize: 16}} >
+                        {selected?.currency}
+                    </TextTheme>
+                </View>
+            }
+
+            renderItemContent={(item) => (<>
+                    <TextTheme style={{fontWeight: 900, fontSize: 16}}>{item.country}</TextTheme>
+                    <TextTheme style={{fontWeight: 600, fontSize: 16}}>{item.currency}</TextTheme>
+            </>)}
+        />
+    );
 }

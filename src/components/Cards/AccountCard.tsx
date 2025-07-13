@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 import AccountModal from "../../Database/Models/AccountModal";
 import style from '../../../AppStyle'
 import { TextTheme } from "../../Contexts/ThemeProvider";
+import { useAppContext } from "../../Contexts/AppContext";
 
 type AccountCardProps = {
     id: string,
@@ -14,6 +15,7 @@ type AccountCardProps = {
 
 export default function AccountCard({id, incomeThisMonth, expenseThisMonth, backgroundColor, balance, name}: AccountCardProps): React.JSX.Element{
 
+    const {currency} = useAppContext()
     const account = AccountModal.findById(id);
 
     return account ? (
@@ -23,7 +25,7 @@ export default function AccountCard({id, incomeThisMonth, expenseThisMonth, back
                 <Text style={{fontSize: 26, fontWeight: 900, color: 'white'}}>{name}</Text>
                 <Text style={{fontSize: 24, color: 'white', alignSelf: 'center', fontWeight: '900'}}>
                     <Text>{balance}</Text>
-                    <Text> INR</Text>
+                    <Text> {currency}</Text>
                 </Text>
             </View>
 
@@ -34,7 +36,7 @@ export default function AccountCard({id, incomeThisMonth, expenseThisMonth, back
                     <TextTheme style={{fontSize: 12}}>INCOME THIS MOUNTH</TextTheme>
                     <TextTheme style={{fontSize: 16}}>
                         <Text style={{fontWeight: 900}}>{incomeThisMonth}</Text>
-                        <Text> INR</Text>
+                        <Text> {currency}</Text>
                     </TextTheme>
                 </View>
 
@@ -44,7 +46,7 @@ export default function AccountCard({id, incomeThisMonth, expenseThisMonth, back
                     <TextTheme style={{fontSize: 12}}>EXPENSE THIS MOUNTH</TextTheme>
                     <TextTheme style={{fontSize: 16}}>
                         <Text style={{fontWeight: 900}}>{expenseThisMonth}</Text>
-                        <Text> INR</Text>
+                        <Text> {currency}</Text>
                     </TextTheme>
                 </View>
             </View>

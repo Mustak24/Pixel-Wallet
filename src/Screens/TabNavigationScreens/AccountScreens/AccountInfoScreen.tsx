@@ -5,17 +5,17 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import TransitionModal from '../../../Database/Models/TransitionModal';
 import AccountModal from '../../../Database/Models/AccountModal';
-import DateSelectorModal from '../../../components/Modal/DateSelectorModal';
-import TransitionCard from '../../../components/Cards/TransitionCard';
-import HaveNoTransition from '../../../components/Other/HaveNoTransition';
+import DateSelectorModal from '../../../Components/Modal/DateSelectorModal';
+import TransitionCard from '../../../Components/Cards/TransitionCard';
+import HaveNoTransition from '../../../Components/Other/HaveNoTransition';
 import { TextTheme, useTheme } from '../../../Contexts/ThemeProvider';
 import navigator from '../../../Navigation/NavigationService';
-import SafePaddingView from '../../../components/SafeAreaView/SafePaddingView';
-import AnimateButton from '../../../components/Buttons/AnimateButton';
+import SafePaddingView from '../../../Components/SafeAreaView/SafePaddingView';
+import AnimateButton from '../../../Components/Buttons/AnimateButton';
 import { useAppContext } from '../../../Contexts/AppContext';
-import BottomModal from '../../../components/Modal/BottomModal';
-import Calculator from '../../../components/Other/Calculator';
-import DeleteModal from '../../../components/Modal/DeleteModal';
+import BottomModal from '../../../Components/Modal/BottomModal';
+import Calculator from '../../../Components/Other/Calculator';
+import DeleteModal from '../../../Components/Modal/DeleteModal';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootNavigationParamsList } from '../../../Navigation/RootNavigation';
 
@@ -30,7 +30,7 @@ type accountInfoCardType = {
 export default function AccountInfo(): React.JSX.Element {
 
     const {primaryBackgroundColor: backgroundColor} = useTheme();
-    const {isNeedTransitionRefresh, setAccounts} = useAppContext()
+    const {isNeedTransitionRefresh, setAccounts, currency} = useAppContext()
 
     const route = useRoute<RouteProp<RootNavigationParamsList, 'account-info-screen'>>()
 
@@ -92,7 +92,7 @@ export default function AccountInfo(): React.JSX.Element {
                     </View>
 
                     <Text style={{fontSize: 24, fontWeight: 900, marginBlock: 20, color: 'white'}}>
-                        <Text>INR </Text>
+                        <Text>{currency} </Text>
                         <Text style={{fontWeight: 900, fontSize: 24}}>{account.balance || '0.00'}</Text>
                     </Text>
 
@@ -103,7 +103,7 @@ export default function AccountInfo(): React.JSX.Element {
                                     <Text style={{fontWeight: 900, marginBottom: 10, paddingLeft: 10, color: 'white'}}>{type?.toLocaleUpperCase()}</Text>
 
                                     <Text style={{fontSize: 18, fontWeight: 900, marginBottom: 16, paddingLeft: 10, color: 'white'}}>
-                                        <Text>INR </Text>
+                                        <Text>{currency} </Text>
                                         <Text>{amount}</Text>
                                     </Text>
 
@@ -258,7 +258,7 @@ type UpdateAccountInfoModalProps = {
 
 function UpdateAccountInfoModal({visible, setVisible, account, setTransitions, month, year}: UpdateAccountInfoModalProps): React.JSX.Element {
 
-    const {setAccounts, setTotalBalance} = useAppContext();
+    const {setAccounts, setTotalBalance, currency} = useAppContext();
     const {primaryColor: color} = useTheme();
 
     const [name, setName] = useState<string>(account.name);
@@ -350,7 +350,7 @@ function UpdateAccountInfoModal({visible, setVisible, account, setTransitions, m
                     <TextTheme style={{color: 'white', opacity: .5, fontSize: 10, fontWeight: 800}}>Enter Account Balance</TextTheme>
                     <TextTheme style={{color: 'white', fontSize: 28, fontWeight: 900}}>
                         <Text>{balance || '0.00'}</Text>
-                        <Text> INR</Text>
+                        <Text> {currency}</Text>
                     </TextTheme>
                 </Pressable>
 

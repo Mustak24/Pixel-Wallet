@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import Feathericons from 'react-native-vector-icons/Feather';
 import { TextTheme } from "../../Contexts/ThemeProvider";
 import AnimateButton from "../Buttons/AnimateButton";
+import { useAppContext } from "../../Contexts/AppContext";
 
 type CalculatorProps = {
     value?: number
@@ -19,6 +20,7 @@ type buttonObject = {
 
 export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResult=()=>{}}: CalculatorProps): React.JSX.Element {
 
+    const {currency} = useAppContext()
     const [value, setValue] = useState<string>(String(val || ''));
 
     const buttons = useRef<buttonObject[][]>([
@@ -93,7 +95,7 @@ export default function Calculator({onChangeValue=()=>{}, value: val = 0, onResu
         <View style={styles.root}>
             <TextTheme style={styles.resultScreen}>
                 <Text>{value || '0.00'}</Text>
-                {isResult() && <Text> INR</Text>}
+                {isResult() && <Text> {currency}</Text>}
             </TextTheme>
 
             <View style={styles.buttonBox}>
