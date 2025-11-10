@@ -1,315 +1,170 @@
-import { Animated, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { memo, useRef, useState } from "react";
+import { TextTheme, ThemeView, useTheme } from "../Contexts/ThemeProvider";
 import AnimateButton from "./Buttons/AnimateButton";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { useEffect, useRef, useState } from "react";
-import FeatherIcons from 'react-native-vector-icons/Feather';
-import BottomModal from "./Modal/BottomModal";
-import AccountModal from "../Database/Models/AccountModal";
-import { useAppContext } from "../Contexts/AppContext";
-import { TextTheme, ThemeView } from "../Contexts/ThemeProvider";
-import { useAlert } from "./Alert/AlertProvider";
-import Calculator from "./Other/Calculator";
 import MaterialIcon from "./Icon/MaterialIcon";
-import NoralTextInput from "./Other/NoralTextInput";
-import navigator from "../Navigation/NavigationService";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { Animated, Pressable, View } from "react-native";
+import useBinaryAnimateValue from "../Hooks/useBinaryAnimatedValue";
 import SafeAreaFromBottom from "./SafeAreaView/SafeAreaFromBottom";
+import FeatherIcon from "./Icon/FeatherIcon";
+import navigator from "../Navigation/NavigationService";
+import CreateAccountModal from "./Modal/CreateAccountModal";
 
-
-export default function BottomTabNavbar({navigation, state}: BottomTabBarProps): React.JSX.Element {
+export default function BottomTabNavbar({navigation, state}:BottomTabBarProps): React.JSX.Element {
 
     const currentRouteName = state.routes[state.index].name;
     const isActive = (route: string) => route === currentRouteName;
 
-    const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
+    return (
+        <ThemeView isPrimary={false} style={{paddingInline: 20, position: 'relative'}} >
+            <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12}} >
+                <NavigationButton
+                    text="Home"
+                    icon="home"
+                    isActive={isActive('home-screen')}
+                    onPress={() => navigation.navigate('home-screen')}
+                />
 
-    const {height: screenInnerHeight} = Dimensions.get('screen');
+                <NavigationButton
+                    text="Accounts"
+                    icon="account-balance-wallet"
+                    isActive={isActive('account-screen')}
+                    onPress={() => navigation.navigate('account-screen')}
+                />
 
-    const translateY = useRef<Animated.Value>(new Animated.Value(screenInnerHeight)).current;
-    const ballsOpacityAnime = useRef<Animated.Value>(new Animated.Value(0)).current;
-    const rotateMenuAnime = useRef<Animated.Value>(new Animated.Value(0)).current;
-
-    const incomeAnime = useRef<Animated.ValueXY>(new Animated.ValueXY({x: 0, y: 0})).current;
-    const expensesAnime = useRef<Animated.ValueXY>(new Animated.ValueXY({x: 0, y: 0})).current;
-    const transferAnime = useRef<Animated.ValueXY>(new Animated.ValueXY({x: 0, y: 0})).current;
-
-    function handleMenu(){
-        setMenuOpen(menu => !menu);
-    }
-
-    function handleMenuAnime(isOpen: Boolean): void{
-        Animated.parallel([
-            Animated.timing(incomeAnime, {
-                toValue: isOpen ? {x: -100, y: -100} : {x: 0, y: 0}, duration: 150, useNativeDriver: true
-            }),
-            Animated.timing(expensesAnime, {
-                toValue: isOpen ? {x: 0, y: -150} : {x: 0, y: 0}, duration: 150, useNativeDriver: true
-            }),
-            Animated.timing(transferAnime, {
-                toValue: isOpen ? {x: 100, y: -100} : {x: 0, y: 0}, duration: 150, useNativeDriver: true
-            }),
-            Animated.timing(ballsOpacityAnime, {
-                toValue: isOpen ? 1 : 0, duration: 50, useNativeDriver: true
-            }),
-            Animated.timing(rotateMenuAnime, {
-                toValue: isOpen ? 1 : 0, duration: 100, useNativeDriver: true
-            }),
-            Animated.timing(translateY, {
-                toValue: isOpen ? 0 : screenInnerHeight, duration: 100, useNativeDriver: true
-            })
-        ]).start()
-    }
-
-    useEffect(() => {
-        if(currentRouteName == 'home-screen') handleMenuAnime(isMenuOpen);
-    }, [isMenuOpen])
-
-    return (<>
-        <ThemeView isPrimary={false} style={{...styles.center, position: 'relative'}}>
-            <ThemeView isPrimary={false} style={styles.navbarContener}>
-                <AnimateButton style={styles.navigatorBtn} onPress={() => {navigation.navigate('home-screen')}} >
-                    <MaterialIcon name="home" size={22} color={isActive('home-screen') ? 'royalblue' : ''} />
-                    <TextTheme color={isActive('home-screen') ? 'royalblue' : ''} style={styles.navigatorBtn_text}>Home</TextTheme>
-                </AnimateButton>
-
-                <AnimateButton style={styles.navigatorBtn} onPress={() => {navigation.navigate('account-screen')}}>
-                    <MaterialIcon name="account-balance-wallet" size={22} color={isActive('account-screen') ? 'royalblue' : ''} />
-                    <TextTheme color={isActive('account-screen') ? 'royalblue' : ''} style={styles.navigatorBtn_text}>Accounts</TextTheme>
-                </AnimateButton>
-            </ThemeView>
-
-
-            {
-                currentRouteName === 'home-screen' ? (
-                    <View style={[styles.center, {position: 'absolute', width: "100%", height: 80, flexDirection: 'row'}]}>
-                        <Animated.View style={[styles.center, styles.menuBackCover, {height: screenInnerHeight, transform: [{translateY}]}]}>
-                        </Animated.View>
-
-                        <Animated.View 
-                            style={[styles.center, {transform: incomeAnime.getTranslateTransform(), top: -32, position: 'absolute', opacity: ballsOpacityAnime}]}
-                        >
-                            <Pressable 
-                                onPress={() => {
-                                    handleMenu();
-                                    navigator.navigate('transition-screen', {mode: 'income'})
-                                }} 
-                                style={[styles.animateBalls, styles.center, {backgroundColor: 'rgb(25,200,150)'}]}
-                            >
-                                <FeatherIcons name="download" size={24} color={'white'} />
-                            </Pressable>
-                            <Text style={styles.animateBalls_text}>ADD</Text>
-                            <Text style={styles.animateBalls_text}>INCOME</Text>
-                        </Animated.View>
-
-                        <Animated.View 
-                            style={[styles.center, {transform: expensesAnime.getTranslateTransform(), top: -32, position: 'absolute', opacity: ballsOpacityAnime}]}
-                        >
-                            <Pressable
-                                onPress={() => {
-                                    handleMenu();
-                                    navigator.navigate('transition-screen', {mode: 'expense'})
-                                }} 
-                                style={[styles.animateBalls, styles.center, {backgroundColor: 'gray'}]}
-                            >
-                                <FeatherIcons name="upload" size={24} color={'white'} />
-                            </Pressable>
-                            <Text style={styles.animateBalls_text}>ADD</Text>
-                            <Text style={styles.animateBalls_text}>EXPENSE</Text>
-                        </Animated.View>
-
-                        <Animated.View 
-                            style={[styles.center, {transform: transferAnime.getTranslateTransform(), top: -32, position: 'absolute', opacity: ballsOpacityAnime}]}
-                        >
-                            <Pressable 
-                                onPress={() => {
-                                    handleMenu();
-                                    navigation.navigate('transition', {mode: 'transfer'})
-                                }}
-                                style={[styles.animateBalls, styles.center, {backgroundColor: 'rgb(130, 100, 255)'}]}
-                            >
-                                <FeatherIcons name="shuffle" size={24} color={'white'} />
-                            </Pressable>
-                            <Text style={styles.animateBalls_text}>ACCOUNT</Text>
-                            <Text style={styles.animateBalls_text}>TRANSFER</Text>
-                        </Animated.View>
-                    </View>
-                ) : currentRouteName === 'account-screen' ? (
-                    <CreateAccountModal visible={isMenuOpen} setVisible={setMenuOpen} />
-                ) : null
-            }
-
-            <View style={[styles.center, {width: '100%', position: 'absolute', top: 0, transform: [{translateY: "-50%"}]}]}>
-                <AnimateButton style={styles.createBtn} 
-                    onPress={handleMenu}
-                >
-                    <Animated.View style={{transform: [{rotate: rotateMenuAnime.interpolate({inputRange: [0, 1], outputRange: ['0deg', '45deg']})}]}}>
-                        <MaterialIcons name="add" color={'white'} size={22} />
-                    </Animated.View>
-                </AnimateButton>
+                {
+                    isActive('home-screen') ? (
+                        <HomeScreenCreateButton/>
+                    ) : (
+                        <AccountScreenCreateButton/>
+                    )
+                }
             </View>
 
             <SafeAreaFromBottom/>
         </ThemeView>
-    </>)
-}
-
-
-const colors = ['rgb(170,50,50)', 'rgb(170,100,50)', 'rgb(170,140,50)', 'rgb(170,170,50)', 'rgb(50,170,100)', 'rgb(25,200,150)', 'rgb(50,150,120)', 'rgb(50,170,170)','rgb(50,130,170)', 'rgb(50,100,170)','rgb(100,50,170)', 'rgb(120,50,170)', 'rgb(170,50,150)', 'rgb(170,50,100)']
-
-
-type CreateAccountModalProps = {
-    visible: boolean,
-    setVisible: (vis: boolean) => void
-}
-
-function CreateAccountModal({visible, setVisible}: CreateAccountModalProps): React.JSX.Element {
-
-    const {setAccounts, setTotalBalance, currency} = useAppContext();
-    const {alert, setAlert} = useAlert();
-
-    const [name, setName] = useState<string>('');
-    const [balance, setBalance] = useState<number>(0);
-    const [backgroundColor, setBackgroundColor] = useState<string>('rgb(25,200,150)');
-
-    const [isCalOpen, setCalOpen] = useState(false);
-
-    function create() {
-        if(!name) return setAlert({type: 'error', massage: 'Plase enter account name', id: 'modal'});
-        AccountModal.create({name, balance, backgroundColor});
-
-        setName('');
-        setBalance(0);
-        setVisible(false);
-
-        setAccounts(AccountModal.getAll());
-        setTotalBalance(AccountModal.getTotalBalance());
-    }
-
-    return (
-        <BottomModal visible={visible} setVisible={setVisible} actionButtons={[{title: 'Add', onPress: create, backgroundColor: 'rgb(25, 200, 150)'}]}  >
-            <View style={{paddingBlock: 10}}>
-                <View style={{display: 'flex', paddingInline: 20, width: '100%'}}>
-                    <TextTheme style={{color: 'white', fontSize: 18, fontWeight: 900}}>Account Options</TextTheme>
-
-                    <View style={{display: 'flex', alignItems: 'center', flexDirection: 'row', gap: 10, width: '100%', position: 'relative', marginBlock: 20}}>
-                        <MaterialIcons name="account-balance-wallet" size={22} color={'rgba(255,255,255,.6)'} style={{backgroundColor, padding: 10, borderRadius: 1000}} />
-                        <View style={{display: 'flex', justifyContent: 'flex-end', flex: 1}}>
-                            <NoralTextInput 
-                                value={name} 
-                                placeholder="Account Name"
-                                style={{fontSize: 18, fontWeight: '900'}} 
-                                onChangeText={setName}
-                            />
-                            <View style={{width: '100%', backgroundColor: 'gray', height: 1, position: 'relative', top: -5}}></View>
-                        </View>
-                    </View>
-                </View>
-
-                <TextTheme style={{paddingInline: 20, marginBlock: 10, color: 'white', fontSize: 16, fontWeight: 900}}>Select Color</TextTheme>
-
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{marginBlock: 20}} >
-                    {
-                        colors.map(color => (
-                            <Pressable 
-                                key={color} 
-                                onPress={() => setBackgroundColor(color)} 
-                                style={{display: 'flex', width: 40, aspectRatio: 1, borderRadius: 100, boxSizing: 'border-box', position: 'relative', marginLeft: 10, backgroundColor: color}}
-                            >
-                                {
-                                    backgroundColor == color ? (
-                                        <View style={{width: 40, aspectRatio: 1, borderWidth: 3, borderColor: 'rgba(255,255,255,.6)', borderRadius: 100}}></View>
-                                    ) : null
-                                }
-                            </Pressable>
-                        ))
-                    }
-                </ScrollView>
-
-                <Pressable onPress={() => setCalOpen(true)} style={{marginTop: 20, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                    <TextTheme style={{color: 'white', opacity: .5, fontSize: 10, fontWeight: 800}}>Enter Account Balance</TextTheme>
-                    <TextTheme style={{color: 'white', fontSize: 28, fontWeight: 900}}>
-                        <Text>{balance || '0.00'}</Text>
-                        <Text> {currency}</Text>
-                    </TextTheme>
-                </Pressable>
-
-                <BottomModal visible={isCalOpen} setVisible={setCalOpen} actionButtons={[{title: 'Set', onPress: () => setCalOpen(false), backgroundColor}]} >
-                    <TextTheme style={{color: 'white', fontSize: 14, fontWeight: 800, paddingLeft: 20, marginBottom: 20, opacity: .6}}>Enter Account Balance :</TextTheme>
-                    <Calculator value={balance} onResult={setBalance} />
-                </BottomModal>
-            </View>
-        </BottomModal>
     )
 }
 
-const styles = StyleSheet.create({
-    center: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-
-    navbarContener: {
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'row',
-        width: '100%',
-        justifyContent: 'space-between',
-        backgroundColor: 'rgb(25, 25, 25)',
-        paddingInline: 20,
-        paddingBlock: 10
-    },
-
-    navigatorBtn: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        gap: 10,
-        height: 44,
-        paddingInline: 20,
-        borderRadius: 100,
-        width: 120
-    },
-
-    navigatorBtn_text: {
-        color: 'white',
-        fontWeight: '900',
-        fontSize: 12
-    },
-
-    createBtn: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        position: 'relative', 
-        width: 64, 
-        aspectRatio: 1, 
-        backgroundColor: 'royalblue',
-        borderRadius: 100,
-    },
-
-    menuBackCover: {
-        position: 'absolute',
-        width: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.90)',
-        alignSelf: 'flex-end'
-    },
-
-    animateBalls: {
-        width: 64,
-        aspectRatio: 1,
-        borderRadius: 1000,
-        backgroundColor: 'royalblue',
-        margin: 10
-    },
-
-    animateBalls_text: {
-        fontWeight: 900,
-        color: 'white',
-        fontSize: 12,
-        opacity: 0.7
-    }
+const NavigationButton = memo(({text, onPress, icon, isActive}: {text: string, onPress: () => void, icon: string, isActive: boolean}) => {
+    return (
+        <AnimateButton style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, height: 44, paddingInline: 20, borderRadius: 40, width: 120, marginBlock: 8}} onPress={onPress} >
+            <MaterialIcon name={icon} size={22} color={isActive ? 'royalblue' : ''} />
+            <TextTheme color={isActive ? 'royalblue' : ''} style={{fontSize: 12, fontWeight: '900'}}>{text}</TextTheme>
+        </AnimateButton>
+    )
 })
 
+
+
+const HomeScreenCreateButton = memo(() => {
+
+    const {secondaryBackgroundColor} = useTheme()
+
+    const animate0to1 = useBinaryAnimateValue({value: 0, duration: 300})
+
+    const modesInfo = useRef([
+        {title: 'ADD INCOME', icon: 'download', bg: 'rgb(50,200,150)', x: -100, y: -100, mode: 'income'},
+        {title: 'ADD EXPENSE', icon: 'upload', bg: 'gray', x: 0, y: -150, mode: 'expense'},
+        {title: 'ACCOUNT TRANSFER', icon: 'shuffle', bg: 'rgb(130, 100, 255)', x: 100, y: -100, mode: 'transfer'},
+    ]).current;
+
+
+    function handleMenu() {
+        if(animate0to1.valueRef.current) {
+            animate0to1.animateTo0();
+        } else {
+            animate0to1.animateTo1();
+        }
+    }
+
+
+    return (
+        <View style={{position: 'absolute', top: 0, left: '50%', transform: [{translateY: '-50%'}, {translateX: '-50%'}]}} >
+            <Pressable 
+                style={{position: 'absolute'}} 
+                onPress={() => animate0to1.animateTo0()}
+            >
+                <Animated.View
+                    style={{
+                        width: 50, height: 50, borderRadius: 50, backgroundColor: secondaryBackgroundColor, opacity: 0.9, position: 'absolute',
+                        transform: [{scale: animate0to1.value.interpolate({
+                            inputRange: [0, 1], outputRange: [1, 50]
+                        })}]
+                    }}
+                />
+            </Pressable>
+
+
+            {
+                modesInfo.map((info, index) => (
+                    <Animated.View
+                        key={index}
+                        style={{
+                            position: 'absolute', alignItems: 'center', justifyContent: 'center', gap: 4,
+                            opacity: animate0to1.value,
+                            transform: [
+                                { translateX: animate0to1.value.interpolate({inputRange: [0, 1], outputRange: [0, info.x]}) },
+                                { translateY: animate0to1.value.interpolate({inputRange: [0, 1], outputRange: [0, info.y]}) },
+                                { scale: animate0to1.value.interpolate({inputRange: [0, 1], outputRange: [0.2, 1]}) }
+                            ]
+                        }}
+                    >
+                        <AnimateButton 
+                            style={{width: 64, height: 64, borderRadius: 100, backgroundColor: info.bg, alignItems: 'center', justifyContent: 'center'}}
+                            onPress={() => {
+                                navigator.navigate('transition-screen', {mode: info.mode as 'income' | 'expense' | 'transfer'})
+                                animate0to1.animateTo0()
+                            }} 
+                        >
+                            <FeatherIcon name={info.icon} size={24} color={'white'} />
+                        </AnimateButton>
+                        
+                        {
+                            info.title.split(' ').map(text => (
+                                <Animated.View 
+                                    key={text}
+                                    style={{
+                                        transform: [{scale: animate0to1.value}]
+                                    }} 
+                                >
+                                    <TextTheme color="white" style={{fontSize: 12, fontWeight: '900'}}>
+                                        {text}
+                                    </TextTheme>
+                                </Animated.View>
+                            ))
+                        }
+                    </Animated.View>
+                ))
+            }
+
+            <AnimateButton style={{alignItems: 'center', justifyContent: 'center', width: 64, height: 64, backgroundColor: 'rgb(100,140,255)', borderRadius: 100}} 
+                onPress={handleMenu}
+            >
+                <Animated.View style={{transform: [{rotate: animate0to1.value.interpolate({inputRange: [0, 1], outputRange: ['0deg', '45deg']})}]}}>
+                    <MaterialIcon name="add" color={'white'} size={22} />
+                </Animated.View>
+            </AnimateButton>
+        </View>
+    )
+})
+
+
+const AccountScreenCreateButton = memo(() => {
+
+    const [isMenuOpen, setMenuOpen] = useState(false);
+
+    return (
+        <View style={{position: 'absolute', top: 0, left: '50%', transform: [{translateY: '-50%'}, {translateX: '-50%'}]}} >
+            <AnimateButton style={{alignItems: 'center', justifyContent: 'center', width: 64, height: 64, backgroundColor: 'rgb(100,140,255)', borderRadius: 100}} 
+                onPress={_ => setMenuOpen(true)}
+            >
+                <MaterialIcon name="add" color={'white'} size={22} />
+            </AnimateButton>
+
+            <CreateAccountModal 
+                visible={isMenuOpen} setVisible={setMenuOpen}
+            />
+        </View>
+    )
+})

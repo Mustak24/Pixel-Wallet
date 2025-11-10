@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import BottomTabNavbar from "../Components/BottomTabNavbar";
 import HomeScreen from "../Screens/TabNavigationScreens/HomeScreen";
 import AccountScreen from "../Screens/TabNavigationScreens/AccountScreens/AccountScreen";
+import BottomTabNavbar from "../Components/BottomTabNavbar";
 
 
 export type TabParamsList = {
