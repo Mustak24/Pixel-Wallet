@@ -1,7 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import { AppStorage } from "../Database/Storage"
 import { Text, TextProps, TextStyle, View, ViewProps, ViewStyle } from "react-native"
-import { updateTheme } from "@funtools/native-ui/theme"
+import { toggleTheme, useThemeStore } from "@funtools/native-ui/theme"
 
 
 
@@ -59,6 +59,8 @@ const themeColors: {
 
 export default function ThemeProvider ({children}: {children: React.ReactNode}): React.JSX.Element {
     
+    const _theme = useThemeStore(store => store.theme);
+
     const appTheme: 'light' | 'dark' = AppStorage.getString('theme') == 'light' ? 'light' : 'dark';
 
     const [theme, setTheme] = useState<'light' | 'dark'>(appTheme);
@@ -68,7 +70,8 @@ export default function ThemeProvider ({children}: {children: React.ReactNode}):
     const [secondaryBackgroundColor, setSecondaryBackgroundColor] = useState<string>(themeColors[appTheme]['secondaryBackgroundColor']);
 
     useEffect(() => {
-        updateTheme(theme);
+        if(_theme && _theme != theme) toggleTheme();
+
         AppStorage.set('theme', theme);
         setPrimaryColor(themeColors[theme]['primaryColor']);
         setSecondaryColor(themeColors[theme]['secondaryColor']);

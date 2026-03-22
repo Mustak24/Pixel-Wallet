@@ -28,9 +28,11 @@ export default function AppUpdateModal() {
       visible={visible}
       setVisible={setVisible}
     //   backgroundContent={<ParticleBackground color="bg-80" />}
-      backdropColor="transparent"
+      backdropVariant='bg'
+      backdropAlpha={90}
       preventCloseRequest={forceUpdate}
-      containerProps={{ color: 'bg-secondary', style: {gap: 20} }}
+      containerProps={{ color: 'bg-secondary' }}
+      style={{gap: 20}}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <ThemeView style={{ borderRadius: 12, paddingHorizontal: 12, paddingVertical: 4, alignSelf: 'flex-start' }}>
@@ -55,7 +57,7 @@ export default function AppUpdateModal() {
           {forceUpdate ? 'Update is Required' : 'New Update is Available'}
         </TextTheme>
 
-        <TextTheme color="text-secondary" style={{ fontSize: 14, textAlign: 'center' }}>
+        <TextTheme isPrimary={false} style={{ fontSize: 14, textAlign: 'center' }}>
           <ShowWhen when={!whatsNew} otherwise={whatsNew}>
             Please update the app to the latest version to enjoy new features
             and improvements.
