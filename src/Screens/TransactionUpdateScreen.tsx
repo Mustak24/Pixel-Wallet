@@ -16,6 +16,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import CategorySelectorModal from "../Components/Modal/CategorySelectorModal";
 import AccountSelector from "../Components/AccountSelector";
 import Calculator from "../Components/Other/Calculator";
+import DateSelectorModal from "../Components/Modal/DateSelectorModal";
 
 
 type transitionInfoType = {
@@ -77,6 +78,7 @@ export default function UpdateTransaction(): React.JSX.Element {
     const [isDescriptionModalOpen, setDescriptionModalOpen] = useState<boolean>(false);
     const [isDeleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
     const [isCategoryModalOpen, setCategoryModalOpen] = useState<boolean>(false)
+    const [isDateSelectorOpen, setDateSelectorOpen] = useState<boolean>(false);
     
     const getTransitonInfo = () => transitionInfo[transitionMode == 'income' ? 0 : transitionMode == 'expense' ? 1 : 2]
 
@@ -178,13 +180,16 @@ export default function UpdateTransaction(): React.JSX.Element {
                         {description && <TextTheme style={{fontSize: 12, opacity: 0.8}} numberOfLines={8}>{description}</TextTheme>}
                     </AnimateButton>
 
-                    <AnimateButton style={{...styles.box, justifyContent: 'space-between', backgroundColor: secondaryBackgroundColor}}>
+                    <AnimateButton 
+                        style={{...styles.box, justifyContent: 'space-between', backgroundColor: secondaryBackgroundColor}}
+                        onPress={(() => setDateSelectorOpen(true))}
+                    >
                         <View style={[styles.center, {gap: 14, flexDirection: 'row'}]}>
                             <FeatherIcons name="calendar" size={20} color={color} />
                             <TextTheme style={{fontWeight: '900', opacity: 0.4}}>Created on</TextTheme>
                         </View>
                         <TextTheme style={{fontWeight: '900'}}>
-                            {mouths[month]} {hour%12 || 12}:{minute < 10 ? `0${minute}` : minute} {hour >= 12 ? 'PM' : 'AM'}
+                            {date} {mouths[month]} {year}
                         </TextTheme>
                     </AnimateButton>
                 </View>
@@ -256,7 +261,18 @@ export default function UpdateTransaction(): React.JSX.Element {
             selected={category}
             setSelected={setCategory}
         />
-
+        
+        <DateSelectorModal
+            visible={isDateSelectorOpen}
+            setVisible={setDateSelectorOpen}
+            value={{year, month, date}}
+                    
+            onSelect={({date, month, year}) => {
+                setDate(date);
+                setMonth(month);
+                setYear(year);
+            }}
+        />
     </SafePaddingView>)
 }
 

@@ -118,9 +118,11 @@ type TextThemeProps = TextProps & {
     color?: string,
     isPrimary?: boolean,
     useInvertTheme?: boolean
+    fontSize?: number
+    fontWeight?: TextStyle['fontWeight']
 }
 
-export function TextTheme({style, color, isPrimary, useInvertTheme, ...props}: TextThemeProps): React.JSX.Element {
+export function TextTheme({style, color, isPrimary, useInvertTheme, fontSize, fontWeight, ...props}: TextThemeProps): React.JSX.Element {
     const {primaryColor, secondaryColor, primaryBackgroundColor, secondaryBackgroundColor} = useTheme();
     
     if(!color) {
@@ -132,6 +134,6 @@ export function TextTheme({style, color, isPrimary, useInvertTheme, ...props}: T
     }
 
     return (
-        <Text style={[style, {color}]} {...props} />
+        <Text style={[{fontSize, fontWeight}, style, {color}]} {...props} />
     )
 }
