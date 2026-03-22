@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import AlertProvider from "./src/Components/Alert/AlertProvider";
 import AlertCard from "./src/Components/Alert/AlertCard";
 import RootNavitaion from "./src/Navigation/RootNavigation";
+import AppUpdateModal from "./src/Components/Modal/AppVersionModal";
 
 export default function App(): React.JSX.Element {
   return (
@@ -15,6 +16,7 @@ export default function App(): React.JSX.Element {
             <AlertProvider>
               <AlertCard />
               <RootNavitaion/>
+              <AppUpdateModal/>
             </AlertProvider>
           </ThemeProvider>
         </AppContextProvider>
