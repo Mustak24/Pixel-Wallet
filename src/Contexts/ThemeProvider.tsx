@@ -1,6 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react"
 import { AppStorage } from "../Database/Storage"
 import { Text, TextProps, TextStyle, View, ViewProps, ViewStyle } from "react-native"
+import { updateTheme } from "@funtools/native-ui/theme"
 
 
 
@@ -67,6 +68,7 @@ export default function ThemeProvider ({children}: {children: React.ReactNode}):
     const [secondaryBackgroundColor, setSecondaryBackgroundColor] = useState<string>(themeColors[appTheme]['secondaryBackgroundColor']);
 
     useEffect(() => {
+        updateTheme(theme);
         AppStorage.set('theme', theme);
         setPrimaryColor(themeColors[theme]['primaryColor']);
         setSecondaryColor(themeColors[theme]['secondaryColor']);
