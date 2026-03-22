@@ -3,11 +3,11 @@ import { Pressable, ScrollView, Text, TextInput, TouchableHighlight, View } from
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import TransitionModal from '../../../Database/Models/TransitionModal';
+import TransactionModal from '../../../Database/Models/TransactionModal';
 import AccountModal from '../../../Database/Models/AccountModal';
 import DateSelectorModal from '../../../Components/Modal/DateSelectorModal';
-import TransitionCard from '../../../Components/Cards/TransitionCard';
-import HaveNoTransition from '../../../Components/Other/HaveNoTransition';
+import TransactionCard from '../../../Components/Cards/TransactionCard';
+import HaveNoTransaction from '../../../Components/Other/HaveNoTransaction';
 import { TextTheme, useTheme } from '../../../Contexts/ThemeProvider';
 import navigator from '../../../Navigation/NavigationService';
 import SafePaddingView from '../../../Components/SafeAreaView/SafePaddingView';
@@ -24,41 +24,41 @@ type accountInfoCardType = {
     type: 'Income' | 'Expense',
     mode: 'income' | 'expense',
     amount: number | string,
-    transitions: number
+    transactions: number
 }
 
 export default function AccountInfo(): React.JSX.Element {
 
     const {primaryBackgroundColor: backgroundColor} = useTheme();
-    const {isNeedTransitionRefresh, setAccounts, currency} = useAppContext()
+    const {isNeedTransactionRefresh, setAccounts, currency} = useAppContext()
 
     const route = useRoute<RouteProp<RootNavigationParamsList, 'account-info-screen'>>()
 
     const {account: acc} = route.params;
-    const transitionsRecord: {income: TransitionModal[], expense: TransitionModal[]} = acc.getTransitionsRecord();
+    const transitionsRecord: {income: TransactionModal[], expense: TransactionModal[]} = acc.getTransactionsRecord();
   
     const [isDeleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
     const [isUpdateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
 
     const [account, setAccount] = useState(acc);
-    const [transitions, setTransitions] = useState<TransitionModal[]>([])
+    const [transactions, setTransactions] = useState<TransactionModal[]>([])
     const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState(new Date().getMonth());
     
     
     const accountInfo: accountInfoCardType[] =  [
-        {type: 'Income', amount: account.getIncomeThisMonth() || '0.00', transitions: transitionsRecord?.income.length ?? 0, mode: 'income'},
-        {type: 'Expense', amount: account.getExpenseThisMonth() || '0.00', transitions: transitionsRecord?.expense.length ?? 0, mode: 'expense'}
+        {type: 'Income', amount: account.getIncomeThisMonth() || '0.00', transactions: transitionsRecord?.income.length ?? 0, mode: 'income'},
+        {type: 'Expense', amount: account.getExpenseThisMonth() || '0.00', transactions: transitionsRecord?.expense.length ?? 0, mode: 'expense'}
     ]
 
     useEffect(() => {
         setAccount(AccountModal.findById(acc.id) ?? acc);
-        setTransitions(TransitionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id || tra.toAccountId == account.id))
-    }, [isNeedTransitionRefresh])
+        setTransactions(TransactionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id || tra.toAccountId == account.id))
+    }, [isNeedTransactionRefresh])
 
     return (
         <SafePaddingView fromBottom={false} style={{width: '100%', height: '100%'}} backgroundColor={account.backgroundColor} >
-            <ScrollView style={{width: '100%', height: '100%'}} >
+            <ScrollView style={{width: '100%', height: '100%',  marginTop: 10,}} >
                 <View style={[style.flex, style.itemCenter, style.justifyBetween, style.flexRow, {paddingInline: 20, paddingBottom: 14}]}>
                     <Pressable 
                         onPress={() => navigator.goBack()} 
@@ -98,7 +98,7 @@ export default function AccountInfo(): React.JSX.Element {
 
                     <View style={[style.center, style.flexRow, {gap: 10, width: '100%'}]}>
                         {
-                            accountInfo.map(({type, amount, transitions, mode}) => (
+                            accountInfo.map(({type, amount, transactions, mode}) => (
                                 <AnimateButton key={type} style={{backgroundColor: 'rgba(0,0,0,.8)', borderRadius: 20, paddingTop: 20, flex: 1, padding: 10}}>
                                     <Text style={{fontWeight: 900, marginBottom: 10, paddingLeft: 10, color: 'white'}}>{type?.toLocaleUpperCase()}</Text>
 
@@ -110,12 +110,12 @@ export default function AccountInfo(): React.JSX.Element {
                                     
                                     <View style={[style.flex, style.flexRow, {gap: 10, paddingLeft: 10}]}>
                                         <FeatherIcons name='trending-up' size={24} color={'white'} style={{fontWeight: 900}} />
-                                        <Text style={{fontWeight: 900, fontSize: 18, color: 'white'}}>{transitions}</Text>
+                                        <Text style={{fontWeight: 900, fontSize: 18, color: 'white'}}>{transactions}</Text>
                                     </View>
-                                    <Text style={{fontSize: 12, color: 'gray', fontWeight: 900, opacity: 0.9, paddingLeft: 10, paddingBottom: 10}}>Transitions</Text>
+                                    <Text style={{fontSize: 12, color: 'gray', fontWeight: 900, opacity: 0.9, paddingLeft: 10, paddingBottom: 10}}>Transactions</Text>
 
                                     <Pressable 
-                                        onPress={() => {navigator.navigate('transition-screen', {account, mode})}} 
+                                        onPress={() => {navigator.navigate('transaction-screen', {account, mode})}} 
                                         style={[style.center, {height: 44, borderRadius: 10, backgroundColor: 'rgb(25,200,150)', width: '100%'}]}
                                     >
                                         <Text style={{color: 'white'}}>
@@ -131,11 +131,11 @@ export default function AccountInfo(): React.JSX.Element {
                 <View 
                     style={{paddingInline: 20, paddingTop: 26, backgroundColor, borderTopLeftRadius: 40, borderTopRightRadius: 40, marginTop: 34, paddingBottom: 100, height: '100%'}}
                 >
-                        <TransitionsRecords 
+                        <TransactionsRecords 
                             account={account} 
                             month={month} setMonth={setMonth} 
                             year={year} setYear={setYear} 
-                            transitions={transitions} setTransitions={setTransitions} 
+                            transactions={transactions} setTransactions={setTransactions} 
                         />
                 </View>
             </ScrollView>
@@ -144,7 +144,7 @@ export default function AccountInfo(): React.JSX.Element {
                 year={year}
                 month={month} 
                 account={account} 
-                setTransitions={setTransitions}
+                setTransactions={setTransactions}
                 visible={isUpdateModalVisible} setVisible={setUpdateModalVisible} 
             />
 
@@ -163,23 +163,23 @@ export default function AccountInfo(): React.JSX.Element {
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-type TransitionsRecordsType = {
+type TransactionsRecordsType = {
     account: AccountModal, 
     month: number, setMonth: Dispatch<SetStateAction<number>>,
     year: number, setYear: Dispatch<SetStateAction<number>>,
-    transitions: TransitionModal[], setTransitions: Dispatch<SetStateAction<TransitionModal[]>>
+    transactions: TransactionModal[], setTransactions: Dispatch<SetStateAction<TransactionModal[]>>
 }
 
-function TransitionsRecords({account, month, setMonth, year, setYear, transitions, setTransitions}: TransitionsRecordsType): React.JSX.Element {
+function TransactionsRecords({account, month, setMonth, year, setYear, transactions, setTransactions}: TransactionsRecordsType): React.JSX.Element {
 
     const {primaryColor: color} = useTheme();
-    const {isNeedTransitionRefresh} = useAppContext()
+    const {isNeedTransactionRefresh} = useAppContext()
 
     const [isDateModalVisible, setDateModalVisible] = useState<boolean>(false)
 
     useEffect(() => {
-        setTransitions(TransitionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id || tra.toAccountId == account.id));
-    }, [month, year, isNeedTransitionRefresh]);
+        setTransactions(TransactionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id || tra.toAccountId == account.id));
+    }, [month, year, isNeedTransactionRefresh]);
 
     return (
         <View>
@@ -216,22 +216,22 @@ function TransitionsRecords({account, month, setMonth, year, setYear, transition
             </View>
 
             <View>
-                {transitions.length == 0 ? <HaveNoTransition/> : null}
+                {transactions.length == 0 ? <HaveNoTransaction/> : null}
 
                 {
-                   transitions.map( (transition) => (
-                        <TransitionCard 
-                            key={transition.id} 
-                            id={transition.id} 
-                            mode={transition.mode} 
-                            fromAccountId={transition.fromAccountId} 
-                            toAccountId={transition.toAccountId}
-                            amount={transition.amount} 
-                            title={transition.title} 
-                            description={transition.description} 
-                            createOn={transition.createOn} 
-                            category={transition.category}
-                            onPress={() => {navigator.navigate('transition-update-screen', {transition})}}
+                   transactions.map( (transaction) => (
+                        <TransactionCard 
+                            key={transaction.id} 
+                            id={transaction.id} 
+                            mode={transaction.mode} 
+                            fromAccountId={transaction.fromAccountId} 
+                            toAccountId={transaction.toAccountId}
+                            amount={transaction.amount} 
+                            title={transaction.title} 
+                            description={transaction.description} 
+                            createOn={transaction.createOn} 
+                            category={transaction.category}
+                            onPress={() => {navigator.navigate('transaction-update-screen', {transaction})}}
                         />
                     ))
                 }
@@ -250,13 +250,13 @@ const colors = ['rgb(170,50,50)', 'rgb(170,100,50)', 'rgb(170,140,50)', 'rgb(170
 
 type UpdateAccountInfoModalProps = {
     visible: boolean, setVisible: Dispatch<SetStateAction<boolean>>,
-    setTransitions: Dispatch<SetStateAction<TransitionModal[]>>,
+    setTransactions: Dispatch<SetStateAction<TransactionModal[]>>,
     account: AccountModal,
     month: number,
     year: number 
 }
 
-function UpdateAccountInfoModal({visible, setVisible, account, setTransitions, month, year}: UpdateAccountInfoModalProps): React.JSX.Element {
+function UpdateAccountInfoModal({visible, setVisible, account, setTransactions, month, year}: UpdateAccountInfoModalProps): React.JSX.Element {
 
     const {setAccounts, setTotalBalance, currency} = useAppContext();
     const {primaryColor: color} = useTheme();
@@ -271,7 +271,7 @@ function UpdateAccountInfoModal({visible, setVisible, account, setTransitions, m
         if(!name) return;
 
         if(account.balance != balance) {
-            let tra = TransitionModal.create({
+            let tra = TransactionModal.create({
                 mode: account.balance < balance ? 'income' : 'expense', 
                 title: 'Adjust Balance', 
                 description: '',    
@@ -302,7 +302,7 @@ function UpdateAccountInfoModal({visible, setVisible, account, setTransitions, m
 
         setAccounts(AccountModal.getAll());
         setTotalBalance(AccountModal.getTotalBalance());
-        setTransitions(TransitionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id))
+        setTransactions(TransactionModal.findByDate(month, year).filter(tra => tra.fromAccountId == account.id))
     }
 
     return (

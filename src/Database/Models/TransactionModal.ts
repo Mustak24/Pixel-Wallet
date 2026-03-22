@@ -2,7 +2,7 @@ import { MMKV } from "react-native-mmkv";
 import idCreator from "../idCreator";
 import AccountModal from "./AccountModal";
 
-const Storage = new MMKV({id: 'Transitions'});
+const Storage = new MMKV({id: 'Transactions'});
 
 
 export type createOnType = {
@@ -24,9 +24,9 @@ type CreateProps = {
     category: string
 }
 
-type TransitionModalProps = CreateProps & {id: string}
+type TransactionModalProps = CreateProps & {id: string}
 
-export default class TransitionModal{
+export default class TransactionModal{
     mode: 'income' | 'expense' | 'transfer';
     fromAccountId: string;
     amount: number;
@@ -37,7 +37,7 @@ export default class TransitionModal{
     toAccountId: string;
     category: string;
 
-    constructor({mode, fromAccountId, amount, title, description, id, createOn, toAccountId, category}: TransitionModalProps) {
+    constructor({mode, fromAccountId, amount, title, description, id, createOn, toAccountId, category}: TransactionModalProps) {
         this.id = id;
         this.mode = mode;
         this.fromAccountId = fromAccountId;
@@ -65,15 +65,15 @@ export default class TransitionModal{
         let keys: string[] = Storage.getAllKeys();
         
         let id: string = idCreator();
-        for(let key of keys) if(key == id) return TransitionModal.createId();
+        for(let key of keys) if(key == id) return TransactionModal.createId();
 
         return id;
     }
 
-    static create({mode, fromAccountId, amount, title, description, createOn, toAccountId, category}: CreateProps): TransitionModal {
+    static create({mode, fromAccountId, amount, title, description, createOn, toAccountId, category}: CreateProps): TransactionModal {
 
-        let id: string = TransitionModal.createId();
-        let transiton = new TransitionModal({mode, fromAccountId, amount, title, description, id, createOn, toAccountId, category});
+        let id: string = TransactionModal.createId();
+        let transiton = new TransactionModal({mode, fromAccountId, amount, title, description, id, createOn, toAccountId, category});
 
         Storage.set(id, JSON.stringify(transiton));
 
@@ -95,42 +95,42 @@ export default class TransitionModal{
         return transiton;
     }
 
-    static getAll(): TransitionModal[] {
+    static getAll(): TransactionModal[] {
         let keys: string[] = Storage.getAllKeys();
-        let transitions: TransitionModal[] = [];
+        let transactions: TransactionModal[] = [];
         for(let key of keys) {
-            let transition = Storage.getString(key);
-            if(transition) {
-                transitions.push(new TransitionModal(JSON.parse(transition)));
+            let transaction = Storage.getString(key);
+            if(transaction) {
+                transactions.push(new TransactionModal(JSON.parse(transaction)));
             }
         }
-        return transitions;
+        return transactions;
     }
     
     static getAllId(): string[] {
         return Storage.getAllKeys();
     }
 
-    static findById(id: string): TransitionModal | null {
+    static findById(id: string): TransactionModal | null {
         if(!Storage.contains(id)) return null;
-        let transition = Storage.getString(id);
-        return transition ? new TransitionModal(JSON.parse(transition)) : null;
+        let transaction = Storage.getString(id);
+        return transaction ? new TransactionModal(JSON.parse(transaction)) : null;
     }
 
 
-    static findByDate(month: number, year?: number): TransitionModal[] {
+    static findByDate(month: number, year?: number): TransactionModal[] {
         if(!month || !year) {
             let date = new Date();
             month ??= date.getMonth();
             year ??= date.getFullYear();
         }
 
-        let transitions: TransitionModal[] = TransitionModal.getAll();
-        transitions = transitions.filter(transition => {
-            return transition.createOn.month == month && transition.createOn.year == year;
+        let transactions: TransactionModal[] = TransactionModal.getAll();
+        transactions = transactions.filter(transaction => {
+            return transaction.createOn.month == month && transaction.createOn.year == year;
         });
 
-        return transitions.sort((a, b) => {
+        return transactions.sort((a, b) => {
             let dateA: number = Number(a.createOn.date);
             let timea: number = a.createOn.hour * 60 + a.createOn.minute;
 
@@ -148,19 +148,19 @@ export default class TransitionModal{
             year ??= date.getFullYear();
         }
 
-        let transitions: TransitionModal[] = TransitionModal.findByDate(month, year);
+        let transactions: TransactionModal[] = TransactionModal.findByDate(month, year);
         let record: {income: number, expense: number} = {income: 0, expense: 0};
 
-        for(let transition of transitions) {
-            if(transition.mode == 'income') record.income += transition.amount;
-            else if(transition.mode == 'expense') record.expense += transition.amount;
+        for(let transaction of transactions) {
+            if(transaction.mode == 'income') record.income += transaction.amount;
+            else if(transaction.mode == 'expense') record.expense += transaction.amount;
         }
 
         return record;
     }
 
-    static deleteById(id: string): TransitionModal | null {
-        let transiton = TransitionModal.findById(id);
+    static deleteById(id: string): TransactionModal | null {
+        let transiton = TransactionModal.findById(id);
         if(!transiton) return null;
 
         Storage.delete(id);

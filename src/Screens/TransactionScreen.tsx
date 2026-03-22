@@ -4,7 +4,7 @@ import AnimateButton from "../Components/Buttons/AnimateButton";
 import FeatherIcons from 'react-native-vector-icons/Feather';
 import { useEffect, useState } from "react";
 import BottomModal from "../Components/Modal/BottomModal";
-import TransitionModal from "../Database/Models/TransitionModal";
+import TransactionModal from "../Database/Models/TransactionModal";
 import AccountModal from "../Database/Models/AccountModal";
 import { useAppContext } from "../Contexts/AppContext";
 import AccountSelector from "../Components/AccountSelector";
@@ -54,15 +54,15 @@ const transitionInfo: transitionInfoType[] = [
 const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 
-export default function TransitionScreen(): React.JSX.Element {
+export default function TransactionScreen(): React.JSX.Element {
 
-    const {params} = useRoute<RouteProp<RootNavigationParamsList, 'transition-screen'>>();
+    const {params} = useRoute<RouteProp<RootNavigationParamsList, 'transaction-screen'>>();
 
-    const {accounts, setTotalBalance, setAccounts, setNeedTransitionRefresh} = useAppContext();
+    const {accounts, setTotalBalance, setAccounts, setNeedTransactionRefresh} = useAppContext();
     const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useTheme()
 
     const [amount, setAmount] = useState<number>(0)
-    const [transitionMode, setTransitionMode] = useState<transitionMode>(params.mode);
+    const [transitionMode, setTransactionMode] = useState<transitionMode>(params.mode);
     const [fromAccount, setFromAccount] = useState<AccountModal>(params.account ?? accounts[0]);
     const [toAccount, setToAccount] = useState<AccountModal>(params.account ?? accounts[0]);
     const [title, setTitle] = useState<string>('');
@@ -84,7 +84,7 @@ export default function TransitionScreen(): React.JSX.Element {
     function createTransiton() {
         if(!fromAccount) return;
 
-        let tra = TransitionModal.create({
+        let tra = TransactionModal.create({
             title, description, fromAccountId: fromAccount.id, mode: transitionMode, amount, 
             createOn: {year, month, date, hour, minute}, 
             toAccountId: transitionMode === 'transfer' ? toAccount.id : '', category
@@ -95,13 +95,13 @@ export default function TransitionScreen(): React.JSX.Element {
         setTotalBalance(AccountModal.getTotalBalance());
         setAccounts(AccountModal.getAll());
 
-        setNeedTransitionRefresh(pre => ++pre)
+        setNeedTransactionRefresh(pre => ++pre)
         navigator.goBack()
     }
 
 
     useEffect(() => {
-        setTransitionMode(params.mode)
+        setTransactionMode(params.mode)
     }, [params])
 
     
@@ -125,7 +125,7 @@ export default function TransitionScreen(): React.JSX.Element {
                                                 backgroundColor: mode == transitionMode ?  backgroundColor : 'transparent',
                                                 borderWidth: mode == transitionMode ? 0 : 2
                                             }} 
-                                            onPress={() => setTransitionMode(mode)}
+                                            onPress={() => setTransactionMode(mode)}
                                         >
                                                 <FeatherIcons
                                                     color={mode == transitionMode ? 'white' : color} 
@@ -252,7 +252,7 @@ type AmountBoxProps = {
 
 function AmountBox({heading, accounts, setFromAccount, amount, setAmount, mode, setToAccount, fromAccount, toAccount}: AmountBoxProps){
 
-    const {params} = useRoute<RouteProp<RootNavigationParamsList, 'transition-screen'>>();
+    const {params} = useRoute<RouteProp<RootNavigationParamsList, 'transaction-screen'>>();
 
     const {primaryBackgroundColor: backgroundColor} = useTheme();
     const {currency} = useAppContext()

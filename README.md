@@ -1,6 +1,6 @@
 # 💸 Pixel-Wallet
 
-**Pixel-Wallet** is a fully offline-first, local-data-powered personal finance management app built with **React Native** and **TypeScript**. This app allows users to track transactions, manage accounts, and visualize financial transitions with a sleek and responsive UI — all without the need for an internet connection.
+**Pixel-Wallet** is a fully offline-first, local-data-powered personal finance management app built with **React Native** and **TypeScript**. This app allows users to track transactions, manage accounts, and visualize financial transactions with a sleek and responsive UI — all without the need for an internet connection.
 
 ## 🚀 Features
 
@@ -33,7 +33,7 @@ Pixel-Wallet/
 ├── App.tsx                 # Entry point
 ├── src/
 │   ├── components/         # Reusable UI components (Buttons, Cards, Icons, etc.)
-│   ├── screens/            # App screens (Home, Accounts, Transitions, etc.)
+│   ├── screens/            # App screens (Home, Accounts, Transactions, etc.)
 │   ├── Database/           # Custom storage and models
 │   ├── Contexts/           # App-wide context providers
 │   ├── Navigation/         # Navigation logic (stack/tab)
@@ -111,13 +111,13 @@ yarn test
 ## 🔥 Code Hotspots (Actively Updated Files)
 
 - App.tsx
-- src/screens/Transition.tsx
+- src/screens/Transaction.tsx
 - src/components/BottomTabNavbar.tsx
 - src/screens/HomeScreens/Home.tsx
 - src/components/Modal/BottomModal.tsx
 - src/components/Calculator.tsx
 - src/Database/Models/AccountModal.ts
-- src/Database/Models/TransitionModal.ts
+- src/Database/Models/TransactionModal.ts
 
 ---
 

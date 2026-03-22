@@ -8,7 +8,7 @@ import { useAppContext } from "../Contexts/AppContext";
 import { TextTheme, useTheme } from "../Contexts/ThemeProvider";
 import { RootNavigationParamsList } from "../Navigation/RootNavigation";
 import AccountModal from "../Database/Models/AccountModal";
-import TransitionModal from "../Database/Models/TransitionModal";
+import TransactionModal from "../Database/Models/TransactionModal";
 import navigator from "../Navigation/NavigationService";
 import SafePaddingView from "../Components/SafeAreaView/SafePaddingView";
 import style from "../../AppStyle";
@@ -53,26 +53,26 @@ const transitionInfo: transitionInfoType[] = [
 
 const mouths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-export default function UpdateTransition(): React.JSX.Element {
+export default function UpdateTransaction(): React.JSX.Element {
 
-    const {accounts, setAccounts, setTotalBalance, setNeedTransitionRefresh} = useAppContext();
+    const {accounts, setAccounts, setTotalBalance, setNeedTransactionRefresh} = useAppContext();
     const {primaryColor: color, primaryBackgroundColor: backgroundColor, secondaryBackgroundColor} = useTheme();
 
-    const route = useRoute<RouteProp<RootNavigationParamsList, 'transition-update-screen'>>();
-    const {transition} = route.params;
+    const route = useRoute<RouteProp<RootNavigationParamsList, 'transaction-update-screen'>>();
+    const {transaction} = route.params;
 
-    const [amount, setAmount] = useState<number>(transition.amount)
-    const [transitionMode, setTransitionMode] = useState<transitionMode>(transition.mode);
-    const [fromAccount, setFromAccount] = useState<AccountModal>(AccountModal.findById(transition.fromAccountId) ?? accounts[0]);
-    const [toAccount, setToAccount] = useState<AccountModal>(AccountModal.findById(transition.toAccountId) ?? accounts[0]);
-    const [title, setTitle] = useState<string>(transition.title);
-    const [category, setCategory] = useState<string>(transition.category);
-    const [description, setDescription] = useState<string>(transition.description);
-    const [year, setYear] = useState<number>(transition.createOn.year)
-    const [month, setMonth] = useState<number>(transition.createOn.month)
-    const [date, setDate] = useState<number>(transition.createOn.date)
-    const [hour, setHour] = useState<number>(transition.createOn.hour)
-    const [minute, setMinute] = useState<number>(transition.createOn.minute)
+    const [amount, setAmount] = useState<number>(transaction.amount)
+    const [transitionMode, setTransactionMode] = useState<transitionMode>(transaction.mode);
+    const [fromAccount, setFromAccount] = useState<AccountModal>(AccountModal.findById(transaction.fromAccountId) ?? accounts[0]);
+    const [toAccount, setToAccount] = useState<AccountModal>(AccountModal.findById(transaction.toAccountId) ?? accounts[0]);
+    const [title, setTitle] = useState<string>(transaction.title);
+    const [category, setCategory] = useState<string>(transaction.category);
+    const [description, setDescription] = useState<string>(transaction.description);
+    const [year, setYear] = useState<number>(transaction.createOn.year)
+    const [month, setMonth] = useState<number>(transaction.createOn.month)
+    const [date, setDate] = useState<number>(transaction.createOn.date)
+    const [hour, setHour] = useState<number>(transaction.createOn.hour)
+    const [minute, setMinute] = useState<number>(transaction.createOn.minute)
 
     const [isDescriptionModalOpen, setDescriptionModalOpen] = useState<boolean>(false);
     const [isDeleteModalVisible, setDeleteModalVisible] = useState<boolean>(false);
@@ -82,9 +82,9 @@ export default function UpdateTransition(): React.JSX.Element {
 
 
 
-    function updateTransition() {
-        TransitionModal.deleteById(transition.id);
-        TransitionModal.create({
+    function updateTransaction() {
+        TransactionModal.deleteById(transaction.id);
+        TransactionModal.create({
             mode: transitionMode, 
             fromAccountId: fromAccount.id, 
             toAccountId: transitionMode == 'transfer' ? toAccount.id : '',
@@ -98,17 +98,17 @@ export default function UpdateTransition(): React.JSX.Element {
         setAccounts(AccountModal.getAll());
         setTotalBalance(AccountModal.getTotalBalance());
 
-        setNeedTransitionRefresh(pre => ++pre)
+        setNeedTransactionRefresh(pre => ++pre)
         navigator.goBack()
     }
     
-    function deleteTransition() {
-        TransitionModal.deleteById(transition.id);
+    function deleteTransaction() {
+        TransactionModal.deleteById(transaction.id);
         
         setAccounts(AccountModal.getAll());
         setTotalBalance(AccountModal.getTotalBalance());
         
-        setNeedTransitionRefresh(pre => ++pre)
+        setNeedTransactionRefresh(pre => ++pre)
         navigator.goBack();
     }
 
@@ -132,7 +132,7 @@ export default function UpdateTransition(): React.JSX.Element {
                                             backgroundColor: mode == transitionMode ?  backgroundColor : 'transparent',
                                             borderWidth: mode == transitionMode ? 0 : 2
                                         }} 
-                                        onPress={() => setTransitionMode(mode)}
+                                        onPress={() => setTransactionMode(mode)}
                                     >
                                         <FeatherIcons
                                             color={mode == transitionMode ? 'white' : color} 
@@ -209,7 +209,7 @@ export default function UpdateTransition(): React.JSX.Element {
                     </AnimateButton>
                     
                     <View style={styles.actionsButtonsBox}>
-                        <AnimateButton style={{...styles.actionBtn, backgroundColor: 'rgb(25,200,150)'}} onPress={updateTransition}>
+                        <AnimateButton style={{...styles.actionBtn, backgroundColor: 'rgb(25,200,150)'}} onPress={updateTransaction}>
                             <Text style={{fontWeight: '900', color: 'white'}}>Save</Text>
                         </AnimateButton>
                     </View>
@@ -241,13 +241,13 @@ export default function UpdateTransition(): React.JSX.Element {
                 {
                     title: 'Delete', 
                     icon: <FeatherIcons name="trash-2" size={20} color={'white'} />, 
-                    onPress: () => deleteTransition(),
+                    onPress: () => deleteTransaction(),
                     backgroundColor: 'rgb(250,50,50)'
                 }
             ]} 
         >
             <Text style={{color: 'rgb(250,60,60)', fontWeight: '900', fontSize: 24, marginBottom: 10}}>Alert !!!</Text>
-            <Text style={{color: 'rgb(250,60,60)', fontWeight: '900', fontSize: 14}}>Once you delete a Transition, there is no going back.</Text>
+            <Text style={{color: 'rgb(250,60,60)', fontWeight: '900', fontSize: 14}}>Once you delete a Transaction, there is no going back.</Text>
         </BottomModal>
 
         <CategorySelectorModal

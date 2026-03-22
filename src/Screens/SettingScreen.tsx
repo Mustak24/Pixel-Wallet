@@ -11,13 +11,13 @@ import FeatherIcon from "../Components/Icon/FeatherIcon";
 import { AppStorage } from "../Database/Storage";
 import BottomModal from "../Components/Modal/BottomModal";
 import AccountModal from "../Database/Models/AccountModal";
-import TransitionModal from "../Database/Models/TransitionModal";
+import TransactionModal from "../Database/Models/TransactionModal";
 import { useAlert } from "../Components/Alert/AlertProvider";
 import { ItemSelectorModal } from "../Components/Modal/ItemSelectorModal";
 
 export default function SettingScreen(): React.JSX.Element {
 
-    const {username, setAccounts, setTotalBalance, setNeedTransitionRefresh, currency} = useAppContext();
+    const {username, setAccounts, setTotalBalance, setNeedTransactionRefresh, currency} = useAppContext();
     
     const {primaryColor: color, secondaryBackgroundColor, theme, setTheme} = useTheme();
 
@@ -186,14 +186,14 @@ export default function SettingScreen(): React.JSX.Element {
                 handleDelete={() => {
                     AccountModal.getAll().forEach(acc => AccountModal.deleteById(acc.id));
             
-                    TransitionModal.getAll().forEach(tra => TransitionModal.deleteById(tra.id));
+                    TransactionModal.getAll().forEach(tra => TransactionModal.deleteById(tra.id));
 
                     AccountModal.create({name: 'Cash', balance: 0, backgroundColor: 'rgb(25,200,150)'});
                     AccountModal.create({name: 'Bank', balance: 0, backgroundColor: 'rgb(130,100,255)'});
                     
                     setAccounts(AccountModal.getAll());
                     setTotalBalance(AccountModal.getTotalBalance());
-                    setNeedTransitionRefresh(pre => ++pre)
+                    setNeedTransactionRefresh(pre => ++pre)
                     setDeleteDataModalVisible(false);
 
                     navigator.goBack();
