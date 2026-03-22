@@ -11,7 +11,7 @@ import MaterialIcon from "../../Components/Icon/MaterialIcon";
 import FeatherIcon from "../../Components/Icon/FeatherIcon";
 import HaveNoTransaction from "../../Components/Other/HaveNoTransaction";
 import TransactionCard from "../../Components/Cards/TransactionCard";
-import DateSelectorModal from "../../Components/Modal/DateSelectorModal";
+import MonthSelectorModal from "../../Components/Modal/MonthSelectorModal";
 import BottomModal from "../../Components/Modal/BottomModal";
 import TypingText from "../../Components/Text/TypingText";
 import navigator from "../../Navigation/NavigationService";
@@ -140,7 +140,7 @@ export default function HomeScreen(): React.JSX.Element {
                 </View>
             </ScrollView>
 
-            <DateSelectorModal visible={isDateModalVisible} setVisible={setDateModalVisible} month={month} setMonth={setMonth} year={year} setYear={setYear} />
+            <MonthSelectorModal visible={isDateModalVisible} setVisible={setDateModalVisible} month={month} setMonth={setMonth} year={year} setYear={setYear} />
 
             <BottomModal
                 visible={isNameModalVisible}

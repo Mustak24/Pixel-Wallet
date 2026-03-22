@@ -325,6 +325,8 @@ function CurrencyModal({ visible, setVisible }: { visible: boolean, setVisible: 
                 </View>
             }
 
+            isItemSelected={!!selected}
+
             renderItemContent={(item) => (<>
                     <TextTheme style={{fontWeight: 900, fontSize: 16}}>{item.country}</TextTheme>
                     <TextTheme style={{fontWeight: 600, fontSize: 16}}>{item.currency}</TextTheme>

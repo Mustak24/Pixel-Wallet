@@ -20,9 +20,10 @@ type Props<item> = {
     selected?: item | null,
     closeOnSelect?: boolean
     renderItemStyle?: ViewStyle,
+    isItemSelected?: boolean
 }
 
-export function ItemSelectorModal<item>({visible, setVisible, onSelect, allItems, title, keyExtractor, filter, SelectedItemContent, renderItemContent, actionButtons, selected=null, renderItemStyle, closeOnSelect=true}: Props<item>) : React.JSX.Element {
+export function ItemSelectorModal<item>({visible, setVisible, onSelect, allItems, title, keyExtractor, filter, SelectedItemContent, renderItemContent, actionButtons, selected=null, renderItemStyle, closeOnSelect=true, isItemSelected = false}: Props<item>) : React.JSX.Element {
 
     const {primaryColor, secondaryBackgroundColor} = useTheme();
 
@@ -53,7 +54,7 @@ export function ItemSelectorModal<item>({visible, setVisible, onSelect, allItems
                 {title}
             </TextTheme>
 
-            <ShowWhen when={selected !== null && !isInputFocus} >
+            <ShowWhen when={isItemSelected} >
                 <View style={{width: "100%", padding: 16, borderRadius: 16, backgroundColor: 'rgba(150, 50, 250, 1)', flexDirection: "row", justifyContent: 'space-between', alignItems: 'center'}} >
                     {SelectedItemContent}
 

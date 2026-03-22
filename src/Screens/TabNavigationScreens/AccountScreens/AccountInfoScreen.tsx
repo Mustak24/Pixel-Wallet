@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import TransactionModal from '../../../Database/Models/TransactionModal';
 import AccountModal from '../../../Database/Models/AccountModal';
-import DateSelectorModal from '../../../Components/Modal/DateSelectorModal';
+import MonthSelectorModal from '../../../Components/Modal/MonthSelectorModal';
 import TransactionCard from '../../../Components/Cards/TransactionCard';
 import HaveNoTransaction from '../../../Components/Other/HaveNoTransaction';
 import { TextTheme, useTheme } from '../../../Contexts/ThemeProvider';
@@ -237,7 +237,7 @@ function TransactionsRecords({account, month, setMonth, year, setYear, transacti
                 }
             </View>
 
-            <DateSelectorModal visible={isDateModalVisible} setVisible={setDateModalVisible} month={month} setMonth={setMonth} year={year} setYear={setYear} />
+            <MonthSelectorModal visible={isDateModalVisible} setVisible={setDateModalVisible} month={month} setMonth={setMonth} year={year} setYear={setYear} />
         </View>
     )
 }
