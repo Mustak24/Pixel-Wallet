@@ -1,7 +1,7 @@
 import { MMKV } from "react-native-mmkv";
 import idCreator from "../idCreator";
-import TransitionModal from "./TransitionModal";
-import { TransitionsStorage } from "../Storage";
+import TransactionModal from "./TransactionModal";
+import { TransactionsStorage } from "../Storage";
 
 const Storage = new MMKV({id: 'Accounts'});
 
@@ -33,7 +33,7 @@ class AccountModal {
     }
 
     getIncomeThisMonth(): number {
-        let transitons: TransitionModal[] = TransitionModal.findByDate(new Date().getMonth());
+        let transitons: TransactionModal[] = TransactionModal.findByDate(new Date().getMonth());
         let income: number = 0;
         for(let transiton of transitons) {
             if(transiton.fromAccountId == this.id && transiton.mode == 'income') 
@@ -43,7 +43,7 @@ class AccountModal {
     }
 
     getExpenseThisMonth(): number {
-        let transitons: TransitionModal[] = TransitionModal.findByDate(new Date().getMonth());
+        let transitons: TransactionModal[] = TransactionModal.findByDate(new Date().getMonth());
         let expense: number = 0;
         for(let transiton of transitons) {
             if(transiton.fromAccountId == this.id && transiton.mode == 'expense') 
@@ -52,9 +52,9 @@ class AccountModal {
         return expense;
     }
 
-    getTransitionsRecord(): {income: TransitionModal[], expense: TransitionModal[]} {
-        let transitons: TransitionModal[] = TransitionModal.getAll();
-        let record: {income: TransitionModal[], expense: TransitionModal[]} = {income: [], expense: []};
+    getTransactionsRecord(): {income: TransactionModal[], expense: TransactionModal[]} {
+        let transitons: TransactionModal[] = TransactionModal.getAll();
+        let record: {income: TransactionModal[], expense: TransactionModal[]} = {income: [], expense: []};
         for(let transiton of transitons) {
             if(transiton.fromAccountId == this.id || transiton.toAccountId == this.id){
                 if(transiton.mode == 'income') {
@@ -137,25 +137,25 @@ class AccountModal {
         if(!Storage.contains(id)) return null;
 
         let account: AccountModalProps = JSON.parse(Storage.getString(id) || '{}');
-        let transitions: TransitionModal[] = TransitionModal.getAll().filter(tra => tra.fromAccountId == id || tra.toAccountId == id);
+        let transactions: TransactionModal[] = TransactionModal.getAll().filter(tra => tra.fromAccountId == id || tra.toAccountId == id);
         
-        for(let transition of transitions) {
-            if(transition.mode == 'transfer') {
-                let fromAccount = AccountModal.findById(transition.fromAccountId);
-                let toAccount = AccountModal.findById(transition.toAccountId);
+        for(let transaction of transactions) {
+            if(transaction.mode == 'transfer') {
+                let fromAccount = AccountModal.findById(transaction.fromAccountId);
+                let toAccount = AccountModal.findById(transaction.toAccountId);
 
                 if(fromAccount && fromAccount.id != id) {
-                    fromAccount.addBalance(transition.amount);
+                    fromAccount.addBalance(transaction.amount);
                     fromAccount.save();
                 }
 
                 if(toAccount && toAccount.id != id){
-                    toAccount.subBalance(transition.amount);
+                    toAccount.subBalance(transaction.amount);
                     toAccount.save();
                 }
             }
             
-            TransitionsStorage.delete(transition.id)
+            TransactionsStorage.delete(transaction.id)
         }
 
         Storage.delete(id);

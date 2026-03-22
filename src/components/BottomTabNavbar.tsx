@@ -113,7 +113,7 @@ const HomeScreenCreateButton = memo(() => {
                         <AnimateButton 
                             style={{width: 64, height: 64, borderRadius: 100, backgroundColor: info.bg, alignItems: 'center', justifyContent: 'center'}}
                             onPress={() => {
-                                navigator.navigate('transition-screen', {mode: info.mode as 'income' | 'expense' | 'transfer'})
+                                navigator.navigate('transaction-screen', {mode: info.mode as 'income' | 'expense' | 'transfer'})
                                 animate0to1.animateTo0()
                             }} 
                         >
@@ -128,7 +128,7 @@ const HomeScreenCreateButton = memo(() => {
                                         transform: [{scale: animate0to1.value}]
                                     }} 
                                 >
-                                    <TextTheme color="white" style={{fontSize: 12, fontWeight: '900'}}>
+                                    <TextTheme color="white" style={{fontSize: 11, textAlign:'center', fontWeight: '900'}}>
                                         {text}
                                     </TextTheme>
                                 </Animated.View>

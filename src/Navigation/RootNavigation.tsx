@@ -1,18 +1,18 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AccountModal from "../Database/Models/AccountModal";
-import TransitionModal from "../Database/Models/TransitionModal";
+import TransactionModal from "../Database/Models/TransactionModal";
 import SettingScreen from "../Screens/SettingScreen";
-import TransitionScreen from "../Screens/TransitionScreen";
-import TransitionUpdateScreen from "../Screens/TransitionUpdateScreen";
+import TransactionScreen from "../Screens/TransactionScreen";
+import TransactionUpdateScreen from "../Screens/TransactionUpdateScreen";
 import AccountInfoScreen from "../Screens/TabNavigationScreens/AccountScreens/AccountInfoScreen";
 import TabNavigation from "./TabNavigation";
 import { NavigationRef } from "./NavigationService";
 
 export type RootNavigationParamsList = {
     'setting-screen': undefined,
-    'transition-screen': { mode: 'income' | 'expense' | 'transfer', account?: AccountModal},
-    'transition-update-screen': {transition: TransitionModal},
+    'transaction-screen': { mode: 'income' | 'expense' | 'transfer', account?: AccountModal},
+    'transaction-update-screen': {transaction: TransactionModal},
     'account-info-screen': {account: AccountModal},
     'tab-navigation': undefined
 }
@@ -31,10 +31,10 @@ export default function RootNavitaion(): React.JSX.Element {
                 <Stack.Screen name="setting-screen" component={SettingScreen} 
                     options={{animation: 'scale_from_center'}} 
                 />
-                <Stack.Screen name="transition-screen" component={TransitionScreen} 
+                <Stack.Screen name="transaction-screen" component={TransactionScreen} 
                     options={{animation: 'scale_from_center'}}
                 />
-                <Stack.Screen name="transition-update-screen" component={TransitionUpdateScreen} 
+                <Stack.Screen name="transaction-update-screen" component={TransactionUpdateScreen} 
                     options={{animation: 'slide_from_right'}}
                 />
                 <Stack.Screen name="account-info-screen" component={AccountInfoScreen} 

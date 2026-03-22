@@ -21,8 +21,8 @@ type AppContextType = {
     categorys: string[],
     setCategorys: Dispatch<SetStateAction<string[]>>,
 
-    isNeedTransitionRefresh: number;
-    setNeedTransitionRefresh: Dispatch<SetStateAction<number>>,
+    isNeedTransactionRefresh: number;
+    setNeedTransactionRefresh: Dispatch<SetStateAction<number>>,
 
     currency: string,
     setCurrency: Dispatch<SetStateAction<string>>
@@ -36,7 +36,7 @@ const defaultState = {
     backgroundColor: 'black', setBackgroundColor: ()=>{},
     username: 'Guest', setUsername: ()=>{},
     categorys: [], setCategorys: ()=>{},
-    isNeedTransitionRefresh: 0, setNeedTransitionRefresh: ()=>{},
+    isNeedTransactionRefresh: 0, setNeedTransactionRefresh: ()=>{},
     currency: "INR", setCurrency: ()=>{}
 }
 
@@ -75,7 +75,7 @@ export default function AppContextProvider({children}: {children: React.ReactNod
     const [backgroundColor, setBackgroundColor] = useState<string>(AppStorage.getString('backgroundColor') ?? 'black');
     const [username, setUsername] = useState<string>(AppStorage.getString('username') ?? 'Guest');
     const [categorys, setCategorys] = useState<string[]>(categorys_);
-    const [isNeedTransitionRefresh, setNeedTransitionRefresh] = useState<number>(0);
+    const [isNeedTransactionRefresh, setNeedTransactionRefresh] = useState<number>(0);
 
     const states: AppContextType = {
         totalBalance, setTotalBalance, 
@@ -84,7 +84,7 @@ export default function AppContextProvider({children}: {children: React.ReactNod
         backgroundColor, setBackgroundColor,
         username, setUsername,
         categorys, setCategorys,
-        isNeedTransitionRefresh, setNeedTransitionRefresh,
+        isNeedTransactionRefresh, setNeedTransactionRefresh,
         currency, setCurrency
     }
 

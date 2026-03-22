@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 900,
         alignSelf: 'flex-start',
-        paddingInline: 20
+        paddingInline: 20,
+         marginTop: 10,
     },
 
     topHeading_balance: {
