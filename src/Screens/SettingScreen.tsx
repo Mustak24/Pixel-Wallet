@@ -44,7 +44,7 @@ export default function SettingScreen(): React.JSX.Element {
                     <Animated.View style={{transform: [{scale: hearAnimate}]}}>
                         <FeatherIcon name="heart" size={16} color={'rgb(250,50,50)'} />
                     </Animated.View>
-                    <TextTheme style={{fontWeight: '900'}}>by @Mustak24</TextTheme>
+                    <TextTheme style={{fontWeight: '900'}}>by @Pixel PropX</TextTheme>
                 </View>
             </View>
 
